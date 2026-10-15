@@ -75,7 +75,7 @@ Optional environment variables: `SCOPEMATCH_DEMO_ORIGIN`, `SCOPEMATCH_CDP_ORIGIN
 
 Public repository: https://github.com/fadillaoegi/scopematch. The learner authorized public creation and pushing code/history by replying “lanjut” to the explicit publication question. The configured credential helper authenticated account `fadillaoegi`; that account was used as the destination. The repository was created as public using the GitHub REST API without an initial README or other remote commits. `origin` points to its HTTPS clone URL. No tokens were displayed or saved in project files.
 
-GitHub CLI is not installed; publishing uses the existing Git credential helper and Git. Push and anonymous-access verification are recorded below when completed.
+GitHub CLI is not installed; publishing uses the existing Git credential helper and Git. Branch `main` and audited history were pushed successfully. Anonymous requests to the GitHub repository API and raw README both returned successfully; the API reports `private: false`, and the public README matches the local file byte for byte. The published branch was verified through commit `7c4e9c6` before this verification record was added.
 
 ## Remaining actions
 
@@ -84,12 +84,12 @@ GitHub CLI is not installed; publishing uses the existing Git credential helper 
 - [x] README, MIT license, planning docs, offline app map, and third-party notice prepared.
 - [ ] Learner reviews the silent video and chooses whether to add their own narration.
 - [x] Learner authorized public creation/push, including code/history; authenticated account `fadillaoegi` resolved the destination.
-- [ ] Repository created/pushed and its URL checked without authentication.
+- [x] Repository created/pushed and its URL checked without authentication (public API and raw README).
 - [ ] Video uploaded publicly to YouTube/Vimeo and link checked without authentication.
 - [ ] Actual submission-form fields and exit survey completed by the learner.
 - [ ] Learner explicitly authorizes submission, or submits directly and reports completion.
 
-Public repository URL: https://github.com/fadillaoegi/scopematch (public repository created; push verification pending).
+Public repository URL: https://github.com/fadillaoegi/scopematch (created, pushed, anonymous access verified).
 Public video URL: pending.
 Optional deployment URL: not requested.
 Devpost submission URL/status: pending, not submitted.
