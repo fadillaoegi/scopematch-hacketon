@@ -1,5 +1,5 @@
 import { motion } from 'motion/react'
-import type { Answer, Card, Role } from '../api/client'
+import type { Answer, Card, Role } from '../domain/models'
 import { BookingPreview } from './BookingPreview'
 import styles from './CompareBoard.module.css'
 

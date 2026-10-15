@@ -4,26 +4,27 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"scopematch/internal/store"
 	"strings"
+
+	"scopematch/internal/domain"
 )
 
 func (s *Service) Export(ctx context.Context, a Actor) (content, filename string, err error) {
-	err = s.st.Tx(ctx, func(q store.Q) error {
-		p, e := store.GetProject(ctx, q, a.ProjectID)
+	err = s.repo.WithinTransaction(ctx, func(q Repository) error {
+		p, e := q.GetProject(ctx, a.ProjectID)
 		if e != nil {
 			return e
 		}
-		if !p.AgreedVersion.Valid {
+		if p.AgreedVersion <= 0 {
 			return notFound("not_agreed")
 		}
-		rows, e := store.Versions(ctx, q, p.ID)
+		rows, e := q.Versions(ctx, p.ID)
 		if e != nil {
 			return e
 		}
 		var saved *ScopeVersion
 		for _, row := range rows {
-			if row.Number != int(p.AgreedVersion.Int64) {
+			if row.Number != p.AgreedVersion {
 				continue
 			}
 			v := ScopeVersion{Version: row.Number, CreatedAt: row.CreatedAt}
@@ -36,7 +37,7 @@ func (s *Service) Export(ctx context.Context, a Actor) (content, filename string
 			break
 		}
 		if saved == nil {
-			return store.ErrNotFound
+			return domain.ErrNotFound
 		}
 		content = renderMarkdown(p, *saved)
 		var slug strings.Builder
@@ -56,7 +57,7 @@ func (s *Service) Export(ctx context.Context, a Actor) (content, filename string
 	})
 	return
 }
-func renderMarkdown(p store.Project, v ScopeVersion) string {
+func renderMarkdown(p domain.Project, v ScopeVersion) string {
 	var b strings.Builder
 	fmt.Fprintf(&b, "# %s\n\nAGREED · v%d\n\nFreelancer: %s\nClient: %s\n\n## Original brief\n\n%s\n\n## Decisions\n\n", p.Name, v.Version, p.FreelancerName, p.ClientName, p.Brief)
 	for _, d := range v.Decisions {

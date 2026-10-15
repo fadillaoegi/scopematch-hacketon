@@ -1,11 +1,14 @@
 import { useRef, useState } from 'react'
-import { api, ApiError, type Answer, type Card, type Session } from '../api/client'
+import { useProjectGateway } from '../lib/gateway'
+import { GatewayError } from '../application/errors'
+import type { Answer, Card, Session } from '../domain/models'
 import { SealedState } from './SealedState'
 import styles from './AnswerFlow.module.css'
 
 export function AnswerFlow({ token, session, library, onUpdate }: {
   token: string; session: Session; library: Map<string, Card>; onUpdate: (s: Session) => void
 }) {
+  const api = useProjectGateway()
   const [answers, setAnswers] = useState<Answer[]>(session.me.answers ?? [])
   const [page, setPage] = useState(0)
   const [saving, setSaving] = useState(false)
@@ -21,7 +24,7 @@ export function AnswerFlow({ token, session, library, onUpdate }: {
     const work = queue.current.catch(() => {}).then(() => api.saveAnswers(token, valid))
     queue.current = work
     return work.then(s => { onUpdate(s); setError(''); return s }).catch(e => {
-      setError(e instanceof ApiError && e.code === 'sealed' ? 'These answers are already sealed. Reload to see the latest state.' : "Couldn't save your answers. Try again before leaving this page.")
+      setError(e instanceof GatewayError && e.code === 'sealed' ? 'These answers are already sealed. Reload to see the latest state.' : "Couldn't save your answers. Try again before leaving this page.")
       throw e
     }).finally(() => { if (queue.current === work) setSaving(false) })
   }

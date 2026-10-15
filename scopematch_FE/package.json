@@ -5,8 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit && vite build",
-    "preview": "vite preview"
+    "build": "npm run check:architecture && tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "check:architecture": "node scripts/check-architecture.mjs"
   },
   "dependencies": {
     "@fontsource-variable/fraunces": "^5.3.0",

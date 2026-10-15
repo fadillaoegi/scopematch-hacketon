@@ -3,9 +3,10 @@ package scope
 import (
 	"context"
 	"encoding/json"
-	"scopematch/internal/library"
-	"scopematch/internal/store"
 	"strings"
+
+	"scopematch/internal/domain"
+	"scopematch/internal/library"
 )
 
 type Summary struct {
@@ -49,16 +50,16 @@ type ScopeView struct {
 	Versions []ScopeVersion `json:"versions"`
 }
 
-func decidedSnapshot(ctx context.Context, q store.Q, pid string) (Snapshot, error) {
-	ids, err := store.ListCards(ctx, q, pid)
+func decidedSnapshot(ctx context.Context, q Repository, pid string) (Snapshot, error) {
+	ids, err := q.ListCards(ctx, pid)
 	if err != nil {
 		return Snapshot{}, err
 	}
-	proposals, err := store.ActiveProposals(ctx, q, pid)
+	proposals, err := q.ActiveProposals(ctx, pid)
 	if err != nil {
 		return Snapshot{}, err
 	}
-	byCard := map[string]store.Proposal{}
+	byCard := map[string]domain.Proposal{}
 	for _, p := range proposals {
 		byCard[p.CardID] = p
 	}
@@ -119,14 +120,14 @@ func sameDecisions(a, b []Decision) bool {
 	}
 	return true
 }
-func scopeView(ctx context.Context, q store.Q, p store.Project) (ScopeView, error) {
-	rows, err := store.Versions(ctx, q, p.ID)
+func scopeView(ctx context.Context, q Repository, p domain.Project) (ScopeView, error) {
+	rows, err := q.Versions(ctx, p.ID)
 	if err != nil {
 		return ScopeView{}, err
 	}
 	out := ScopeView{Versions: []ScopeVersion{}}
-	if p.AgreedVersion.Valid {
-		out.AgreedVersion = int(p.AgreedVersion.Int64)
+	if p.AgreedVersion > 0 {
+		out.AgreedVersion = p.AgreedVersion
 	}
 	for _, row := range rows {
 		v := ScopeVersion{Version: row.Number, CreatedAt: row.CreatedAt}
@@ -162,8 +163,8 @@ func scopeView(ctx context.Context, q store.Q, p store.Project) (ScopeView, erro
 }
 func (s *Service) Scope(ctx context.Context, a Actor) (ScopeView, error) {
 	var out ScopeView
-	err := s.st.Tx(ctx, func(q store.Q) error {
-		p, err := store.GetProject(ctx, q, a.ProjectID)
+	err := s.repo.WithinTransaction(ctx, func(q Repository) error {
+		p, err := q.GetProject(ctx, a.ProjectID)
 		if err != nil {
 			return err
 		}
@@ -177,7 +178,7 @@ func (s *Service) Draft(ctx context.Context, a Actor) (Summary, error) {
 		return Summary{}, forbidden("owner_only")
 	}
 	var v Snapshot
-	err := s.st.Tx(ctx, func(q store.Q) error {
+	err := s.repo.WithinTransaction(ctx, func(q Repository) error {
 		if err := requireCompare(ctx, q, a); err != nil {
 			return err
 		}
@@ -203,7 +204,7 @@ func (s *Service) SaveVersion(ctx context.Context, a Actor, summary Summary) (in
 		}
 	}
 	version := 0
-	err := s.st.Tx(ctx, func(q store.Q) error {
+	err := s.repo.WithinTransaction(ctx, func(q Repository) error {
 		if err := requireCompare(ctx, q, a); err != nil {
 			return err
 		}
@@ -216,11 +217,11 @@ func (s *Service) SaveVersion(ctx context.Context, a Actor, summary Summary) (in
 		if err != nil {
 			return err
 		}
-		if err := q.QueryRowContext(ctx, `SELECT COALESCE(MAX(version),0)+1 FROM scope_versions WHERE project_id=?`, a.ProjectID).Scan(&version); err != nil {
+		version, err = q.NextVersion(ctx, a.ProjectID)
+		if err != nil {
 			return err
 		}
-		_, err = q.ExecContext(ctx, `INSERT INTO scope_versions(project_id,version,summary_json,created_at) VALUES (?,?,?,?)`, a.ProjectID, version, string(data), store.Now())
-		return err
+		return q.InsertVersion(ctx, a.ProjectID, domain.VersionRecord{Number: version, SnapshotJSON: string(data), CreatedAt: now()})
 	})
 	return version, err
 }
@@ -230,11 +231,11 @@ func (s *Service) ConfirmVersion(ctx context.Context, a Actor, n int, name strin
 		return false, invalid(map[string]string{"name": "Enter your name in 1–120 characters."})
 	}
 	agreed := false
-	err := s.st.Tx(ctx, func(q store.Q) error {
+	err := s.repo.WithinTransaction(ctx, func(q Repository) error {
 		if err := requireCompare(ctx, q, a); err != nil {
 			return err
 		}
-		p, err := store.GetProject(ctx, q, a.ProjectID)
+		p, err := q.GetProject(ctx, a.ProjectID)
 		if err != nil {
 			return err
 		}
@@ -249,19 +250,15 @@ func (s *Service) ConfirmVersion(ctx context.Context, a Actor, n int, name strin
 			return conflict("decisions_changed")
 		}
 		latest := v.Versions[0]
-		atCol, nameCol := "owner_confirmed_at", "owner_confirm_name"
-		if a.Role == RoleClient {
-			atCol, nameCol = "client_confirmed_at", "client_confirm_name"
-		}
 		if (a.Role == RoleOwner && latest.OwnerConfirmation != nil) || (a.Role == RoleClient && latest.ClientConfirmation != nil) {
 			return conflict("already_confirmed")
 		}
-		if _, err := q.ExecContext(ctx, `UPDATE scope_versions SET `+atCol+`=?,`+nameCol+`=? WHERE project_id=? AND version=?`, store.Now(), name, a.ProjectID, n); err != nil {
+		if err := q.ConfirmVersion(ctx, a.ProjectID, n, a.Role, name, now()); err != nil {
 			return err
 		}
 		agreed = (a.Role == RoleOwner && latest.ClientConfirmation != nil) || (a.Role == RoleClient && latest.OwnerConfirmation != nil)
 		if agreed {
-			_, err = q.ExecContext(ctx, `UPDATE projects SET agreed_version=? WHERE id=?`, n, a.ProjectID)
+			err = q.MarkAgreed(ctx, a.ProjectID, n)
 		}
 		return err
 	})

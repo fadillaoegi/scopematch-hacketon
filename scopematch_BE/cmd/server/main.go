@@ -38,7 +38,7 @@ func main() {
 		log.Fatalf("listen: %v", err)
 	}
 	defer listener.Close()
-	svc := scope.NewService(st)
+	svc := scope.NewService(store.NewRepository(st))
 	if *seed {
 		token, err := svc.CreateProject(context.Background(), scope.NewProject{Name: "Salon website", FreelancerName: "Dimas", ClientName: "Maya", Brief: "We need a salon website with booking, two languages, and editable content."})
 		if err != nil {

@@ -3,8 +3,8 @@ package scope
 import (
 	"context"
 
+	"scopematch/internal/domain"
 	"scopematch/internal/library"
-	"scopematch/internal/store"
 )
 
 // Stages, derived from stored rows on every read.
@@ -30,9 +30,9 @@ type CardRef struct {
 }
 
 type PartyView struct {
-	Name      string          `json:"name"`
-	Submitted bool            `json:"submitted"`
-	Answers   *[]store.Answer `json:"answers,omitempty"`
+	Name      string           `json:"name"`
+	Submitted bool             `json:"submitted"`
+	Answers   *[]domain.Answer `json:"answers,omitempty"`
 }
 
 // SessionView is everything one role may see about its project. This is the
@@ -54,7 +54,7 @@ type SessionView struct {
 
 func (s *Service) Session(ctx context.Context, a Actor) (SessionView, error) {
 	var v SessionView
-	err := s.st.Tx(ctx, func(q store.Q) error {
+	err := s.repo.WithinTransaction(ctx, func(q Repository) error {
 		var err error
 		v, err = buildSession(ctx, q, a)
 		return err
@@ -62,12 +62,12 @@ func (s *Service) Session(ctx context.Context, a Actor) (SessionView, error) {
 	return v, err
 }
 
-func buildSession(ctx context.Context, q store.Q, a Actor) (SessionView, error) {
-	p, err := store.GetProject(ctx, q, a.ProjectID)
+func buildSession(ctx context.Context, q Repository, a Actor) (SessionView, error) {
+	p, err := q.GetProject(ctx, a.ProjectID)
 	if err != nil {
 		return SessionView{}, err
 	}
-	ids, err := store.ListCards(ctx, q, p.ID)
+	ids, err := q.ListCards(ctx, p.ID)
 	if err != nil {
 		return SessionView{}, err
 	}
@@ -95,22 +95,22 @@ func buildSession(ctx context.Context, q store.Q, a Actor) (SessionView, error) 
 	if a.Role == RoleClient {
 		otherRole = RoleOwner
 	}
-	me.Submitted, err = store.Submitted(ctx, q, p.ID, a.Role)
+	me.Submitted, err = q.Submitted(ctx, p.ID, a.Role)
 	if err != nil {
 		return SessionView{}, err
 	}
-	other.Submitted, err = store.Submitted(ctx, q, p.ID, otherRole)
+	other.Submitted, err = q.Submitted(ctx, p.ID, otherRole)
 	if err != nil {
 		return SessionView{}, err
 	}
-	answers, err := store.Answers(ctx, q, p.ID, a.Role)
+	answers, err := q.Answers(ctx, p.ID, a.Role)
 	if err != nil {
 		return SessionView{}, err
 	}
 	me.Answers = &answers
 	// Do not even query the other role's answers until both have sealed.
 	if me.Submitted && other.Submitted {
-		answers, err := store.Answers(ctx, q, p.ID, otherRole)
+		answers, err := q.Answers(ctx, p.ID, otherRole)
 		if err != nil {
 			return SessionView{}, err
 		}
@@ -118,7 +118,7 @@ func buildSession(ctx context.Context, q store.Q, a Actor) (SessionView, error) 
 	}
 
 	stage := StageSetup
-	if p.LockedAt.Valid {
+	if p.LockedAt != "" {
 		stage = StageAnswering
 	}
 	var comparisons []Comparison
@@ -126,7 +126,7 @@ func buildSession(ctx context.Context, q store.Q, a Actor) (SessionView, error) 
 	if me.Submitted && other.Submitted {
 		stage = StageCompare
 		comparisons, counts = compareAnswers(ids, *me.Answers, *other.Answers)
-		proposals, err := store.ActiveProposals(ctx, q, p.ID)
+		proposals, err := q.ActiveProposals(ctx, p.ID)
 		if err != nil {
 			return SessionView{}, err
 		}
@@ -153,7 +153,7 @@ func buildSession(ctx context.Context, q store.Q, a Actor) (SessionView, error) 
 		if counts.Decided == counts.Total {
 			stage = StageReview
 		}
-		if p.AgreedVersion.Valid {
+		if p.AgreedVersion > 0 {
 			stage = StageAgreed
 		}
 	}
@@ -172,7 +172,7 @@ func buildSession(ctx context.Context, q store.Q, a Actor) (SessionView, error) 
 		Stage: stage,
 		Project: ProjectView{
 			Name: p.Name, Brief: p.Brief, FreelancerName: p.FreelancerName,
-			ClientName: p.ClientName, Locked: p.LockedAt.Valid,
+			ClientName: p.ClientName, Locked: p.LockedAt != "",
 		},
 		Cards:   cards,
 		Matches: all,

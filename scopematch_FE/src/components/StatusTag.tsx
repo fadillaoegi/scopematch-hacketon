@@ -1,4 +1,4 @@
-import type { CompareStatus } from '../api/client'
+import type { CompareStatus } from '../domain/models'
 import styles from './CompareBoard.module.css'
 
 const LABELS: Record<CompareStatus, string> = {

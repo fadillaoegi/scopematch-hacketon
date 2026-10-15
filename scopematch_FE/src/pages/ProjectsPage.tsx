@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
-import { api, ApiError, type Session, type Stage } from '../api/client'
+import { useProjectGateway } from '../lib/gateway'
+import { GatewayError } from '../application/errors'
+import type { Session, Stage } from '../domain/models'
 import { Masthead } from '../components/Masthead'
 import { rememberedProjects } from '../lib/projects'
 import styles from './ProjectsPage.module.css'
 
 const STAGES: Record<Stage, string> = { setup: 'Setup', answering: 'Answering separately', compare: 'Compare & resolve', review: 'Review scope', agreed: 'Agreed' }
 export function ProjectsPage() {
+  const api = useProjectGateway()
   const [projects] = useState(rememberedProjects)
   const [sessions, setSessions] = useState<Record<string, Session>>({})
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -17,11 +20,11 @@ export function ProjectsPage() {
         const s = await api.session(p.ownerToken)
         if (live) setSessions(prev => ({ ...prev, [p.ownerToken]: s }))
       } catch (e) {
-        if (live) setErrors(prev => ({ ...prev, [p.ownerToken]: e instanceof ApiError && e.status === 401 ? 'This saved link is no longer valid' : 'Server unavailable · open to retry' }))
+        if (live) setErrors(prev => ({ ...prev, [p.ownerToken]: e instanceof GatewayError && e.code === 'invalid_link' ? 'This saved link is no longer valid' : 'Server unavailable · open to retry' }))
       }
     }))
     return () => { live = false }
-  }, [projects])
+  }, [projects, api])
   return <>
     <Masthead home={false} meta={<span>Your projects</span>} />
     <main className={styles.page}>

@@ -1,4 +1,4 @@
-import type { Session } from '../api/client'
+import type { Session } from '../domain/models'
 import styles from './AnswerFlow.module.css'
 
 export function SealedState({ session }: { session: Session }) {

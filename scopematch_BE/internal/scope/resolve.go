@@ -2,9 +2,10 @@ package scope
 
 import (
 	"context"
-	"scopematch/internal/library"
-	"scopematch/internal/store"
 	"strings"
+
+	"scopematch/internal/domain"
+	"scopematch/internal/library"
 )
 
 type ProposalInput struct {
@@ -13,16 +14,16 @@ type ProposalInput struct {
 	Why        string `json:"why"`
 }
 
-func requireCompare(ctx context.Context, q store.Q, a Actor) error {
-	p, err := store.GetProject(ctx, q, a.ProjectID)
+func requireCompare(ctx context.Context, q Repository, a Actor) error {
+	p, err := q.GetProject(ctx, a.ProjectID)
 	if err != nil {
 		return err
 	}
-	if p.AgreedVersion.Valid {
+	if p.AgreedVersion > 0 {
 		return conflict("agreed")
 	}
 	for _, role := range []string{RoleOwner, RoleClient} {
-		yes, err := store.Submitted(ctx, q, p.ID, role)
+		yes, err := q.Submitted(ctx, p.ID, role)
 		if err != nil {
 			return err
 		}
@@ -32,12 +33,12 @@ func requireCompare(ctx context.Context, q store.Q, a Actor) error {
 	}
 	return nil
 }
-func seedSameAnswers(ctx context.Context, q store.Q, pid string) error {
-	mine, err := store.Answers(ctx, q, pid, RoleOwner)
+func seedSameAnswers(ctx context.Context, q Repository, pid string) error {
+	mine, err := q.Answers(ctx, pid, RoleOwner)
 	if err != nil {
 		return err
 	}
-	theirs, err := store.Answers(ctx, q, pid, RoleClient)
+	theirs, err := q.Answers(ctx, pid, RoleClient)
 	if err != nil {
 		return err
 	}
@@ -49,18 +50,18 @@ func seedSameAnswers(ctx context.Context, q store.Q, pid string) error {
 		if a.OptionID == library.OptionOther || a.OptionID == library.OptionUnsure || byOther[a.CardID] != a.OptionID {
 			continue
 		}
-		if err := store.InsertProposal(ctx, q, pid, store.Proposal{ID: newID(), CardID: a.CardID, ProposedBy: "system", OptionID: a.OptionID, CreatedAt: store.Now()}); err != nil {
+		if err := q.InsertProposal(ctx, pid, domain.Proposal{ID: newID(), CardID: a.CardID, ProposedBy: "system", OptionID: a.OptionID, CreatedAt: now()}); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 func (s *Service) Propose(ctx context.Context, a Actor, cardID string, in ProposalInput) error {
-	return s.st.Tx(ctx, func(q store.Q) error {
+	return s.repo.WithinTransaction(ctx, func(q Repository) error {
 		if err := requireCompare(ctx, q, a); err != nil {
 			return err
 		}
-		ids, err := store.ListCards(ctx, q, a.ProjectID)
+		ids, err := q.ListCards(ctx, a.ProjectID)
 		if err != nil {
 			return err
 		}
@@ -92,37 +93,34 @@ func (s *Service) Propose(ctx context.Context, a Actor, cardID string, in Propos
 		} else {
 			in.CustomText = ""
 		}
-		if _, err := q.ExecContext(ctx, `UPDATE proposals SET active=0 WHERE project_id=? AND card_id=? AND active=1`, a.ProjectID, cardID); err != nil {
+		if err := q.DeactivateProposals(ctx, a.ProjectID, cardID); err != nil {
 			return err
 		}
-		p := store.Proposal{ID: newID(), CardID: cardID, ProposedBy: a.Role, OptionID: in.OptionID, CustomText: in.CustomText, Why: in.Why, CreatedAt: store.Now()}
+		p := domain.Proposal{ID: newID(), CardID: cardID, ProposedBy: a.Role, OptionID: in.OptionID, CustomText: in.CustomText, Why: in.Why, CreatedAt: now()}
 		if a.Role == RoleOwner {
 			p.OwnerAt = p.CreatedAt
 		} else {
 			p.ClientAt = p.CreatedAt
 		}
-		return store.InsertProposal(ctx, q, a.ProjectID, p)
+		return q.InsertProposal(ctx, a.ProjectID, p)
 	})
 }
 func (s *Service) ConfirmProposal(ctx context.Context, a Actor, id string) error {
-	return s.st.Tx(ctx, func(q store.Q) error {
+	return s.repo.WithinTransaction(ctx, func(q Repository) error {
 		if err := requireCompare(ctx, q, a); err != nil {
 			return err
 		}
-		p, err := store.GetActiveProposal(ctx, q, a.ProjectID, id)
+		p, err := q.GetActiveProposal(ctx, a.ProjectID, id)
 		if err != nil {
 			return err
 		}
-		column := "confirmed_by_owner_at"
 		at := p.OwnerAt
 		if a.Role == RoleClient {
-			column = "confirmed_by_client_at"
 			at = p.ClientAt
 		}
 		if at != "" {
 			return conflict("already_confirmed")
 		}
-		_, err = q.ExecContext(ctx, `UPDATE proposals SET `+column+`=? WHERE id=? AND project_id=? AND active=1`, store.Now(), id, a.ProjectID)
-		return err
+		return q.ConfirmProposal(ctx, a.ProjectID, id, a.Role, now())
 	})
 }

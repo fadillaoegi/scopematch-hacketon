@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"strings"
 
+	"scopematch/internal/domain"
 	"scopematch/internal/scope"
-	"scopematch/internal/store"
 )
 
 // authed wraps a handler that needs a link token. The token comes only from
@@ -19,7 +19,7 @@ func (s *Server) authed(h func(w http.ResponseWriter, r *http.Request, a scope.A
 			return
 		}
 		a, err := s.svc.Authenticate(r.Context(), strings.TrimSpace(token))
-		if errors.Is(err, store.ErrNotFound) {
+		if errors.Is(err, domain.ErrNotFound) {
 			writeError(w, http.StatusUnauthorized, "invalid_link", nil)
 			return
 		}

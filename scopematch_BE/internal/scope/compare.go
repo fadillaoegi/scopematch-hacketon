@@ -1,8 +1,8 @@
 package scope
 
 import (
+	"scopematch/internal/domain"
 	"scopematch/internal/library"
-	"scopematch/internal/store"
 )
 
 const (
@@ -12,9 +12,9 @@ const (
 )
 
 type Comparison struct {
-	CardID   string          `json:"cardId"`
-	Status   string          `json:"status"`
-	Proposal *store.Proposal `json:"proposal,omitempty"`
+	CardID   string           `json:"cardId"`
+	Status   string           `json:"status"`
+	Proposal *domain.Proposal `json:"proposal,omitempty"`
 }
 
 type Counts struct {
@@ -25,7 +25,7 @@ type Counts struct {
 	Clarification int `json:"clarification"`
 }
 
-func compareAnswers(ids []string, mine, theirs []store.Answer) ([]Comparison, *Counts) {
+func compareAnswers(ids []string, mine, theirs []domain.Answer) ([]Comparison, *Counts) {
 	byMe, byOther := map[string]string{}, map[string]string{}
 	for _, a := range mine {
 		byMe[a.CardID] = a.OptionID

@@ -1,5 +1,5 @@
 import { LayoutGroup, motion } from 'motion/react'
-import type { Card, CardRef, Match } from '../api/client'
+import type { Card, CardRef, Match } from '../domain/models'
 import styles from './CardPicker.module.css'
 
 interface Props {

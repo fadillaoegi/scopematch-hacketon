@@ -26,7 +26,7 @@ func newClient(t *testing.T) *client {
 		t.Fatal(err)
 	}
 	t.Cleanup(func() { st.Close() })
-	srv := httptest.NewServer(New(scope.NewService(st), ""))
+	srv := httptest.NewServer(New(scope.NewService(store.NewRepository(st)), ""))
 	t.Cleanup(srv.Close)
 	return &client{t: t, srv: srv}
 }

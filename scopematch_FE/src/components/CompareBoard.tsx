@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useReducedMotion } from 'motion/react'
-import type { Card, Session } from '../api/client'
+import type { Card, Session } from '../domain/models'
 import { AnswerCard } from './AnswerCard'
 import { ProposalBox } from './ProposalBox'
 import { StatusTag } from './StatusTag'

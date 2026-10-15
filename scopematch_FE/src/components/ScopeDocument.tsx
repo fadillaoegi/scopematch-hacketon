@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
-import { api, ApiError, type ScopeView, type Session, type Summary } from '../api/client'
+import { useProjectGateway } from '../lib/gateway'
+import { GatewayError } from '../application/errors'
+import type { ScopeView, Session, Summary } from '../domain/models'
 import { AgreedStamp } from './AgreedStamp'
 import styles from './ScopeDocument.module.css'
 
@@ -10,6 +12,7 @@ const SECTIONS: { key: keyof Summary; label: string }[] = [
 ]
 
 export function ScopeDocument({ token, session, onUpdate }: { token: string; session: Session; onUpdate: (s: Session) => void }) {
+  const api = useProjectGateway()
   const [view, setView] = useState<ScopeView | null>(null)
   const [summary, setSummary] = useState<Summary | null>(null)
   const [editing, setEditing] = useState(false)
@@ -39,7 +42,7 @@ export function ScopeDocument({ token, session, onUpdate }: { token: string; ses
     }
     void load()
     return () => { live = false }
-  }, [token, owner, latestVersion, current, ownerAt, clientAt, canDraft])
+  }, [token, owner, latestVersion, current, ownerAt, clientAt, canDraft, api])
 
   async function refresh() {
     const [v, s] = await Promise.all([api.scope(token), api.session(token)])
@@ -64,13 +67,14 @@ export function ScopeDocument({ token, session, onUpdate }: { token: string; ses
     if (!view?.versions[0]) return
     setBusy(true); setError('')
     try { await api.confirmVersion(token, view.versions[0].version, name); await refresh() }
-    catch (e) { setError(e instanceof ApiError && ['not_latest', 'decisions_changed'].includes(e.code) ? 'The scope changed. Review the latest version before confirming.' : 'Your confirmation was not recorded. Review the latest version and try again.'); void refresh().catch(() => {}) }
+    catch (e) { setError(e instanceof GatewayError && ['not_latest', 'decisions_changed'].includes(e.code) ? 'The scope changed. Review the latest version before confirming.' : 'Your confirmation was not recorded. Review the latest version and try again.'); void refresh().catch(() => {}) }
     finally { setBusy(false) }
   }
   async function download() {
     setBusy(true); setError('')
     try {
-      const { blob, filename } = await api.download(token)
+      const { contents, filename } = await api.download(token)
+      const blob = new Blob([contents], { type: 'text/markdown;charset=utf-8' })
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a'); a.href = url; a.download = filename
       document.body.append(a); a.click(); a.remove()

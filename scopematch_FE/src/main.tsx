@@ -11,13 +11,17 @@ import './styles/tokens.css'
 import './styles/global.css'
 
 import { App } from './App'
+import { api } from './api/client'
+import { ProjectGatewayProvider } from './lib/gateway'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     {/* "user": honour the OS reduced-motion setting everywhere. */}
     <MotionConfig reducedMotion="user">
       <BrowserRouter>
-        <App />
+        <ProjectGatewayProvider gateway={api}>
+          <App />
+        </ProjectGatewayProvider>
       </BrowserRouter>
     </MotionConfig>
   </StrictMode>,

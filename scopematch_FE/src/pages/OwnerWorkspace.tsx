@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router'
-import { api, type Role } from '../api/client'
+import { useProjectGateway } from '../lib/gateway'
+import type { Role } from '../domain/models'
 import { AnswerFlow } from '../components/AnswerFlow'
 import { BriefPanel } from '../components/BriefPanel'
 import { CardPicker } from '../components/CardPicker'
@@ -27,6 +28,7 @@ export function OwnerWorkspace({ role = 'owner' }: { role?: Role }) {
 }
 
 function Workspace({ token, role }: { token: string; role: Role }) {
+  const api = useProjectGateway()
   const { library, error: libraryError } = useLibrary()
   const { session, setSession, invalid, error: connectionError } = useSession(token, role)
   const [error, setError] = useState('')
@@ -53,7 +55,7 @@ function Workspace({ token, role }: { token: string; role: Role }) {
       if (live) setError("Couldn't restore your client link. Reload to try again.")
     })
     return () => { live = false }
-  }, [token, role, locked])
+  }, [token, role, locked, api])
 
   const matches = useMemo(() => new Map((session?.matches ?? []).map(m => [m.cardId, m])), [session])
   if (invalid) return <InvalidLinkPage />

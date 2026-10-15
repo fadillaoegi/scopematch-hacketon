@@ -1,114 +1,8 @@
-// Typed API client. Every call that needs access carries the link token from
-// the page URL as a bearer token; project IDs never appear in requests.
-
-export type Role = 'owner' | 'client'
-export type Stage = 'setup' | 'answering' | 'compare' | 'review' | 'agreed'
-
-export interface PreviewStep {
-  title: string
-  body: string
-}
-
-export interface Option {
-  id: string
-  label: string
-  included: string[]
-  excluded: string[]
-  clientResponsibilities: string[]
-  acceptanceCriteria: string[]
-  preview?: PreviewStep[]
-}
-
-export interface Card {
-  id: string
-  number: number
-  title: string
-  question: string
-  keywords: string[]
-  alwaysSuggest?: boolean
-  options: Option[]
-}
-
-export interface Match {
-  cardId: string
-  phrase: string
-  start: number
-  end: number
-  sentence: string
-}
-
-export interface CardRef {
-  id: string
-  match: Match | null
-}
-
-export interface Party {
-  name: string
-  submitted: boolean
-  answers?: Answer[]
-}
-
-export interface Answer {
-  cardId: string
-  optionId: string
-  customText?: string
-}
-
-export interface Session {
-  role: Role
-  stage: Stage
-  project: {
-    name: string
-    brief: string
-    freelancerName: string
-    clientName: string
-    locked: boolean
-  }
-  cards: CardRef[]
-  matches: Match[]
-  me: Party
-  other: Party
-  scope?: ScopeState
-  compare?: Comparison[]
-  counts?: { total: number; decided: number; same: number; discussion: number; clarification: number }
-}
-
-export type CompareStatus = 'same_answer' | 'needs_discussion' | 'needs_clarification' | 'decided'
-export interface Proposal {
-  id: string; cardId: string; proposedBy: Role | 'system'; optionId: string; customText?: string; why?: string
-  ownerConfirmedAt?: string; clientConfirmedAt?: string; createdAt: string
-}
-export interface Comparison { cardId: string; status: CompareStatus; proposal?: Proposal }
-export interface ProposalInput { optionId: string; customText?: string; why?: string }
-
-export interface Summary {
-  included: string[]; excluded: string[]; clientResponsibilities: string[]; acceptanceCriteria: string[]; openQuestions: string[]
-}
-export interface Decision { cardId: string; number: number; title: string; label: string; proposalId: string }
-export interface Confirmation { name: string; at: string }
-export interface ScopeVersion {
-  version: number; summary: Summary; decisions: Decision[]; createdAt: string
-  ownerConfirmation?: Confirmation; clientConfirmation?: Confirmation
-}
-export interface ScopeState { latestVersion: number; agreedVersion: number; current: boolean; ownerConfirmedAt?: string; clientConfirmedAt?: string }
-export interface ScopeView extends ScopeState { versions: ScopeVersion[] }
-
-export interface NewProject {
-  name: string
-  freelancerName: string
-  clientName: string
-  brief: string
-}
-
-export class ApiError extends Error {
-  constructor(
-    public status: number,
-    public code: string,
-    public fields: Record<string, string> = {},
-  ) {
-    super(code)
-  }
-}
+// HTTP adapter: this is the only layer that knows fetch, bearer headers,
+// HTTP status codes, and endpoint paths. main.tsx injects it into presentation.
+import type { Answer, Card, NewProject, ProposalInput, ScopeView, Session, Summary } from '../domain/models'
+import type { ProjectGateway } from '../application/projectGateway'
+import { GatewayError } from '../application/errors'
 
 async function request<T>(method: string, path: string, token?: string, body?: unknown): Promise<T> {
   const headers: Record<string, string> = {}
@@ -118,14 +12,14 @@ async function request<T>(method: string, path: string, token?: string, body?: u
   try {
     res = await fetch(path, { method, headers, body: body === undefined ? undefined : JSON.stringify(body) })
   } catch {
-    throw new ApiError(0, 'network')
+    throw new GatewayError('network')
   }
   const data = await res.json().catch(() => ({}))
-  if (!res.ok) throw new ApiError(res.status, data.error ?? 'unknown', data.fields)
+  if (!res.ok) throw new GatewayError(data.error ?? 'unknown', data.fields)
   return data as T
 }
 
-export const api = {
+export const api: ProjectGateway = {
   createProject: (p: NewProject) => request<{ ownerToken: string }>('POST', '/api/projects', undefined, p),
   library: () => request<{ cards: Card[] }>('GET', '/api/library'),
   session: (token: string) => request<Session>('GET', '/api/session', token),
@@ -138,8 +32,8 @@ export const api = {
   confirmVersion: (token: string, version: number, name: string) => request<{ version: number; agreed: boolean }>('POST', `/api/scope/versions/${version}/confirm`, token, { name }),
   download: async (token: string) => {
     const res = await fetch('/api/scope/export.md', { headers: { Authorization: `Bearer ${token}` } })
-    if (!res.ok) throw new ApiError(res.status, (await res.json()).error)
-    return { blob: await res.blob(), filename: res.headers.get('Content-Disposition')?.match(/filename="?([^";]+)/)?.[1] ?? 'scopematch.md' }
+    if (!res.ok) throw new GatewayError((await res.json()).error)
+    return { contents: await res.text(), filename: res.headers.get('Content-Disposition')?.match(/filename="?([^";]+)/)?.[1] ?? 'scopematch.md' }
   },
   propose: (token: string, cardId: string, input: ProposalInput) => request<Session>('POST', `/api/cards/${encodeURIComponent(cardId)}/proposals`, token, input),
   confirmProposal: (token: string, id: string) => request<Session>('POST', `/api/proposals/${encodeURIComponent(id)}/confirm`, token),

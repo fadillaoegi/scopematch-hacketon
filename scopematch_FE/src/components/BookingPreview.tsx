@@ -1,4 +1,4 @@
-import type { Card } from '../api/client'
+import type { Card } from '../domain/models'
 import styles from './CompareBoard.module.css'
 
 export function BookingPreview({ card, optionId }: { card: Card; optionId: string }) {

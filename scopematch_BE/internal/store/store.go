@@ -11,10 +11,10 @@ import (
 	"path/filepath"
 	"time"
 
+	"scopematch/internal/domain"
+
 	_ "modernc.org/sqlite"
 )
-
-var ErrNotFound = errors.New("not found")
 
 // Q is satisfied by both *sql.DB and *sql.Tx, so every query helper works
 // inside or outside a transaction.
@@ -66,18 +66,7 @@ func (s *Store) Tx(ctx context.Context, fn func(q Q) error) error {
 // Now is the timestamp format stored everywhere.
 func Now() string { return time.Now().UTC().Format(time.RFC3339Nano) }
 
-type Project struct {
-	ID             string
-	Name           string
-	FreelancerName string
-	ClientName     string
-	Brief          string
-	LockedAt       sql.NullString
-	AgreedVersion  sql.NullInt64
-	CreatedAt      string
-}
-
-func InsertProject(ctx context.Context, q Q, p Project) error {
+func InsertProject(ctx context.Context, q Q, p domain.Project) error {
 	_, err := q.ExecContext(ctx,
 		`INSERT INTO projects (id, name, freelancer_name, client_name, brief, created_at) VALUES (?, ?, ?, ?, ?, ?)`,
 		p.ID, p.Name, p.FreelancerName, p.ClientName, p.Brief, p.CreatedAt)
@@ -92,13 +81,13 @@ func InsertProject(ctx context.Context, q Q, p Project) error {
 	return nil
 }
 
-func GetProject(ctx context.Context, q Q, id string) (Project, error) {
-	var p Project
+func GetProject(ctx context.Context, q Q, id string) (domain.Project, error) {
+	var p domain.Project
 	err := q.QueryRowContext(ctx,
-		`SELECT id, name, freelancer_name, client_name, brief, locked_at, agreed_version, created_at FROM projects WHERE id = ?`, id).
+		`SELECT id, name, freelancer_name, client_name, brief, COALESCE(locked_at,''), COALESCE(agreed_version,0), created_at FROM projects WHERE id = ?`, id).
 		Scan(&p.ID, &p.Name, &p.FreelancerName, &p.ClientName, &p.Brief, &p.LockedAt, &p.AgreedVersion, &p.CreatedAt)
 	if errors.Is(err, sql.ErrNoRows) {
-		return p, ErrNotFound
+		return p, domain.ErrNotFound
 	}
 	return p, err
 }
@@ -112,7 +101,7 @@ func InsertToken(ctx context.Context, q Q, hash, projectID, role string) error {
 func LookupToken(ctx context.Context, q Q, hash string) (projectID, role string, err error) {
 	err = q.QueryRowContext(ctx, `SELECT project_id, role FROM access_tokens WHERE token_hash = ?`, hash).Scan(&projectID, &role)
 	if errors.Is(err, sql.ErrNoRows) {
-		return "", "", ErrNotFound
+		return "", "", domain.ErrNotFound
 	}
 	return projectID, role, err
 }

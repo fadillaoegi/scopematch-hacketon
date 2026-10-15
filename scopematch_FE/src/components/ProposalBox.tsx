@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
-import { api, type Card, type Comparison, type Session } from '../api/client'
+import { useProjectGateway } from '../lib/gateway'
+import type { Card, Comparison, Session } from '../domain/models'
 import styles from './ProposalBox.module.css'
 
 export function ProposalBox({ token, session, card, comparison, onUpdate }: {
   token: string; session: Session; card: Card; comparison: Comparison; onUpdate: (s: Session) => void
 }) {
+  const api = useProjectGateway()
   const p = comparison.proposal
   const [editing, setEditing] = useState(false)
   const [optionId, setOptionId] = useState('b')

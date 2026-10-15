@@ -7,8 +7,8 @@ import (
 	"encoding/base64"
 	"strings"
 
+	"scopematch/internal/domain"
 	"scopematch/internal/library"
-	"scopematch/internal/store"
 )
 
 // Derive the invite from the authenticated owner's secret so retries return
@@ -20,53 +20,52 @@ func (s *Service) Lock(ctx context.Context, a Actor, ownerToken string) (string,
 	mac := hmac.New(sha256.New, []byte(ownerToken))
 	mac.Write([]byte("scopematch/client-invite/v1"))
 	token := base64.RawURLEncoding.EncodeToString(mac.Sum(nil))
-	err := s.st.Tx(ctx, func(q store.Q) error {
-		p, err := store.GetProject(ctx, q, a.ProjectID)
+	err := s.repo.WithinTransaction(ctx, func(q Repository) error {
+		p, err := q.GetProject(ctx, a.ProjectID)
 		if err != nil {
 			return err
 		}
-		if p.LockedAt.Valid {
+		if p.LockedAt != "" {
 			return nil
 		}
-		ids, err := store.ListCards(ctx, q, p.ID)
+		ids, err := q.ListCards(ctx, p.ID)
 		if err != nil {
 			return err
 		}
 		if len(ids) == 0 {
 			return conflict("no_questions")
 		}
-		if err := store.InsertToken(ctx, q, HashToken(token), p.ID, RoleClient); err != nil {
+		if err := q.InsertToken(ctx, HashToken(token), p.ID, RoleClient); err != nil {
 			return err
 		}
-		_, err = q.ExecContext(ctx, `UPDATE projects SET locked_at = ? WHERE id = ?`, store.Now(), p.ID)
-		return err
+		return q.LockProject(ctx, p.ID, now())
 	})
 	return token, err
 }
 
-func answerable(ctx context.Context, q store.Q, a Actor) ([]string, error) {
-	p, err := store.GetProject(ctx, q, a.ProjectID)
+func answerable(ctx context.Context, q Repository, a Actor) ([]string, error) {
+	p, err := q.GetProject(ctx, a.ProjectID)
 	if err != nil {
 		return nil, err
 	}
-	if p.AgreedVersion.Valid {
+	if p.AgreedVersion > 0 {
 		return nil, conflict("agreed")
 	}
-	if !p.LockedAt.Valid {
+	if p.LockedAt == "" {
 		return nil, conflict("not_locked")
 	}
-	submitted, err := store.Submitted(ctx, q, p.ID, a.Role)
+	submitted, err := q.Submitted(ctx, p.ID, a.Role)
 	if err != nil {
 		return nil, err
 	}
 	if submitted {
 		return nil, conflict("sealed")
 	}
-	return store.ListCards(ctx, q, p.ID)
+	return q.ListCards(ctx, p.ID)
 }
 
-func (s *Service) SaveAnswers(ctx context.Context, a Actor, answers []store.Answer) error {
-	return s.st.Tx(ctx, func(q store.Q) error {
+func (s *Service) SaveAnswers(ctx context.Context, a Actor, answers []domain.Answer) error {
+	return s.repo.WithinTransaction(ctx, func(q Repository) error {
 		ids, err := answerable(ctx, q, a)
 		if err != nil {
 			return err
@@ -93,7 +92,7 @@ func (s *Service) SaveAnswers(ctx context.Context, a Actor, answers []store.Answ
 			} else {
 				answer.CustomText = ""
 			}
-			if err := store.SaveAnswer(ctx, q, a.ProjectID, a.Role, answer); err != nil {
+			if err := q.SaveAnswer(ctx, a.ProjectID, a.Role, answer); err != nil {
 				return err
 			}
 		}
@@ -102,19 +101,19 @@ func (s *Service) SaveAnswers(ctx context.Context, a Actor, answers []store.Answ
 }
 
 func (s *Service) Submit(ctx context.Context, a Actor) error {
-	return s.st.Tx(ctx, func(q store.Q) error {
+	return s.repo.WithinTransaction(ctx, func(q Repository) error {
 		ids, err := answerable(ctx, q, a)
 		if err != nil {
 			return err
 		}
-		answers, err := store.Answers(ctx, q, a.ProjectID, a.Role)
+		answers, err := q.Answers(ctx, a.ProjectID, a.Role)
 		if err != nil {
 			return err
 		}
 		if len(answers) != len(ids) {
 			return invalid(map[string]string{"answers": "Answer every question before sealing."})
 		}
-		_, err = q.ExecContext(ctx, `UPDATE participants SET submitted_at = ? WHERE project_id = ? AND role = ?`, store.Now(), a.ProjectID, a.Role)
+		err = q.SealAnswers(ctx, a.ProjectID, a.Role, now())
 		if err != nil {
 			return err
 		}
@@ -122,7 +121,7 @@ func (s *Service) Submit(ctx context.Context, a Actor) error {
 		if a.Role == RoleClient {
 			otherRole = RoleOwner
 		}
-		otherSubmitted, err := store.Submitted(ctx, q, a.ProjectID, otherRole)
+		otherSubmitted, err := q.Submitted(ctx, a.ProjectID, otherRole)
 		if err != nil {
 			return err
 		}

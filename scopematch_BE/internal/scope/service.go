@@ -4,8 +4,8 @@ import (
 	"context"
 	"strings"
 
+	"scopematch/internal/domain"
 	"scopematch/internal/library"
-	"scopematch/internal/store"
 )
 
 const (
@@ -19,16 +19,16 @@ type Actor struct {
 	Role      string
 }
 
-type Service struct{ st *store.Store }
+type Service struct{ repo Repository }
 
-func NewService(st *store.Store) *Service { return &Service{st: st} }
+func NewService(repo Repository) *Service { return &Service{repo: repo} }
 
 // Authenticate resolves a link token to an Actor.
 func (s *Service) Authenticate(ctx context.Context, token string) (Actor, error) {
 	if token == "" {
-		return Actor{}, store.ErrNotFound
+		return Actor{}, domain.ErrNotFound
 	}
-	pid, role, err := store.LookupToken(ctx, s.st.DB, HashToken(token))
+	pid, role, err := s.repo.LookupToken(ctx, HashToken(token))
 	return Actor{ProjectID: pid, Role: role}, err
 }
 
@@ -73,18 +73,18 @@ func (s *Service) CreateProject(ctx context.Context, in NewProject) (ownerToken 
 	}
 
 	token, hash := NewToken()
-	p := store.Project{
+	p := domain.Project{
 		ID: newID(), Name: in.Name, FreelancerName: in.FreelancerName,
-		ClientName: in.ClientName, Brief: in.Brief, CreatedAt: store.Now(),
+		ClientName: in.ClientName, Brief: in.Brief, CreatedAt: now(),
 	}
-	err = s.st.Tx(ctx, func(q store.Q) error {
-		if err := store.InsertProject(ctx, q, p); err != nil {
+	err = s.repo.WithinTransaction(ctx, func(q Repository) error {
+		if err := q.InsertProject(ctx, p); err != nil {
 			return err
 		}
-		if err := store.InsertToken(ctx, q, hash, p.ID, RoleOwner); err != nil {
+		if err := q.InsertToken(ctx, hash, p.ID, RoleOwner); err != nil {
 			return err
 		}
-		return store.ReplaceCards(ctx, q, p.ID, library.Suggested(p.Brief))
+		return q.ReplaceCards(ctx, p.ID, library.Suggested(p.Brief))
 	})
 	if err != nil {
 		return "", err
@@ -111,14 +111,14 @@ func (s *Service) SetCards(ctx context.Context, a Actor, cardIDs []string) error
 			ids = append(ids, id)
 		}
 	}
-	return s.st.Tx(ctx, func(q store.Q) error {
-		p, err := store.GetProject(ctx, q, a.ProjectID)
+	return s.repo.WithinTransaction(ctx, func(q Repository) error {
+		p, err := q.GetProject(ctx, a.ProjectID)
 		if err != nil {
 			return err
 		}
-		if p.LockedAt.Valid {
+		if p.LockedAt != "" {
 			return conflict("locked")
 		}
-		return store.ReplaceCards(ctx, q, p.ID, ids)
+		return q.ReplaceCards(ctx, p.ID, ids)
 	})
 }

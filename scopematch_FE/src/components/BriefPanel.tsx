@@ -1,4 +1,4 @@
-import type { Match } from '../api/client'
+import type { Match } from '../domain/models'
 import styles from './BriefPanel.module.css'
 
 interface Props {

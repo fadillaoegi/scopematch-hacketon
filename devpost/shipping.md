@@ -93,3 +93,7 @@ Public repository URL: https://github.com/fadillaoegi/scopematch-hacketon (creat
 Public video URL: pending.
 Optional deployment URL: not requested.
 Devpost submission URL/status: pending, not submitted.
+
+## Post-publication architecture revision
+
+The learner requested Clean Architecture as a permanent project convention. `AGENTS.md` and `CLAUDE.md` now carry that requirement. `docs/architecture.md` describes the application-owned transactional repository, persistence-neutral records, frontend gateway injection, and dependency checks. This is an internal refactor; the approved product scope, HTTP API, and SQLite schema are preserved. Existing demo footage remains representative of the same user-visible behavior.

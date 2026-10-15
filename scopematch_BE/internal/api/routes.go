@@ -14,9 +14,9 @@ import (
 	"strconv"
 	"strings"
 
+	"scopematch/internal/domain"
 	"scopematch/internal/library"
 	"scopematch/internal/scope"
-	"scopematch/internal/store"
 )
 
 type Server struct {
@@ -109,7 +109,7 @@ func (s *Server) lockProject(w http.ResponseWriter, r *http.Request, a scope.Act
 
 func (s *Server) putAnswers(w http.ResponseWriter, r *http.Request, a scope.Actor) {
 	var in struct {
-		Answers []store.Answer `json:"answers"`
+		Answers []domain.Answer `json:"answers"`
 	}
 	if !readJSON(w, r, &in) {
 		return
@@ -142,7 +142,7 @@ func (s *Server) fail(w http.ResponseWriter, err error) {
 		writeError(w, status, e.Code, e.Fields)
 		return
 	}
-	if errors.Is(err, store.ErrNotFound) {
+	if errors.Is(err, domain.ErrNotFound) {
 		writeError(w, http.StatusNotFound, "not_found", nil)
 		return
 	}

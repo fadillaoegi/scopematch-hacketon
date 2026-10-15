@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
-import { api, ApiError, type NewProject } from '../api/client'
+import { useProjectGateway } from '../lib/gateway'
+import { GatewayError } from '../application/errors'
+import type { NewProject } from '../domain/models'
 import { Masthead } from '../components/Masthead'
 import { rememberProject } from '../lib/projects'
 import styles from './NewProjectPage.module.css'
@@ -15,6 +17,7 @@ const SALON_EXAMPLE: NewProject = {
 const EMPTY: NewProject = { name: '', freelancerName: '', clientName: '', brief: '' }
 
 export function NewProjectPage() {
+  const api = useProjectGateway()
   const navigate = useNavigate()
   const [form, setForm] = useState<NewProject>(EMPTY)
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -35,7 +38,7 @@ export function NewProjectPage() {
       rememberProject({ ownerToken, name: form.name.trim(), createdAt: new Date().toISOString() })
       navigate(`/o/${ownerToken}`)
     } catch (err) {
-      if (err instanceof ApiError && err.status === 422) setErrors(err.fields)
+      if (err instanceof GatewayError && err.code === 'validation') setErrors(err.fields)
       else setFailure("Couldn't reach ScopeMatch. Check that the server is running, then try again.")
     } finally {
       setBusy(false)

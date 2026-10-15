@@ -99,12 +99,21 @@ npm run build
 
 Backend tests exercise token/role isolation, the server-side reveal gate, all 25 answer-pair statuses, proposal replacement, two-party decisions, version resets, stale-decision rejection, concurrent confirmations, immutable agreed exports, validation, and static serving.
 
+## Architecture
+
+This project uses **Clean Architecture**. The backend use cases depend on domain records and an application-owned repository interface; SQLite and HTTP are outer adapters. The frontend separates models, gateway contracts, HTTP implementation, and presentation, with dependency injection in `main.tsx`.
+
+[Architecture boundaries and checks](docs/architecture.md) document the dependency direction. [AGENTS.md](AGENTS.md) makes this required for future work; `CLAUDE.md` imports the same rules. The frontend build runs architecture checks automatically; the Go suite checks backend imports.
+
 ## Code and data
 
 - `scopematch_FE/src/pages/OwnerWorkspace.tsx`: role-specific navigation and project stages.
 - `scopematch_FE/src/components/`: answers, Compare, proposals, versioned scope, and motion.
-- `scopematch_BE/internal/scope/`: product rules, response visibility, versions, and Markdown export.
-- `scopematch_BE/internal/store/`: SQLite access and idempotent startup schema.
+- `scopematch_FE/src/domain/` and `src/application/`: frontend models, gateway contract, and semantic errors.
+- `scopematch_FE/src/api/client.ts`: HTTP gateway adapter, injected through `src/lib/gateway.tsx`.
+- `scopematch_BE/internal/domain/`: persistence-neutral project, answer, proposal, and version records.
+- `scopematch_BE/internal/scope/`: use cases, repository port, response visibility, versions, and Markdown export.
+- `scopematch_BE/internal/store/`: SQLite repository implementation and idempotent startup schema.
 - `scopematch_BE/internal/library/cards.json`: curated questions, option scope text, and booking previews.
 - `devpost/`: approved scope, PRD, technical spec, and build checklist. Open [the offline code map](devpost/app-map.html) in a browser for a three-stop reference route.
 

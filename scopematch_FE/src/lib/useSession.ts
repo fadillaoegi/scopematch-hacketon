@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react'
-import { api, ApiError, type Role, type Session } from '../api/client'
+import { useProjectGateway } from '../lib/gateway'
+import { GatewayError } from '../application/errors'
+import type { Role, Session } from '../domain/models'
 
 export function useSession(token: string, role: Role) {
+  const api = useProjectGateway()
   const [session, setSession] = useState<Session | null>(null)
   const [invalid, setInvalid] = useState(false)
   const [error, setError] = useState('')
@@ -22,7 +25,7 @@ export function useSession(token: string, role: Role) {
         setError('')
       } catch (e) {
         if (!live) return
-        if (e instanceof ApiError && e.status === 401) setInvalid(true)
+        if (e instanceof GatewayError && e.code === 'invalid_link') setInvalid(true)
         else setError("Couldn't reach the server. Retrying…")
       } finally { loading = false }
     }
@@ -35,6 +38,6 @@ export function useSession(token: string, role: Role) {
       window.clearInterval(timer)
       document.removeEventListener('visibilitychange', visible)
     }
-  }, [token, role])
+  }, [token, role, api])
   return { session, setSession, invalid, error }
 }

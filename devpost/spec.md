@@ -30,6 +30,16 @@ PRD ref: `prd.md > The Core Journey`.
 7. All cards decided → freelancer opens Scope tab, the server-assembled draft summary loads (`GET /api/scope/draft`) → freelancer edits → `POST /api/scope/versions` saves version N → each side confirms with name (`POST /api/scope/versions/{n}/confirm`).
 8. Both confirmed the same version → server sets the project to Agreed → website shows the stamp → `GET /api/scope/export.md` downloads the stored version as Markdown.
 
+## Architecture
+
+Clean Architecture is required by the learner for this project and future changes. `AGENTS.md` records the rule; `CLAUDE.md` imports it. See `docs/architecture.md` for the dependency boundaries and verification commands.
+
+Backend: domain records and the pure card library → application use cases in `internal/scope` with an application-owned `Repository` port → SQLite and HTTP adapters; wire implementations in `cmd/server`. Use cases never import `internal/store`, `database/sql`, or `net/http`, and perform rule checks/writes through one transaction-scoped repository.
+
+Frontend: `src/domain/models.ts` → `src/application/projectGateway.ts` and semantic errors → HTTP adapter and React presentation. Components/hooks consume an injected gateway; only `main.tsx` imports and wires the HTTP implementation. Browser-only storage/download conveniences remain outside the inner layers.
+
+Import checks run in the existing Go suite and frontend build. API contracts and SQLite schema remain unchanged by the architecture refactor.
+
 ## Stack
 Learner choices: React + Vite + TypeScript, Go (from the handoff, kept). SQLite and local-first running were agent recommendations the learner accepted ("lanjut").
 
@@ -147,7 +157,7 @@ Renders the stored `agreed_version` row only (`404` if not agreed). Includes pro
 - Bad token → "This link isn't valid" page.
 
 #### API client
-`src/api/client.ts`: `fetch` wrapper that adds the bearer token taken from the route; typed responses; maps `401` to the invalid-link page. While waiting for the other party, polls `GET /api/session` every 4 s (stops when stage changes or tab hidden).
+`src/api/client.ts`: HTTP implementation of the application-owned `ProjectGateway` contract. The composition root injects it through `ProjectGatewayProvider`; pages and hooks use `useProjectGateway()` and domain models. The adapter adds the bearer token taken from the route and translates errors into semantic `GatewayError` codes; the UI maps `invalid_link` to the invalid-link page. While waiting for the other party, polls `GET /api/session` every 4 s (stops when stage changes or tab hidden).
 
 #### Projects page
 Implements `prd.md > Screens and Layout` (Projects).
@@ -209,6 +219,7 @@ scopematch/
 │   ├── go.mod
 │   ├── cmd/server/main.go        # flags, wiring, static SPA serving, demo seed
 │   ├── internal/
+│   │   ├── domain/               # persistence-neutral records and errors
 │   │   ├── api/                  # HTTP handlers, JSON in/out, error mapping
 │   │   │   ├── routes.go
 │   │   │   ├── middleware.go     # token auth, role checks
@@ -217,11 +228,13 @@ scopematch/
 │   │   │   ├── cards.json        # curated scenario cards (embedded)
 │   │   │   └── match.go          # brief sentence matching
 │   │   ├── scope/                # domain rules: reveal gate, statuses, proposals,
+│   │   │   ├── repository.go     # application-owned repository/transaction port
 │   │   │   ├── session.go        #   versions, agreed check, markdown export
 │   │   │   ├── resolve.go
 │   │   │   ├── versions.go
 │   │   │   └── export.go
 │   │   └── store/                # SQLite access + migrations
+│   │       ├── repository.go     # SQLite adapter implementing the use-case port
 │   │       ├── migrate.go
 │   │       └── store.go
 │   └── data/                     # scopematch.db (gitignored)
@@ -231,7 +244,10 @@ scopematch/
     ├── index.html
     └── src/
         ├── main.tsx, App.tsx     # routes
-        ├── api/client.ts         # typed fetch + polling
+        ├── domain/models.ts      # transport-independent models
+        ├── application/          # gateway interface and semantic errors
+        ├── api/client.ts         # HTTP adapter
+        ├── lib/gateway.tsx       # injected gateway for presentation/hooks
         ├── styles/tokens.css     # palette, type, spacing
         ├── styles/global.css     # paper background, ruled lines
         ├── pages/                # ProjectsPage, NewProjectPage, OwnerWorkspace,

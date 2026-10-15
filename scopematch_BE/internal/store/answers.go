@@ -1,22 +1,20 @@
 package store
 
-import "context"
+import (
+	"context"
 
-type Answer struct {
-	CardID     string `json:"cardId"`
-	OptionID   string `json:"optionId"`
-	CustomText string `json:"customText,omitempty"`
-}
+	"scopematch/internal/domain"
+)
 
-func Answers(ctx context.Context, q Q, projectID, role string) ([]Answer, error) {
+func Answers(ctx context.Context, q Q, projectID, role string) ([]domain.Answer, error) {
 	rows, err := q.QueryContext(ctx, `SELECT card_id, option_id, COALESCE(custom_text, '') FROM answers WHERE project_id = ? AND role = ? ORDER BY card_id`, projectID, role)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	out := []Answer{}
+	out := []domain.Answer{}
 	for rows.Next() {
-		var a Answer
+		var a domain.Answer
 		if err := rows.Scan(&a.CardID, &a.OptionID, &a.CustomText); err != nil {
 			return nil, err
 		}
@@ -31,7 +29,7 @@ func Submitted(ctx context.Context, q Q, projectID, role string) (bool, error) {
 	return submitted, err
 }
 
-func SaveAnswer(ctx context.Context, q Q, projectID, role string, a Answer) error {
+func SaveAnswer(ctx context.Context, q Q, projectID, role string, a domain.Answer) error {
 	_, err := q.ExecContext(ctx, `INSERT INTO answers (project_id, role, card_id, option_id, custom_text, updated_at)
 		VALUES (?, ?, ?, ?, ?, ?) ON CONFLICT (project_id, role, card_id)
 		DO UPDATE SET option_id = excluded.option_id, custom_text = excluded.custom_text, updated_at = excluded.updated_at`,
