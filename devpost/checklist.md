@@ -115,3 +115,5 @@ Activity mode: Brief evidence-based recap plus offline reference map.
 - Build closeout: learner accepted final readiness and requested continuation with "lanjut". Concise recap delivered, map retained as a reference route, and 5-build complete. Proceed to 6-ship; repository/video publication and Devpost submission remain separate actions.
 
 - Shipping preparation: existing Go tests/vet and frontend production build passed again. A 105-second silent 1080p recording of the real salon workflow was captured with isolated browser sessions; video/upload and repository publication remain pending. See `shipping.md` for artifacts and current requirements.
+
+- Publication authorization: learner replied "lanjut" to the explicit public-repository and history-push question. Existing Git credential helper authenticated `fadillaoegi`; created public repository `https://github.com/fadillaoegi/scopematch` and configured its HTTPS remote. No credentials included in project files.

@@ -306,4 +306,4 @@ Manual: full demo flow laptop + phone; phone width has no horizontal scroll; red
 
 ## Sharing and submission status
 
-Build review and the concise learning recap are complete. `devpost/shipping.md` records current official requirements, the local silent demo video, publication audit, and remaining learner-owned steps. No Git remote, public video URL, deployment, or Devpost submission has been created. Repository creation/push and external upload await explicit authorization and the destination account.
+Build review and the concise learning recap are complete. `devpost/shipping.md` records current official requirements, the local silent demo video, publication audit, and remaining learner-owned steps. The learner authorized public repository creation and pushing the audited history. Repository: https://github.com/fadillaoegi/scopematch, using the authenticated account `fadillaoegi`; push and anonymous-access verification are recorded in `shipping.md`. No public video URL, deployment, or Devpost submission has been created. External video upload and submission remain pending.

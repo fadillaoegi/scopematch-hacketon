@@ -36,7 +36,7 @@ Ignored local folder: `artifacts/demo/`.
 
 The recording focuses on Booking as the selected scenario: independent freelancer A/client C choices, sealed waiting state, Compare and static previews, proposed B decision with both confirmations, saved scope v1, both name confirmations, AGREED, and export. The other three curated questions remain in the library and are covered by app verification.
 
-The raw video has no address bar or normal browser profile. Read-only link field values are concealed for the recording. Only disposable sample project names are used. It demonstrates behavior but still needs the learner's own presentation review and, if desired, their own narration. No public links or submission have been created.
+The raw video has no address bar or normal browser profile. Read-only link field values are concealed for the recording. Only disposable sample project names are used. It demonstrates behavior but still needs the learner's own presentation review and, if desired, their own narration. A public code repository has now been created; video upload and Devpost submission remain pending.
 
 ## Re-record locally
 
@@ -69,11 +69,13 @@ Optional environment variables: `SCOPEMATCH_DEMO_ORIGIN`, `SCOPEMATCH_CDP_ORIGIN
 - Initial history audit: 8 commits, 153 distinct text/content blobs; no matches for the high-confidence private-key, GitHub-token, API-secret, and AWS access-key patterns checked.
 - No actual `devpost/learner-profile.md`, `.env`, or SQLite database/sidecar file found in tracked history. The real profile stays ignored.
 - No absolute local user paths found in project files outside copied skill templates.
-- Required planning documents remain included. They contain design preferences and build decisions; commit history retains author metadata. These will be readable if the full repository is made public.
+- Required planning documents remain included. They contain design preferences and build decisions; commit history retains author metadata. These are included in the authorized public repository and remain publicly readable.
 - `THIRD_PARTY_NOTICES.md` retains the upstream Devpost MIT notice for the copied skill pack.
 - Review is targeted signature scanning and file inspection, not a guarantee of finding every possible secret. No history rewriting performed.
 
-No Git remote is configured. GitHub CLI was not installed in this environment at inspection time. Account authentication and a destination owner must be established before an authorized push; credentials must never be pasted into chat.
+Public repository: https://github.com/fadillaoegi/scopematch. The learner authorized public creation and pushing code/history by replying “lanjut” to the explicit publication question. The configured credential helper authenticated account `fadillaoegi`; that account was used as the destination. The repository was created as public using the GitHub REST API without an initial README or other remote commits. `origin` points to its HTTPS clone URL. No tokens were displayed or saved in project files.
+
+GitHub CLI is not installed; publishing uses the existing Git credential helper and Git. Push and anonymous-access verification are recorded below when completed.
 
 ## Remaining actions
 
@@ -81,13 +83,13 @@ No Git remote is configured. GitHub CLI was not installed in this environment at
 - [x] Local demo MP4 recorded and technical metadata checked; sampled frames inspected.
 - [x] README, MIT license, planning docs, offline app map, and third-party notice prepared.
 - [ ] Learner reviews the silent video and chooses whether to add their own narration.
-- [ ] Learner specifies GitHub owner/repository and explicitly authorizes public creation/push, including code and history.
+- [x] Learner authorized public creation/push, including code/history; authenticated account `fadillaoegi` resolved the destination.
 - [ ] Repository created/pushed and its URL checked without authentication.
 - [ ] Video uploaded publicly to YouTube/Vimeo and link checked without authentication.
 - [ ] Actual submission-form fields and exit survey completed by the learner.
 - [ ] Learner explicitly authorizes submission, or submits directly and reports completion.
 
-Public repository URL: pending.
+Public repository URL: https://github.com/fadillaoegi/scopematch (public repository created; push verification pending).
 Public video URL: pending.
 Optional deployment URL: not requested.
 Devpost submission URL/status: pending, not submitted.
