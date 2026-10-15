@@ -73,7 +73,7 @@ Optional environment variables: `SCOPEMATCH_DEMO_ORIGIN`, `SCOPEMATCH_CDP_ORIGIN
 - `THIRD_PARTY_NOTICES.md` retains the upstream Devpost MIT notice for the copied skill pack.
 - Review is targeted signature scanning and file inspection, not a guarantee of finding every possible secret. No history rewriting performed.
 
-Public repository: https://github.com/fadillaoegi/scopematch. The learner authorized public creation and pushing code/history by replying “lanjut” to the explicit publication question. The configured credential helper authenticated account `fadillaoegi`; that account was used as the destination. The repository was created as public using the GitHub REST API without an initial README or other remote commits. `origin` points to its HTTPS clone URL. No tokens were displayed or saved in project files.
+Public repository: https://github.com/fadillaoegi/scopematch-hacketon. The learner authorized public creation and pushing code/history by replying “lanjut” to the explicit publication question. The configured credential helper authenticated account `fadillaoegi`; that account was used as the destination. The repository was created as public using the GitHub REST API without an initial README or other remote commits, then renamed to `scopematch-hacketon` at the learner’s request. `origin` points to its HTTPS clone URL. No tokens were displayed or saved in project files.
 
 GitHub CLI is not installed; publishing uses the existing Git credential helper and Git. Branch `main` and audited history were pushed successfully. Anonymous requests to the GitHub repository API and raw README both returned successfully; the API reports `private: false`, and the public README matches the local file byte for byte. The published branch was verified through commit `7c4e9c6` before this verification record was added.
 
@@ -89,7 +89,7 @@ GitHub CLI is not installed; publishing uses the existing Git credential helper 
 - [ ] Actual submission-form fields and exit survey completed by the learner.
 - [ ] Learner explicitly authorizes submission, or submits directly and reports completion.
 
-Public repository URL: https://github.com/fadillaoegi/scopematch (created, pushed, anonymous access verified).
+Public repository URL: https://github.com/fadillaoegi/scopematch-hacketon (created, pushed, anonymous access verified).
 Public video URL: pending.
 Optional deployment URL: not requested.
 Devpost submission URL/status: pending, not submitted.

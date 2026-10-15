@@ -116,6 +116,8 @@ Activity mode: Brief evidence-based recap plus offline reference map.
 
 - Shipping preparation: existing Go tests/vet and frontend production build passed again. A 105-second silent 1080p recording of the real salon workflow was captured with isolated browser sessions; video/upload and repository publication remain pending. See `shipping.md` for artifacts and current requirements.
 
-- Publication authorization: learner replied "lanjut" to the explicit public-repository and history-push question. Existing Git credential helper authenticated `fadillaoegi`; created public repository `https://github.com/fadillaoegi/scopematch` and configured its HTTPS remote. No credentials included in project files.
+- Publication authorization: learner replied "lanjut" to the explicit public-repository and history-push question. Existing Git credential helper authenticated `fadillaoegi`; created public repository `https://github.com/fadillaoegi/scopematch-hacketon` and configured its HTTPS remote. No credentials included in project files.
 
-- Repository published: branch `main` pushed to https://github.com/fadillaoegi/scopematch. Anonymous GitHub API reported public visibility and the unauthenticated raw README matched the local file. Video upload and learner-written Devpost fields/exit survey remain pending.
+- Repository published: branch `main` pushed to https://github.com/fadillaoegi/scopematch-hacketon. Anonymous GitHub API reported public visibility and the unauthenticated raw README matched the local file. Video upload and learner-written Devpost fields/exit survey remain pending.
+
+- Repository renamed at learner request to `scopematch-hacketon`; local `origin` and project documentation now use https://github.com/fadillaoegi/scopematch-hacketon.
