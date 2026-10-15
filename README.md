@@ -106,7 +106,7 @@ Backend tests exercise token/role isolation, the server-side reveal gate, all 25
 - `scopematch_BE/internal/scope/`: product rules, response visibility, versions, and Markdown export.
 - `scopematch_BE/internal/store/`: SQLite access and idempotent startup schema.
 - `scopematch_BE/internal/library/cards.json`: curated questions, option scope text, and booking previews.
-- `devpost/`: approved scope, PRD, technical spec, and build checklist.
+- `devpost/`: approved scope, PRD, technical spec, and build checklist. Open [the offline code map](devpost/app-map.html) in a browser for a three-stop reference route.
 
 Projects and all agreement records live in the SQLite file on the server. The Projects list stores owner links in this browser's local storage; it is a convenience, not a login or backup. Losing the private owner link loses freelancer access. Keep the database file and owner link to resume later.
 

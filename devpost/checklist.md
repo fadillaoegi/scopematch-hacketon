@@ -82,13 +82,13 @@ Build mode: fast (agent recommendation, learner accepted with "lanjut")
 
 - [ ] Learning activity complete — guided route, focused alternative, prior practice connected, or brief recap
 - [ ] Optional edit and transfer reflection addressed — offered/declined/already covered/not applicable as appropriate
-- [ ] `devpost/app-map.html` generated from finished code, checked, and shown, including a project-grounded practice to reuse
+- [x] `devpost/app-map.html` generated from finished code, checked, and shown, including a project-grounded practice to reuse — reference map prepared for final review; interactive activity remains pending
 
-Activity and evidence:
-Route and stops:
-Edit outcome:
-Reflection:
-Activity mode:
+Activity and evidence: Reference map generated from source snapshot `2c58322`; paths and function anchors verified, screenshots inspected, and offline desktop/375px browser checks passed with JavaScript disabled. Final hands-on review and learning activity are not yet complete.
+Route and stops: Reference route only: AnswerFlow.submit → scope.Submit → buildSession/CompareBoard. No interactive tour claimed.
+Edit outcome: No learner edit offered yet; pending final-review outcome.
+Reflection: Not yet offered; pending final-review outcome.
+Activity mode: Reference preparation; learning wrap-up pending.
 
 ## Revisions
 
@@ -108,3 +108,6 @@ Activity mode:
 - Slice 6: Projects reads live stage/counts and remembers opened owner links; malformed or unavailable local storage is tolerated. Question-library fetch retries instead of hanging on failure. Added seed-demo startup, static-build validation, missing-asset 404, strict single-JSON-body parsing, SQLite sidecar ignores, README demo/LAN/tunnel instructions, and MIT license. Markdown export reads only the stored agreed snapshot and records.
 - Final mechanical verification: Go tests and vet plus production frontend build pass. Real browser journey repeated on final build through counter-proposals, same-answer/custom decisions, revised v2, dual agreement, actual Markdown download, and live Agreed project listing. Additional 375px checks passed for fresh seed setup, bad/wrong-role links, corrupted/invalid/unavailable storage, library-request failure/retry, maximum-length unbroken input, and reduced-motion agreed scope. Screenshots inspected. No public tunnel or publication was started.
 - Implementation is complete through slice 6. Final hands-on exploration, explicit readiness confirmation, and the learning wrap-up remain pending; do not mark final review or invoke 6-ship until they are complete.
+
+- Final review requested with links to a fresh setup project and an agreed example. Await learner observations and explicit readiness before marking Final Review complete. The offline app map is prepared as a reference, not recorded as a completed learning activity.
+- Final UI correction: outdated scope versions no longer show the "waiting for the other person" prompt; they retain the stale-version notice and historical confirmation records. Frontend build passed after this correction.

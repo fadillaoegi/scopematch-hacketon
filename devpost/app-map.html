@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ScopeMatch — code reference map</title>
+<style>
+:root{color-scheme:light;--paper:#f4efe4;--card:#fbf8f1;--ink:#1b1a17;--soft:#5e5a52;--rule:#d6ccb8;--blue:#233f94;--red:#d9472b}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.6 system-ui,sans-serif}main{max-width:1050px;margin:auto;padding:40px 24px 64px}h1,h2,h3{font-family:Georgia,serif;font-weight:500;line-height:1.15}h1{font-size:clamp(2.5rem,6vw,4rem);margin:12px 0 20px}h2{font-size:1.9rem;margin:0 0 16px}h3{font-size:1.25rem}p{margin:0 0 16px}a{color:var(--blue);text-underline-offset:3px}a:focus-visible,summary:focus-visible{outline:2px solid var(--red);outline-offset:4px}code,pre,.meta{font-family:ui-monospace,SFMono-Regular,monospace;font-size:.83em}code{overflow-wrap:anywhere}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--card);border:1px solid var(--rule);padding:16px}.meta{color:var(--soft);letter-spacing:.04em}header{border-bottom:3px double var(--ink);padding-bottom:20px;margin-bottom:30px}section{margin:32px 0}li{margin-bottom:10px}ul,ol{padding-left:24px}.lede{max-width:70ch;color:var(--soft)}.note{border-left:3px solid var(--red);padding:12px 16px;background:var(--card);font-size:.9em}.flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:12px}.step{background:var(--card);border:1px solid var(--rule);border-top:3px solid var(--blue);padding:16px;min-width:0;height:100%}.step:last-child{border-top-color:var(--red)}.step h3{margin:10px 0}.arrow{font-size:24px;color:var(--soft)}.pointers{display:grid;grid-template-columns:1fr 1fr;gap:12px}.pointer{background:var(--card);border:1px solid var(--rule);padding:16px}.pointer h3{margin-top:0}details{border-top:1px solid var(--rule);padding:16px 0}summary{cursor:pointer;font-weight:600}details p{margin-top:16px}footer{border-top:1px solid var(--rule);padding-top:16px;color:var(--soft);font-size:.85em}@media(max-width:640px){main{padding:24px 16px 48px}.flow,.pointers{grid-template-columns:1fr}.arrow{text-align:center;transform:rotate(90deg)}.step{height:auto}}
+</style>
+</head>
+<body><main>
+<header><p class="meta">§ ScopeMatch · code reference · snapshot 2c58322</p><h1>From a sealed answer<br>to a shared scope.</h1><p class="lede">A freelancer and client answer separately, compare what they imagined, settle each decision, and confirm one saved scope. React draws the screens. Go enforces the rules. SQLite keeps the records.</p></header>
+<p class="note">This is a reference route for the implemented proof of concept, prepared for final review. It does not claim an interactive code tour was completed. The map is an offline snapshot; refresh it after changes to the mapped behavior.</p>
+<section aria-labelledby="journey"><h2 id="journey">Follow one action: Seal my answers</h2>
+<div class="flow" role="group" aria-label="Browser submission, server transaction, role-filtered response">
+<div class="step"><span class="meta">01 · Browser</span><h3>Submit one person's choices</h3><p><code>AnswerFlow.tsx → submit()</code></p><p>Save that person's current answers, then request sealing with the link's bearer token.</p></div><span class="arrow" aria-hidden="true">→</span>
+<div class="step"><span class="meta">02 · Rule + SQLite</span><h3>Validate, then seal</h3><p><code>scope/answers.go → Submit()</code></p><p>Every selected question must be answered. A transaction stores the submission; later edits are rejected.</p></div><span class="arrow" aria-hidden="true">→</span>
+<div class="step"><span class="meta">03 · Visible result</span><h3>Wait, or reveal together</h3><p><code>scope/session.go → buildSession()</code></p><p>Other-party answers are omitted until both submit. The response then unlocks Compare.</p></div>
+</div>
+<ol>
+<li><a href="../scopematch_FE/src/components/AnswerFlow.tsx">Frontend: <code>scopematch_FE/src/components/AnswerFlow.tsx</code></a> — search <code>async function submit</code>. The component saves answers, sends the submit request, and renders the sealed waiting state. <code>src/api/client.ts</code> adds the link token.</li>
+<li><a href="../scopematch_BE/internal/scope/answers.go">Domain rule: <code>scopematch_BE/internal/scope/answers.go</code></a> — search <code>func (s *Service) Submit</code>. Rule checks and the submission write share one SQLite transaction. Matching concrete answers get a system proposal, with no automatic confirmations.</li>
+<li><a href="../scopematch_BE/internal/scope/session.go">Response boundary: <code>scopematch_BE/internal/scope/session.go</code></a> — search <code>func buildSession</code>. Own answers are returned; other answers are queried and included only after both submit. <code>CompareBoard.tsx</code> displays the allowed response with the two ink colors.</li>
+</ol></section>
+<section aria-labelledby="changes"><h2 id="changes">To change this, start here</h2><div class="pointers">
+<div class="pointer"><h3>Questions and sample previews</h3><p><a href="../scopematch_BE/internal/library/cards.json"><code>internal/library/cards.json</code></a> contains option labels, included/excluded items, responsibilities, criteria, and static booking steps.</p></div>
+<div class="pointer"><h3>Paper, type, and two inks</h3><p><a href="../scopematch_FE/src/styles/tokens.css"><code>src/styles/tokens.css</code></a> sets the palette and typography. Component CSS Modules set each screen's layout.</p></div>
+<div class="pointer"><h3>Proposal replacement</h3><p><a href="../scopematch_BE/internal/scope/resolve.go"><code>scope/resolve.go → Propose()</code></a> deactivates the old proposal. The new one starts with only its proposer's confirmation.</p></div>
+<div class="pointer"><h3>Versioned agreement and export</h3><p><a href="../scopematch_BE/internal/scope/versions.go"><code>scope/versions.go → ConfirmVersion()</code></a> checks the latest saved version and active decisions. <a href="../scopematch_BE/internal/scope/export.go"><code>scope/export.go → Export()</code></a> reads the stored agreed snapshot.</p></div>
+</div></section>
+<section aria-labelledby="practice"><h2 id="practice">A practice to reuse</h2><p>Turn a requirement into an observable check at the boundary that controls it. “Answers stay private” becomes “the raw session JSON has no <code>other.answers</code> before both submit.”</p><p><a href="../scopematch_BE/internal/api/answers_test.go"><code>TestAnswersStaySealedUntilBothSubmit</code></a> checks that absence directly, including secret custom-answer text. <a href="../scopematch_BE/internal/api/versions_test.go"><code>TestUndecidedOrReplacedDecisionsCannotBeAgreed</code></a> applies the same approach to a stale scope. A hidden UI element alone would not establish either rule.</p><p>For another project, choose the user-visible guarantee first, identify the code that must enforce it, then test the response or stored result a second user could actually observe.</p></section>
+<section aria-labelledby="run"><h2 id="run">Run it again</h2><p>From the repository root, use two terminals. Requirements and the complete salon demo are in <a href="../README.md">README.md</a>.</p><pre>cd scopematch_BE
+go run ./cmd/server</pre><pre>cd scopematch_FE
+npm ci
+npm run dev -- --host</pre><p>Open <code>http://localhost:5173</code>. To serve a built site and seed a fresh setup project:</p><pre>cd scopematch_FE
+npm run build
+cd ../scopematch_BE
+go run ./cmd/server -static ../scopematch_FE/dist -seed-demo</pre><details><summary>Where state lives and how to check the rules</summary><p>SQLite in <code>scopematch_BE/data/</code> stores projects, answers, proposals, versions, and confirmations. Browser local storage remembers owner links and whether the reveal has played. There are no external runtime services or API keys.</p><pre>cd scopematch_BE
+go test ./...
+go vet ./...</pre><p>The frontend check is <code>npm run build</code> from <code>scopematch_FE</code>.</p></details></section>
+<footer>Source snapshot: <code>2c58322</code> · Implementation through all six build slices. Final learner review and learning wrap-up are tracked in <a href="checklist.md">checklist.md</a>. This file works offline with JavaScript disabled.</footer>
+</main></body></html>
