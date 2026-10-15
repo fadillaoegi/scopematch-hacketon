@@ -10,6 +10,7 @@ export function App() {
       <Route path="/" element={<ProjectsPage />} />
       <Route path="/new" element={<NewProjectPage />} />
       <Route path="/o/:token" element={<OwnerWorkspace />} />
+      <Route path="/c/:token" element={<OwnerWorkspace role="client" />} />
       <Route path="*" element={<InvalidLinkPage />} />
     </Routes>
   )

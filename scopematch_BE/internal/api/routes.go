@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"scopematch/internal/library"
 	"scopematch/internal/scope"
@@ -29,6 +30,9 @@ func New(svc *scope.Service, staticDir string) http.Handler {
 	s.mux.HandleFunc("GET /api/library", s.getLibrary)
 	s.mux.HandleFunc("GET /api/session", s.authed(s.getSession))
 	s.mux.HandleFunc("PUT /api/project/cards", s.authed(s.putCards))
+	s.mux.HandleFunc("POST /api/project/lock", s.authed(s.lockProject))
+	s.mux.HandleFunc("PUT /api/answers", s.authed(s.putAnswers))
+	s.mux.HandleFunc("POST /api/answers/submit", s.authed(s.submitAnswers))
 	s.mux.HandleFunc("/api/", func(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusNotFound, "not_found", nil)
 	})
@@ -81,6 +85,38 @@ func (s *Server) respondSession(w http.ResponseWriter, r *http.Request, a scope.
 		return
 	}
 	writeJSON(w, http.StatusOK, v)
+}
+
+func (s *Server) lockProject(w http.ResponseWriter, r *http.Request, a scope.Actor) {
+	token := strings.TrimSpace(strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer "))
+	clientToken, err := s.svc.Lock(r.Context(), a, token)
+	if err != nil {
+		s.fail(w, err)
+		return
+	}
+	writeJSON(w, http.StatusOK, map[string]string{"clientToken": clientToken})
+}
+
+func (s *Server) putAnswers(w http.ResponseWriter, r *http.Request, a scope.Actor) {
+	var in struct {
+		Answers []store.Answer `json:"answers"`
+	}
+	if !readJSON(w, r, &in) {
+		return
+	}
+	if err := s.svc.SaveAnswers(r.Context(), a, in.Answers); err != nil {
+		s.fail(w, err)
+		return
+	}
+	s.respondSession(w, r, a)
+}
+
+func (s *Server) submitAnswers(w http.ResponseWriter, r *http.Request, a scope.Actor) {
+	if err := s.svc.Submit(r.Context(), a); err != nil {
+		s.fail(w, err)
+		return
+	}
+	s.respondSession(w, r, a)
 }
 
 // fail maps a rule error to its status; anything else is a 500.

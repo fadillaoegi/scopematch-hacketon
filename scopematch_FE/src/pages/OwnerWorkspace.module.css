@@ -36,6 +36,9 @@
 
 .tab {
   padding: 0.7rem 0;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
   font-family: var(--font-mono);
   font-size: 0.78rem;
   font-weight: 500;
@@ -87,3 +90,10 @@
     position: static;
   }
 }
+
+.tab:disabled { cursor: default; }
+.actions { display: grid; justify-items: start; gap: 1rem; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--rule-strong); }
+.actions p { color: var(--ink-soft); }
+.links { margin: -1rem 0 2rem; }
+.links summary { cursor: pointer; color: var(--ink-soft); font-size: var(--step--1); }
+.error { color: var(--danger); margin-bottom: 1.5rem; }

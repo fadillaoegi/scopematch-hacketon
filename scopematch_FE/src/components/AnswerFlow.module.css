@@ -1,0 +1,28 @@
+.flow { max-width: 800px; margin: 0 auto; }
+.intro { display: grid; gap: .8rem; padding-bottom: 2rem; }
+.intro h2, .sealed h2 { font-size: var(--step-3); }
+.intro p:last-child { max-width: 58ch; color: var(--ink-soft); }
+.questions { display: grid; gap: 2rem; }
+.question { min-width: 0; margin: 0; border: 1px solid var(--rule-strong); padding: 1.5rem; background: var(--paper-card); }
+.question legend { padding: 0 .5rem; max-width: 100%; }
+.questionTitle { display: block; font-family: var(--font-display); font-size: var(--step-2); line-height: 1.2; margin: .5rem 0; }
+.option { display: flex; align-items: center; gap: .9rem; border: 1px solid var(--rule); padding: 1rem; margin-top: .6rem; min-height: 58px; cursor: pointer; }
+.option input { accent-color: var(--party-ink); flex-shrink: 0; }
+.letter { font-family: var(--font-mono); color: var(--party-ink); font-weight: 600; }
+.selected { border-color: var(--party-ink); box-shadow: inset 3px 0 var(--party-ink); }
+.custom { display: grid; gap: .5rem; margin-top: 1rem; }
+.custom textarea { width: 100%; border: 1px solid var(--rule-strong); padding: .8rem; background: var(--paper); resize: vertical; }
+.paging { display: none; }
+.footer { margin-top: 2rem; border-top: 1px solid var(--rule-strong); padding-top: 1.5rem; display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; }
+.footer p { width: 100%; color: var(--ink-soft); }
+.footer .error { color: var(--danger); }
+.sealed { display: grid; justify-items: center; gap: 1.4rem; text-align: center; max-width: 650px; padding: 3rem 1rem; margin: auto; }
+.sealed p:last-child { color: var(--ink-soft); max-width: 48ch; }
+.stamp { border: 3px double var(--ink); padding: .5rem 1rem; font-family: var(--font-mono); font-size: 1.5rem; letter-spacing: .2em; transform: rotate(-6deg); margin-bottom: 1rem; }
+@media (max-width: 600px) {
+  .question { display: none; padding: 1rem; }
+  .question.visible { display: block; }
+  .paging { display: flex; align-items: center; justify-content: space-between; gap: .5rem; margin-top: 1rem; }
+  .paging button { padding: .75em; }
+  .option { padding: .8rem; gap: .6rem; }
+}

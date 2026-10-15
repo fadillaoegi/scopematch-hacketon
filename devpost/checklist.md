@@ -19,7 +19,7 @@ Build mode: fast (agent recommendation, learner accepted with "lanjut")
   Learner check: Open `http://localhost:5173/new`, paste the salon brief, create the project, hover each card and watch its sentence highlight in the brief, then reload the page — the project is still there.
   Commit: `Create projects with brief matching and setup screen`
 
-- [ ] **2. Both sides answer separately and their answers stay sealed**
+- [x] **2. Both sides answer separately and their answers stay sealed**
   Becomes usable: Freelancer locks questions and gets the client link; freelancer (laptop) and client (phone/second browser) each answer and submit; each sees "Sealed. Waiting for …" and nothing of the other's answers.
   Why now: This is the kernel's first half and the highest-risk rule (server-side hiding + role-limited links); it must be proven before anything builds on it.
   PRD ref: `prd.md > Links and access`, `prd.md > Answering separately`
@@ -93,3 +93,6 @@ Activity mode:
 ## Revisions
 
 - Brief matches computed from the brief on each read instead of stored in `project_cards.matched_sentence`; session also returns `matches` for all cards — unselected cards need provenance too.
+
+- Slice 2: client invites are derived with HMAC from the authenticated owner secret, allowing idempotent lock/recovery without storing plaintext tokens. Client and owner use a shared workspace shell with role-specific access and navigation.
+- Slice 2 verification: Go API tests and production frontend build passed; isolated Chrome desktop/mobile sessions exercised create → lock → answer (including custom text) → seal → reload. Raw client session omitted freelancer answers before the second submission. Mobile width 390px had no horizontal overflow; screenshots inspected. Learner checkpoint remains after slice 3.

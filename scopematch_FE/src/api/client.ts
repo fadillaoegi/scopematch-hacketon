@@ -45,6 +45,13 @@ export interface CardRef {
 export interface Party {
   name: string
   submitted: boolean
+  answers?: Answer[]
+}
+
+export interface Answer {
+  cardId: string
+  optionId: string
+  customText?: string
 }
 
 export interface Session {
@@ -100,4 +107,7 @@ export const api = {
   library: () => request<{ cards: Card[] }>('GET', '/api/library'),
   session: (token: string) => request<Session>('GET', '/api/session', token),
   setCards: (token: string, cardIds: string[]) => request<Session>('PUT', '/api/project/cards', token, { cardIds }),
+  lock: (token: string) => request<{ clientToken: string }>('POST', '/api/project/lock', token),
+  saveAnswers: (token: string, answers: Answer[]) => request<Session>('PUT', '/api/answers', token, { answers }),
+  submitAnswers: (token: string) => request<Session>('POST', '/api/answers/submit', token),
 }

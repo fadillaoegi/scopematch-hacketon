@@ -27,8 +27,9 @@ type CardRef struct {
 }
 
 type PartyView struct {
-	Name      string `json:"name"`
-	Submitted bool   `json:"submitted"`
+	Name      string          `json:"name"`
+	Submitted bool            `json:"submitted"`
+	Answers   *[]store.Answer `json:"answers,omitempty"`
 }
 
 // SessionView is everything one role may see about its project. This is the
@@ -83,6 +84,31 @@ func buildSession(ctx context.Context, q store.Q, a Actor) (SessionView, error) 
 	me, other := PartyView{Name: p.FreelancerName}, PartyView{Name: p.ClientName}
 	if a.Role == RoleClient {
 		me, other = other, me
+	}
+	otherRole := RoleClient
+	if a.Role == RoleClient {
+		otherRole = RoleOwner
+	}
+	me.Submitted, err = store.Submitted(ctx, q, p.ID, a.Role)
+	if err != nil {
+		return SessionView{}, err
+	}
+	other.Submitted, err = store.Submitted(ctx, q, p.ID, otherRole)
+	if err != nil {
+		return SessionView{}, err
+	}
+	answers, err := store.Answers(ctx, q, p.ID, a.Role)
+	if err != nil {
+		return SessionView{}, err
+	}
+	me.Answers = &answers
+	// Do not even query the other role's answers until both have sealed.
+	if me.Submitted && other.Submitted {
+		answers, err := store.Answers(ctx, q, p.ID, otherRole)
+		if err != nil {
+			return SessionView{}, err
+		}
+		other.Answers = &answers
 	}
 
 	stage := StageSetup

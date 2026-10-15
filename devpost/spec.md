@@ -111,7 +111,7 @@ Implements `prd.md > Scenario cards`.
 
 #### Project service
 Implements `prd.md > Creating a project`, `prd.md > Scenario cards`.
-Create (validates non-empty name/brief → `422` with field errors), set cards (owner, only before lock, ≥1 card), lock (creates client token once; idempotent).
+Create (validates non-empty name/brief → `422` with field errors), set cards (owner, only before lock, ≥1 card), lock (creates client token once; idempotent). The client token is HMAC-SHA256 of a fixed domain label keyed by the authenticated random owner token; repeated locks restore the same invite while only token hashes are stored.
 
 #### Answer service and reveal gate
 Implements `prd.md > Answering separately`, `prd.md > Compare`.
