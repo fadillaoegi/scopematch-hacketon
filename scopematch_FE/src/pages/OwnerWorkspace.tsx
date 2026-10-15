@@ -1,14 +1,16 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useParams } from 'react-router'
 import { useProjectGateway } from '../lib/gateway'
 import type { Role } from '../domain/models'
 import { AnswerFlow } from '../components/AnswerFlow'
+import { BriefLink } from '../components/BriefLink'
 import { BriefPanel } from '../components/BriefPanel'
 import { CardPicker } from '../components/CardPicker'
 import { CompareBoard } from '../components/CompareBoard'
 import { ScopeDocument } from '../components/ScopeDocument'
 import { LinksPanel } from '../components/LinksPanel'
 import { Masthead } from '../components/Masthead'
+import { StageRail } from '../components/StageRail'
 import { useLibrary } from '../lib/library'
 import { rememberProject, rememberedProjects } from '../lib/projects'
 import { useSession } from '../lib/useSession'
@@ -36,6 +38,7 @@ function Workspace({ token, role }: { token: string; role: Role }) {
   const [saving, setSaving] = useState(false)
   const [tab, setTab] = useState<string | null>(null)
   const [clientToken, setClientToken] = useState('')
+  const setupRef = useRef<HTMLDivElement>(null)
   const projectName = session?.project.name
   useEffect(() => {
     if (role === 'owner' && projectName && !rememberedProjects().some(p => p.ownerToken === token)) {
@@ -92,8 +95,12 @@ function Workspace({ token, role }: { token: string; role: Role }) {
     <Masthead home={role === 'owner'} meta={<><span>{role === 'owner' ? 'Freelancer view' : 'Client view'}</span><span aria-live="polite">{saving ? 'Saving…' : project.locked ? 'Questions locked' : 'Saved'}</span></>} />
     <main className={styles.page}>
       <header className={styles.header}>
-        <h1>{project.name}</h1>
-        <p className={styles.parties}>Between <span className="ink-freelancer">{project.freelancerName}</span>{' '}<span className="meta">(freelancer{role === 'owner' ? ', you' : ''})</span> and <span className="ink-client">{project.clientName}</span>{' '}<span className="meta">(client{role === 'client' ? ', you' : ''})</span></p>
+        <div className={styles.title}>
+          <p className="meta">Scope agreement · {role === 'owner' ? 'your copy' : "client's copy"}</p>
+          <h1>{project.name}</h1>
+          <p className={styles.parties}>Between <span className="ink-freelancer">{project.freelancerName}</span>{' '}<span className="meta">(freelancer{role === 'owner' ? ', you' : ''})</span> and <span className="ink-client">{project.clientName}</span>{' '}<span className="meta">(client{role === 'client' ? ', you' : ''})</span></p>
+        </div>
+        <StageRail session={session} />
       </header>
       <nav className={styles.tabs} aria-label="Project stages">
         {TABS.filter(t => role === 'owner' || t.id !== 'setup').map((t, i) => <button key={t.id} className={`${styles.tab} ${currentTab === t.id ? styles.current : ''}`} aria-current={currentTab === t.id ? 'step' : undefined} disabled={(t.id === 'scope' && !scopeReady) || (t.id === 'compare' && !compareReady) || (t.id === 'answer' && !project.locked)} onClick={() => setTab(t.id)}><span className={styles.num}>0{i + 1}</span> {t.label}</button>)}
@@ -101,9 +108,10 @@ function Workspace({ token, role }: { token: string; role: Role }) {
       {(error || connectionError) && <p role="alert" className={styles.error}>{error || connectionError}</p>}
       {currentTab === 'setup' && <>
         {clientToken && <LinksPanel token={token} clientToken={clientToken} />}
-        <div className={styles.setup}>
+        <div className={styles.setup} ref={setupRef}>
+          <BriefLink container={setupRef} activeCardId={active} />
           <div className={styles.briefCol}><BriefPanel brief={project.brief} marks={marks} activeCardId={active} onActivate={setActive} /></div>
-          <div>
+          <div className={styles.cardsCol}>
             <CardPicker library={library} selected={session.cards} matches={matches} activeCardId={active} onActivate={setActive} onToggle={toggle} disabled={project.locked || saving} />
             <div className={styles.actions}>
               {project.locked ? <button className="btn" onClick={() => setTab('answer')}>Answer the questions →</button> : <><p>Locking fixes these questions for both of you.</p><button className="btn" disabled={saving || !session.cards.length} onClick={() => void lock()}>{saving ? 'Locking…' : 'Lock questions & get links'}</button></>}

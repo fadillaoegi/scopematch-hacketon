@@ -21,7 +21,6 @@
 .footer .error { color: var(--danger); }
 .sealed { display: grid; justify-items: center; gap: 1.4rem; text-align: center; max-width: 650px; padding: 3rem 1rem; margin: auto; }
 .sealed p:last-child { color: var(--ink-soft); max-width: 48ch; }
-.stamp { border: 3px double var(--ink); padding: .5rem 1rem; font-family: var(--font-mono); font-size: 1.5rem; letter-spacing: .2em; transform: rotate(-6deg); margin-bottom: 1rem; }
 @media (max-width: 600px) {
   .question { display: none; padding: 1rem; }
   .question.visible { display: block; }
@@ -29,3 +28,13 @@
   .paging button { padding: .75em; }
   .option { padding: .8rem; gap: .6rem; }
 }
+
+.seals { display: flex; align-items: center; gap: .5rem; margin-bottom: .5rem; }
+.sealDisc { width: 8.5rem; height: 8.5rem; border-radius: 50%; display: grid; place-content: center; justify-items: center; gap: .25rem; border: 3px double var(--seal-ink); color: var(--seal-ink); background: var(--paper-card); }
+.sealDisc > span { font-family: var(--font-mono); font-size: 1rem; letter-spacing: .18em; font-weight: 600; }
+.sealDisc small { font-family: var(--font-display); font-size: 1.05rem; color: var(--ink); }
+.sealFreelancer { --seal-ink: var(--ink-freelancer); }
+.sealClient { --seal-ink: var(--ink-client); }
+.waiting { border-style: dashed; border-width: 2px; }
+.sealGap { width: 3rem; height: 2px; background: repeating-linear-gradient(90deg, var(--ink-faint) 0 5px, transparent 5px 9px); }
+@media (max-width: 420px) { .sealDisc { width: 7rem; height: 7rem; } .sealGap { width: 1.5rem; } }

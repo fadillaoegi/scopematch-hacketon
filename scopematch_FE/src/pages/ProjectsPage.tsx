@@ -8,6 +8,7 @@ import { rememberedProjects } from '../lib/projects'
 import styles from './ProjectsPage.module.css'
 
 const STAGES: Record<Stage, string> = { setup: 'Setup', answering: 'Answering separately', compare: 'Compare & resolve', review: 'Review scope', agreed: 'Agreed' }
+const ORDER: Stage[] = ['setup', 'answering', 'compare', 'review', 'agreed']
 export function ProjectsPage() {
   const api = useProjectGateway()
   const [projects] = useState(rememberedProjects)
@@ -31,10 +32,13 @@ export function ProjectsPage() {
       <div className={styles.top}><h1>Your scopes</h1><Link to="/new" className="btn">New project <span aria-hidden>→</span></Link></div>
       <p className={styles.note}>Projects remembered on this device. Your private freelancer link also opens the project on another device.</p>
       {projects.length === 0 ? <div className={styles.empty}><p>Start with one brief.<br />Find out what each of you imagines.</p><p className={styles.note}>You and your client answer separately, compare expectations, then confirm one scope together.</p><Link to="/new" className="btn btn-outline">Create your first scope →</Link></div> : <ul className={styles.list}>
+        <li className={styles.newTile}><Link to="/new"><span className="meta">New</span><span className={styles.newTitle}>Start from a client's brief →</span></Link></li>
         {projects.map(p => {
           const s = sessions[p.ownerToken]
-          return <li key={p.ownerToken}><Link to={`/o/${p.ownerToken}`}>
+          const at = s ? ORDER.indexOf(s.stage) : -1
+          return <li key={p.ownerToken} className={s?.stage === 'agreed' ? styles.agreedTile : ''}><Link to={`/o/${p.ownerToken}`}>
             <div className={styles.projectTitle}><span>{s?.project.name ?? p.name}</span><span className={`meta ${s?.stage === 'agreed' ? styles.agreed : ''}`}>{s ? STAGES[s.stage] : errors[p.ownerToken] ? 'Link status' : 'Opening…'}</span></div>
+            <span className={styles.rail} aria-hidden>{ORDER.map((st, i) => <i key={st} className={i <= at ? styles.on : ''} style={{ transitionDelay: `${i * 90}ms` }} />)}</span>
             <p className={styles.detail}>{s ? <><span>Client: {s.project.clientName}</span><span>{s.counts ? `${s.counts.decided} of ${s.counts.total} decided · ${s.counts.discussion} need discussion · ${s.counts.clarification} need clarification` : `${s.cards.length} questions · ${s.project.locked ? `${Number(s.me.submitted) + Number(s.other.submitted)} of 2 answers sealed` : 'Questions still editable'}`}</span></> : errors[p.ownerToken] ?? 'Checking the latest stage…'}</p>
           </Link></li>
         })}

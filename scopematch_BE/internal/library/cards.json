@@ -8,15 +8,15 @@
     "options": [
       {
         "id": "a",
-        "label": "Open WhatsApp to contact the salon",
-        "included": ["A \"Book now\" button that opens a WhatsApp chat with the salon"],
+        "label": "Open WhatsApp to contact the business",
+        "included": ["A \"Book now\" button that opens a WhatsApp chat with the business"],
         "excluded": ["Booking forms, availability calendar, and booking records on the website"],
-        "clientResponsibilities": ["Provide the salon's WhatsApp number", "Answer booking messages in WhatsApp"],
-        "acceptanceCriteria": ["Tapping \"Book now\" opens WhatsApp with a pre-filled greeting to the salon's number"],
+        "clientResponsibilities": ["Provide the business's WhatsApp number", "Answer booking messages in WhatsApp"],
+        "acceptanceCriteria": ["Tapping \"Book now\" opens WhatsApp with a pre-filled greeting to the business's number"],
         "preview": [
           { "title": "Customer taps Book now", "body": "The button sits on every service page." },
           { "title": "WhatsApp opens", "body": "\"Hi, I'd like to book a haircut.\" is ready to send." },
-          { "title": "Salon replies by chat", "body": "Date and time are agreed in the conversation, outside the website." }
+          { "title": "The business replies by chat", "body": "Date and time are agreed in the conversation, outside the website." }
         ]
       },
       {
@@ -28,14 +28,14 @@
         "acceptanceCriteria": ["Customers enter a service and a requested date", "A new request has status Pending", "Only after staff approve does the status become Confirmed"],
         "preview": [
           { "title": "Customer fills a short form", "body": "Haircut · Sat 14:00 · Maya · 0812…" },
-          { "title": "\"Request sent\"", "body": "\"The salon will confirm your time shortly.\" Status: Pending." },
+          { "title": "\"Request sent\"", "body": "\"We will confirm your time shortly.\" Status: Pending." },
           { "title": "Staff confirm", "body": "Staff approve the request; the customer's status becomes Confirmed." }
         ]
       },
       {
         "id": "c",
         "label": "Reserve an available slot immediately",
-        "included": ["A live availability calendar per service and stylist", "Instant booking that blocks the chosen slot"],
+        "included": ["A live availability calendar per service and staff member", "Instant booking that blocks the chosen slot"],
         "excluded": ["Online payment"],
         "clientResponsibilities": ["Keep opening hours, services, durations, and staff schedules up to date"],
         "acceptanceCriteria": ["Customers only see free slots", "Choosing a slot confirms the booking instantly", "A booked slot is no longer offered to anyone else"],

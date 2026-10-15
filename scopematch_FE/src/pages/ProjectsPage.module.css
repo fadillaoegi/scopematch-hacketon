@@ -54,3 +54,18 @@
 .projectTitle { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
 .detail { display: flex; justify-content: space-between; flex-wrap: wrap; gap: .5rem 1rem; font-family: var(--font-body); font-size: var(--step--1); color: var(--ink-soft); margin-top: .75rem; }
 .agreed { border: 2px double var(--ink); padding: .25rem .5rem; color: var(--ink); }
+
+/* Bento: tiles of different weight; the newest project and the "new" tile lead. */
+.list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .9rem; margin-top: 1.5rem; }
+.list li { border: 1px solid var(--rule); border-radius: var(--radius); background: var(--paper-card); }
+.list li:nth-child(2) { grid-column: span 2; }
+.list li a { display: grid; align-content: space-between; gap: 1.25rem; height: 100%; padding: 1.25rem 1.35rem; }
+.newTile { background: var(--ink) !important; border-color: var(--ink) !important; color: var(--paper); }
+.newTile .meta { color: rgba(244, 239, 228, .6); }
+.newTitle { font-size: var(--step-2); line-height: 1.1; }
+.newTile a:hover { color: var(--paper) !important; }
+.agreedTile { border: 2px double var(--ink) !important; }
+.rail { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; }
+.rail i { height: 5px; border-radius: 2px; background: var(--paper-deep); transition: background-color 400ms; }
+.rail i.on { background: var(--ink); }
+@media (max-width: 760px) { .list { grid-template-columns: 1fr; } .list li:nth-child(2) { grid-column: auto; } }

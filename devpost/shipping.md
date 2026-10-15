@@ -34,6 +34,8 @@ Ignored local folder: `artifacts/demo/`.
 - `recording.json`: recorded stages and timing; local capture metadata, not public submission text.
 - `contact-sheet.jpg`: sampled frames used for visual inspection.
 
+Larger-text re-recording (15 Oct): `artifacts/demo-large/scopematch-demo.mp4`, same real workflow, 1920×1080, 105.1 seconds, silent. The freelancer view now renders at a 1024×576 CSS viewport with a 1.875 pixel ratio (phone view at 390×844, ratio 1.28), so interface text is about 1.4× larger and stays sharp. `scripts/record-demo.mjs` was changed accordingly. Sampled frames, including the final AGREED frame, were inspected. Prefer this file for upload unless the learner prefers the original.
+
 The recording focuses on Booking as the selected scenario: independent freelancer A/client C choices, sealed waiting state, Compare and static previews, proposed B decision with both confirmations, saved scope v1, both name confirmations, AGREED, and export. The other three curated questions remain in the library and are covered by app verification.
 
 The raw video has no address bar or normal browser profile. Read-only link field values are concealed for the recording. Only disposable sample project names are used. It demonstrates behavior but still needs the learner's own presentation review and, if desired, their own narration. A public code repository has now been created; video upload and Devpost submission remain pending.
@@ -82,7 +84,7 @@ GitHub CLI is not installed; publishing uses the existing Git credential helper 
 - [x] Existing Go tests/vet and frontend build pass.
 - [x] Local demo MP4 recorded and technical metadata checked; sampled frames inspected.
 - [x] README, MIT license, planning docs, offline app map, and third-party notice prepared.
-- [ ] Learner reviews the silent video and chooses whether to add their own narration.
+- [ ] Learner reviews the silent video (prefer `artifacts/demo-large/`) and chooses whether to add their own narration.
 - [x] Learner authorized public creation/push, including code/history; authenticated account `fadillaoegi` resolved the destination.
 - [x] Repository created/pushed and its URL checked without authentication (public API and raw README).
 - [ ] Video uploaded publicly to YouTube/Vimeo and link checked without authentication.

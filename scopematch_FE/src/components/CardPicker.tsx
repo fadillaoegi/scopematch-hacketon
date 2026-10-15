@@ -24,6 +24,7 @@ export function CardPicker({ library, selected, matches, activeCardId, onActivat
     const match = matches.get(card.id)
     return (
       <motion.li
+        data-card={card.id}
         layout
         key={card.id}
         transition={{ type: 'spring', stiffness: 380, damping: 34 }}

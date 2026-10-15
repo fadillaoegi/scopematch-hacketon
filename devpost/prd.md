@@ -27,7 +27,7 @@ Success = demo flow from `scope.md > What "Working" Looks Like` runs end to end 
 1. **Projects** (freelancer home) — projects remembered on this device: name, client, current stage, counts ("3 decided · 1 needs discussion"). Button: New project. Empty state explains the idea in one line and invites creating the first project.
 2. **Project setup** (freelancer) — left: the brief with matched sentences highlighted; right: scenario cards (suggested + library). Hover/focus a card → its source sentence highlights. "Lock questions & get links" at the end; then shows owner link + client link with copy buttons.
 3. **Answer** (both roles; client on phone) — one card at a time on mobile, a list on desktop; progress ("2 of 4"); options as large tappable choices; Submit seals. After submitting: "Sealed. Waiting for [other name]."
-4. **Compare & Resolve** (both roles) — per card: freelancer answer (blue ink) and client answer (vermilion ink) side by side, status label, proposal area. Booking card shows a static "What the salon's customer sees" preview for each chosen option. Header counter: "2 of 4 decided".
+4. **Compare & Resolve** (both roles) — per card: freelancer answer (blue ink) and client answer (vermilion ink) side by side, status label, proposal area. Booking card shows a static "What the customer sees" preview for each chosen option. Header counter: "2 of 4 decided".
 5. **Agreed Scope** (both roles) — the summary document, confirmation records, version label, AGREED stamp when final, "Download Markdown".
 
 Navigation: freelancer moves via the project's stage tabs (Setup → Answer → Compare → Scope); client only ever sees Answer → Compare → Scope for their one project.
@@ -45,6 +45,8 @@ Learner-approved direction: **"two inks on contract paper"**.
   - Respect reduced-motion settings (fade instead of flip/stamp).
 - **Avoid (learner: "jangan sampai seperti AI slop"):** purple/blue gradients, glassmorphism, neon glow, emoji as icons, "✨ AI-powered" labels, uniform grids of rounded cards, decorative blobs.
 - **References:** [Stripe Press](https://press.stripe.com/) (editorial feel), [Are.na](https://www.are.na/) (calm, non-generic).
+- **Layout revision (16 Oct, learner-approved):** asymmetric editorial layout as the base, with bento grids only where a screen summarizes — the Compare header and the Projects list. Fonts unchanged (Fraunces, Instrument Sans, JetBrains Mono); larger, higher-contrast type scale.
+- **Informative motion (16 Oct, learner-approved):** each animation explains something — an ink line from a brief phrase to the question it produced; two seals showing who has sealed their answers; a ≠ / ? / = / ✓ link between the two answers that changes as decisions settle; a decided counter that rolls up; a five-stage progress rail.
 - UI copy in English. Client screens designed phone-first.
 
 ## Features and Behavior
@@ -60,7 +62,7 @@ Curated library (deterministic keyword matching — never described as AI extrac
 
 | § | Card | Matches brief words like | Options (plus "Something else" and "Not sure yet") |
 |---|---|---|---|
-| 1 | **Booking** — What should happen when a customer books an appointment? | book, booking, appointment, reserve | A: Open WhatsApp to contact the salon · B: Submit a request for staff approval · C: Reserve an available slot immediately |
+| 1 | **Booking** — What should happen when a customer books an appointment? | book, booking, appointment, reserve | A: Open WhatsApp to contact the business · B: Submit a request for staff approval · C: Reserve an available slot immediately |
 | 2 | **Languages** — What does "two languages" cover? | language, bilingual, translation, English, Indonesian | A: Every page, translated by the client · B: Every page, translated by the freelancer · C: Main pages only |
 | 3 | **Editable content** — What can the client change after launch, without the freelancer? | editable, edit, update, CMS | A: Text and photos on every page · B: Services and prices only · C: Nothing — send changes to the freelancer |
 | 4 | **Launch content** — Who provides the text and photos at launch? | always suggested | A: Client provides all · B: Freelancer writes text, client provides photos · C: Freelancer provides all (stock photos) |

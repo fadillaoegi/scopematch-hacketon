@@ -100,6 +100,8 @@ Carries `prd.md > Look and Feel` ("two inks on contract paper").
 - *Proposal swap:* old proposal slides out with strike-through, new one slides in.
 - `useReducedMotion()` → replace flips/stamps with opacity fades.
 
+**Layout revision (16 Oct):** asymmetric workspace header (title 8fr, `StageRail` 4fr), Setup grid 7fr brief / 5fr questions with the question column offset down, Compare `bento` header (dark hero tile, decided counter, open-status bar, question chips), answer pairs with the client card a step lower, and a bento Projects grid. Components: `StageRail` (stage progress + per-party seal state from the session), `BriefLink` (SVG line from `[data-card-mark]` to `[data-card]`, desktop only, measured on scroll/resize), `NumberFlip`, `DiffLink` inside `CompareBoard`, two-seal `SealedState`. Presentation only: no API, schema, or rule change. Token added: `--ink-client-light` for vermilion on dark tiles.
+
 **Copy tone:** plain, calm, specific ("Sealed. Waiting for Maya."), no hype, no "AI".
 
 **Avoid:** gradients, glass blur, glow, emoji icons, uniform rounded card grids, decorative blobs.

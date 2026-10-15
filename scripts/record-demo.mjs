@@ -38,7 +38,7 @@ function send(method, params = {}, sessionId) {
 }
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 const contexts = []
-async function page(width, height, mobile = false) {
+async function page(width, height, mobile = false, scale = 1) {
   const { browserContextId } = await send('Target.createBrowserContext')
   contexts.push(browserContextId)
   const { targetId } = await send('Target.createTarget', { url: 'about:blank', browserContextId })
@@ -46,7 +46,7 @@ async function page(width, height, mobile = false) {
   const call = (method, params = {}) => send(method, params, sessionId)
   await call('Runtime.enable')
   await call('Page.enable')
-  await call('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 1, mobile })
+  await call('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: scale, mobile })
   // Redact link values before their first rendered frame. The link buttons and
   // real access-control behavior remain intact; only demo URLs are concealed.
   await call('Page.addScriptToEvaluateOnNewDocument', { source: `document.addEventListener('DOMContentLoaded',()=>{const s=document.createElement('style');s.textContent='input[readonly]{color:transparent!important;text-shadow:none!important}';document.head.append(s)})` })
@@ -108,8 +108,10 @@ async function encode(manifest) {
     p.on('error', reject); p.on('exit', code => code === 0 ? resolve() : reject(Error(`ffmpeg ${code}: ${error}`)))
   })
 }
-const owner = await page(1440, 900)
-const client = await page(390, 900, true)
+// A narrower CSS viewport rendered at a higher pixel ratio fills 1920×1080
+// with larger, still-sharp text, so the video stays readable when watched small.
+const owner = await page(1024, 576, false, 1920 / 1024)
+const client = await page(390, 844, true, 1080 / 844)
 let timer
 try {
   await owner.call('Page.navigate', { url: `${origin}/new` })

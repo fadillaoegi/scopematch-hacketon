@@ -18,3 +18,8 @@ dist/
 
 # Local demo recordings and publication preparation
 /artifacts/
+
+# AI agent and tooling metadata
+AGENTS.md
+CLAUDE.md
+THIRD_PARTY_NOTICES.md

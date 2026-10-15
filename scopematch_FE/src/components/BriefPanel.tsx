@@ -21,6 +21,7 @@ export function BriefPanel({ brief, marks, activeCardId, onActivate }: Props) {
     const active = activeCardId === match.cardId
     parts.push(
       <mark
+        data-card-mark={match.cardId}
         key={match.cardId}
         className={`${styles.mark} ${active ? styles.active : ''}`}
         onMouseEnter={() => onActivate(match.cardId)}
