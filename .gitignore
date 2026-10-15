@@ -9,6 +9,8 @@
 # Local database
 /scopematch_BE/data/
 *.db
+*.db-wal
+*.db-shm
 
 # Build output
 node_modules/

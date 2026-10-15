@@ -9,6 +9,7 @@ import { ScopeDocument } from '../components/ScopeDocument'
 import { LinksPanel } from '../components/LinksPanel'
 import { Masthead } from '../components/Masthead'
 import { useLibrary } from '../lib/library'
+import { rememberProject, rememberedProjects } from '../lib/projects'
 import { useSession } from '../lib/useSession'
 import { InvalidLinkPage } from './InvalidLinkPage'
 import styles from './OwnerWorkspace.module.css'
@@ -26,13 +27,19 @@ export function OwnerWorkspace({ role = 'owner' }: { role?: Role }) {
 }
 
 function Workspace({ token, role }: { token: string; role: Role }) {
-  const library = useLibrary()
+  const { library, error: libraryError } = useLibrary()
   const { session, setSession, invalid, error: connectionError } = useSession(token, role)
   const [error, setError] = useState('')
   const [active, setActive] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
   const [tab, setTab] = useState<string | null>(null)
   const [clientToken, setClientToken] = useState('')
+  const projectName = session?.project.name
+  useEffect(() => {
+    if (role === 'owner' && projectName && !rememberedProjects().some(p => p.ownerToken === token)) {
+      rememberProject({ ownerToken: token, name: projectName, createdAt: new Date().toISOString() })
+    }
+  }, [role, token, projectName])
   const locked = session?.project.locked
   const stage = session?.stage
   const compareReady = !!session?.compare
@@ -50,7 +57,7 @@ function Workspace({ token, role }: { token: string; role: Role }) {
 
   const matches = useMemo(() => new Map((session?.matches ?? []).map(m => [m.cardId, m])), [session])
   if (invalid) return <InvalidLinkPage />
-  if (!session || !library) return <><Masthead home={role === 'owner'} /><main className={styles.centered}>{connectionError || 'Opening the project…'}</main></>
+  if (!session || !library) return <><Masthead home={role === 'owner'} /><main className={styles.centered}>{connectionError || libraryError || 'Opening the project…'}</main></>
   const { project } = session
   const scopeReady = session.stage === 'review' || session.stage === 'agreed' || !!session.scope?.latestVersion
   const currentTab = tab ?? (session.stage === 'agreed' ? 'scope' : compareReady ? 'compare' : project.locked ? 'answer' : 'setup')

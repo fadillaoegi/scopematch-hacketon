@@ -2,6 +2,7 @@ package scope
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"scopematch/internal/store"
 	"strings"
@@ -16,16 +17,23 @@ func (s *Service) Export(ctx context.Context, a Actor) (content, filename string
 		if !p.AgreedVersion.Valid {
 			return notFound("not_agreed")
 		}
-		view, e := scopeView(ctx, q, p)
+		rows, e := store.Versions(ctx, q, p.ID)
 		if e != nil {
 			return e
 		}
 		var saved *ScopeVersion
-		for i := range view.Versions {
-			if view.Versions[i].Version == view.AgreedVersion {
-				saved = &view.Versions[i]
-				break
+		for _, row := range rows {
+			if row.Number != int(p.AgreedVersion.Int64) {
+				continue
 			}
+			v := ScopeVersion{Version: row.Number, CreatedAt: row.CreatedAt}
+			if e := json.Unmarshal([]byte(row.SnapshotJSON), &v.Snapshot); e != nil {
+				return e
+			}
+			v.OwnerConfirmation = &Confirmation{Name: row.OwnerName, At: row.OwnerAt}
+			v.ClientConfirmation = &Confirmation{Name: row.ClientName, At: row.ClientAt}
+			saved = &v
+			break
 		}
 		if saved == nil {
 			return store.ErrNotFound

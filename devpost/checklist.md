@@ -59,7 +59,7 @@ Build mode: fast (agent recommendation, learner accepted with "lanjut")
   Learner check: Finish the salon project: edit one summary line, send it, confirm on both sides, watch the stamp, and open the downloaded `.md` to check it matches the screen.
   Commit: `Add versioned scope confirmation, AGREED stamp, and export`
 
-- [ ] **6. Ready to demo: Projects list, bad links, phone polish, run docs**
+- [x] **6. Ready to demo: Projects list, bad links, phone polish, run docs**
   Becomes usable: Projects home lists this device's projects with stage and counts; invalid links show a safe page; client screens fit phone width; `-seed-demo` and `-static` work; README explains running and the demo.
   Why now: Wraps the working journey for recording and the real-user test without changing the kernel.
   PRD ref: `prd.md > Screens and Layout`, `prd.md > States and Boundaries`
@@ -104,3 +104,7 @@ Activity mode:
 - Slice 4: proposal replacement, project isolation, same-answer system proposals, explicit dual confirmation, and reopened decisions pass API tests; frontend production build passes. Startup backfills unconfirmed system proposals for matching answers on projects revealed before this feature.
 
 - Slice 5: frozen scope snapshots include decision text and proposal IDs; a replaced decision invalidates pending versions until a new version is sent. API tests cover old-version rejection, confirmation reset, undecided/replaced decisions, simultaneous confirmations, deterministic stored export, role restrictions, and locked writes after agreement. Go tests, vet, and frontend build passed. Real isolated desktop/mobile browser sessions completed counter-proposals → 4/4 decisions → edited v1 → one confirmation → revised v2 → both confirmations → AGREED; the actual downloaded Markdown matched export bytes. Reload kept the agreed scope locked; screenshots inspected and no horizontal overflow/runtime errors observed.
+
+- Slice 6: Projects reads live stage/counts and remembers opened owner links; malformed or unavailable local storage is tolerated. Question-library fetch retries instead of hanging on failure. Added seed-demo startup, static-build validation, missing-asset 404, strict single-JSON-body parsing, SQLite sidecar ignores, README demo/LAN/tunnel instructions, and MIT license. Markdown export reads only the stored agreed snapshot and records.
+- Final mechanical verification: Go tests and vet plus production frontend build pass. Real browser journey repeated on final build through counter-proposals, same-answer/custom decisions, revised v2, dual agreement, actual Markdown download, and live Agreed project listing. Additional 375px checks passed for fresh seed setup, bad/wrong-role links, corrupted/invalid/unavailable storage, library-request failure/retry, maximum-length unbroken input, and reduced-motion agreed scope. Screenshots inspected. No public tunnel or publication was started.
+- Implementation is complete through slice 6. Final hands-on exploration, explicit readiness confirmation, and the learning wrap-up remain pending; do not mark final review or invoke 6-ship until they are complete.

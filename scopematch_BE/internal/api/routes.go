@@ -5,6 +5,7 @@ package api
 import (
 	"encoding/json"
 	"errors"
+	"io"
 	"log"
 	"mime"
 	"net/http"
@@ -162,6 +163,10 @@ func readJSON(w http.ResponseWriter, r *http.Request, dst any) bool {
 		writeError(w, http.StatusBadRequest, "bad_json", nil)
 		return false
 	}
+	if err := dec.Decode(new(any)); err != io.EOF {
+		writeError(w, http.StatusBadRequest, "bad_json", nil)
+		return false
+	}
 	return true
 }
 
@@ -188,6 +193,10 @@ func spa(dir string) http.Handler {
 		path := filepath.Join(dir, filepath.Clean("/"+r.URL.Path))
 		if info, err := os.Stat(path); err == nil && !info.IsDir() {
 			files.ServeHTTP(w, r)
+			return
+		}
+		if strings.HasPrefix(r.URL.Path, "/assets/") {
+			http.NotFound(w, r)
 			return
 		}
 		http.ServeFile(w, r, filepath.Join(dir, "index.html"))

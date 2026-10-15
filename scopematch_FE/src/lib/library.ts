@@ -12,14 +12,22 @@ export function loadLibrary(): Promise<Card[]> {
   return cached
 }
 
-export function useLibrary(): Map<string, Card> | null {
-  const [lib, setLib] = useState<Map<string, Card> | null>(null)
+export function useLibrary() {
+  const [library, setLibrary] = useState<Map<string, Card> | null>(null)
+  const [error, setError] = useState('')
   useEffect(() => {
     let live = true
-    loadLibrary().then((cards) => live && setLib(new Map(cards.map((c) => [c.id, c]))))
-    return () => {
-      live = false
+    let timer: number | undefined
+    async function load() {
+      try {
+        const cards = await loadLibrary()
+        if (live) { setLibrary(new Map(cards.map(c => [c.id, c]))); setError('') }
+      } catch {
+        if (live) { setError("Couldn't load the questions. Retrying…"); timer = window.setTimeout(() => void load(), 4000) }
+      }
     }
+    void load()
+    return () => { live = false; window.clearTimeout(timer) }
   }, [])
-  return lib
+  return { library, error }
 }

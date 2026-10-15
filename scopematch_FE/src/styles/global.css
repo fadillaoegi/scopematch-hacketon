@@ -30,11 +30,13 @@ h3 {
   font-variation-settings: 'opsz' 96, 'SOFT' 30;
   line-height: 1.08;
   letter-spacing: -0.015em;
+  overflow-wrap: anywhere;
   margin: 0;
 }
 
 p {
   margin: 0;
+  overflow-wrap: anywhere;
 }
 
 a {

@@ -15,7 +15,7 @@ export function LinksPanel({ token, clientToken }: { token: string; clientToken:
   return <section className={styles.panel} aria-label="Project links">
     <p className="meta">Questions locked · two private links</p>
     <h2>One link for each side.</h2>
-    <p>Keep your freelancer link. Send only the client link to your client.</p>
+    <p>Save your freelancer link — it’s the only way back in. Send only the client link to your client.</p>
     {[
       { label: 'Freelancer — keep private', url: ownerLink(token) },
       { label: 'Client — share this', url: `${window.location.origin}/c/${clientToken}` },

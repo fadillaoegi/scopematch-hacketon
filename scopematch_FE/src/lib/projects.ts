@@ -12,7 +12,11 @@ const KEY = 'scopematch.projects'
 export function rememberedProjects(): RememberedProject[] {
   try {
     const raw = localStorage.getItem(KEY)
-    return raw ? (JSON.parse(raw) as RememberedProject[]) : []
+    const parsed: unknown = raw ? JSON.parse(raw) : []
+    if (!Array.isArray(parsed)) return []
+    return parsed.filter((p): p is RememberedProject => p && typeof p === 'object' &&
+      typeof p.ownerToken === 'string' && /^[A-Za-z0-9_-]{43}$/.test(p.ownerToken) &&
+      typeof p.name === 'string' && typeof p.createdAt === 'string')
   } catch {
     return []
   }
