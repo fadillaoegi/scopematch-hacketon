@@ -12,7 +12,7 @@ function alreadySeen(key: string) {
   catch { return seenInMemory.has(key) }
 }
 
-export function CompareBoard({ token, session, library, onUpdate }: { token: string; session: Session; library: Map<string, Card>; onUpdate: (s: Session) => void }) {
+export function CompareBoard({ token, session, library, onUpdate, onScope }: { token: string; session: Session; library: Map<string, Card>; onUpdate: (s: Session) => void; onScope: () => void }) {
   const key = `scopematch.reveal.${token}`
   const [reveal] = useState(() => !alreadySeen(key))
   const reduced = !!useReducedMotion()
@@ -32,7 +32,7 @@ export function CompareBoard({ token, session, library, onUpdate }: { token: str
       {counts && <div className={styles.counter} aria-label={`${counts.decided} of ${counts.total} decided`}><strong>{counts.decided}<span> / {counts.total}</span></strong><span className="meta">Decided</span></div>}
     </header>
     {counts && <p className={styles.tally} aria-live="polite"><span>{counts.discussion} need discussion</span><span>{counts.clarification} need clarification</span><span>{counts.same} same answer</span></p>}
-    {session.stage === 'review' && <div className={styles.review}><p>Every question has a decision confirmed by both of you.</p></div>}
+    {session.stage === 'review' && <div className={styles.review}><p>Every question has a decision confirmed by both of you.</p><button className="btn" onClick={onScope}>{session.role === 'owner' ? 'Review scope →' : 'View scope →'}</button></div>}
     <div className={styles.clauses}>
       {session.compare?.map((comparison, index) => {
         const card = library.get(comparison.cardId)

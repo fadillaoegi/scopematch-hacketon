@@ -5,6 +5,7 @@ import { AnswerFlow } from '../components/AnswerFlow'
 import { BriefPanel } from '../components/BriefPanel'
 import { CardPicker } from '../components/CardPicker'
 import { CompareBoard } from '../components/CompareBoard'
+import { ScopeDocument } from '../components/ScopeDocument'
 import { LinksPanel } from '../components/LinksPanel'
 import { Masthead } from '../components/Masthead'
 import { useLibrary } from '../lib/library'
@@ -36,7 +37,7 @@ function Workspace({ token, role }: { token: string; role: Role }) {
   const stage = session?.stage
   const compareReady = !!session?.compare
 
-  useEffect(() => { if (stage === 'compare') setTab(null) }, [stage])
+  useEffect(() => { if (stage === 'compare' || stage === 'agreed') setTab(null) }, [stage])
 
   useEffect(() => {
     if (role !== 'owner' || !locked) return
@@ -51,7 +52,8 @@ function Workspace({ token, role }: { token: string; role: Role }) {
   if (invalid) return <InvalidLinkPage />
   if (!session || !library) return <><Masthead home={role === 'owner'} /><main className={styles.centered}>{connectionError || 'Opening the project…'}</main></>
   const { project } = session
-  const currentTab = tab ?? (compareReady ? 'compare' : project.locked ? 'answer' : 'setup')
+  const scopeReady = session.stage === 'review' || session.stage === 'agreed' || !!session.scope?.latestVersion
+  const currentTab = tab ?? (session.stage === 'agreed' ? 'scope' : compareReady ? 'compare' : project.locked ? 'answer' : 'setup')
 
   async function toggle(cardId: string, include: boolean) {
     if (!session) return
@@ -85,7 +87,7 @@ function Workspace({ token, role }: { token: string; role: Role }) {
         <p className={styles.parties}>Between <span className="ink-freelancer">{project.freelancerName}</span>{' '}<span className="meta">(freelancer{role === 'owner' ? ', you' : ''})</span> and <span className="ink-client">{project.clientName}</span>{' '}<span className="meta">(client{role === 'client' ? ', you' : ''})</span></p>
       </header>
       <nav className={styles.tabs} aria-label="Project stages">
-        {TABS.filter(t => role === 'owner' || t.id !== 'setup').map((t, i) => <button key={t.id} className={`${styles.tab} ${currentTab === t.id ? styles.current : ''}`} aria-current={currentTab === t.id ? 'step' : undefined} disabled={t.id === 'scope' || (t.id === 'compare' && !compareReady) || (t.id === 'answer' && !project.locked)} onClick={() => setTab(t.id)}><span className={styles.num}>0{i + 1}</span> {t.label}</button>)}
+        {TABS.filter(t => role === 'owner' || t.id !== 'setup').map((t, i) => <button key={t.id} className={`${styles.tab} ${currentTab === t.id ? styles.current : ''}`} aria-current={currentTab === t.id ? 'step' : undefined} disabled={(t.id === 'scope' && !scopeReady) || (t.id === 'compare' && !compareReady) || (t.id === 'answer' && !project.locked)} onClick={() => setTab(t.id)}><span className={styles.num}>0{i + 1}</span> {t.label}</button>)}
       </nav>
       {(error || connectionError) && <p role="alert" className={styles.error}>{error || connectionError}</p>}
       {currentTab === 'setup' && <>
@@ -104,7 +106,8 @@ function Workspace({ token, role }: { token: string; role: Role }) {
         {role === 'owner' && clientToken && <details className={styles.links}><summary>Project links · keep yours, share the client's</summary><LinksPanel token={token} clientToken={clientToken} /></details>}
         <AnswerFlow token={token} session={session} library={library} onUpdate={setSession} />
       </>}
-      {currentTab === 'compare' && compareReady && <CompareBoard token={token} session={session} library={library} onUpdate={setSession} />}
+      {currentTab === 'compare' && compareReady && <CompareBoard token={token} session={session} library={library} onUpdate={setSession} onScope={() => setTab('scope')} />}
+      {currentTab === 'scope' && scopeReady && <ScopeDocument token={token} session={session} onUpdate={setSession} />}
     </main>
   </>
 }

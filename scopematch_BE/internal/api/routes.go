@@ -6,9 +6,11 @@ import (
 	"encoding/json"
 	"errors"
 	"log"
+	"mime"
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	"scopematch/internal/library"
@@ -35,6 +37,11 @@ func New(svc *scope.Service, staticDir string) http.Handler {
 	s.mux.HandleFunc("POST /api/answers/submit", s.authed(s.submitAnswers))
 	s.mux.HandleFunc("POST /api/cards/{cardId}/proposals", s.authed(s.propose))
 	s.mux.HandleFunc("POST /api/proposals/{id}/confirm", s.authed(s.confirmProposal))
+	s.mux.HandleFunc("GET /api/scope/draft", s.authed(s.scopeDraft))
+	s.mux.HandleFunc("GET /api/scope", s.authed(s.getScope))
+	s.mux.HandleFunc("POST /api/scope/versions", s.authed(s.saveVersion))
+	s.mux.HandleFunc("POST /api/scope/versions/{n}/confirm", s.authed(s.confirmVersion))
+	s.mux.HandleFunc("GET /api/scope/export.md", s.authed(s.exportScope))
 	s.mux.HandleFunc("/api/", func(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusNotFound, "not_found", nil)
 	})
@@ -204,4 +211,65 @@ func (s *Server) confirmProposal(w http.ResponseWriter, r *http.Request, a scope
 		return
 	}
 	s.respondSession(w, r, a)
+}
+
+func (s *Server) scopeDraft(w http.ResponseWriter, r *http.Request, a scope.Actor) {
+	summary, err := s.svc.Draft(r.Context(), a)
+	if err != nil {
+		s.fail(w, err)
+		return
+	}
+	writeJSON(w, 200, map[string]any{"summary": summary})
+}
+func (s *Server) getScope(w http.ResponseWriter, r *http.Request, a scope.Actor) {
+	v, err := s.svc.Scope(r.Context(), a)
+	if err != nil {
+		s.fail(w, err)
+		return
+	}
+	writeJSON(w, 200, v)
+}
+func (s *Server) saveVersion(w http.ResponseWriter, r *http.Request, a scope.Actor) {
+	var in struct {
+		Summary scope.Summary `json:"summary"`
+	}
+	if !readJSON(w, r, &in) {
+		return
+	}
+	v, err := s.svc.SaveVersion(r.Context(), a, in.Summary)
+	if err != nil {
+		s.fail(w, err)
+		return
+	}
+	writeJSON(w, 201, map[string]int{"version": v})
+}
+func (s *Server) confirmVersion(w http.ResponseWriter, r *http.Request, a scope.Actor) {
+	var in struct {
+		Name string `json:"name"`
+	}
+	if !readJSON(w, r, &in) {
+		return
+	}
+	n, err := strconv.Atoi(r.PathValue("n"))
+	if err != nil {
+		writeError(w, 422, "validation", map[string]string{"version": "Choose a valid version."})
+		return
+	}
+	agreed, err := s.svc.ConfirmVersion(r.Context(), a, n, in.Name)
+	if err != nil {
+		s.fail(w, err)
+		return
+	}
+	writeJSON(w, 200, map[string]any{"version": n, "agreed": agreed})
+}
+func (s *Server) exportScope(w http.ResponseWriter, r *http.Request, a scope.Actor) {
+	data, filename, err := s.svc.Export(r.Context(), a)
+	if err != nil {
+		s.fail(w, err)
+		return
+	}
+	w.Header().Set("Content-Type", "text/markdown; charset=utf-8")
+	w.Header().Set("Content-Disposition", mime.FormatMediaType("attachment", map[string]string{"filename": filename}))
+	w.Header().Set("Cache-Control", "no-store")
+	w.Write([]byte(data))
 }

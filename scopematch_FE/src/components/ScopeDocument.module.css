@@ -1,0 +1,19 @@
+.page { max-width: 860px; margin: auto; }
+.heading { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 2rem; padding: .5rem 0 2rem; }
+.heading h2 { font-size: var(--step-3); margin-top: .7rem; }
+.stamp { font-family: var(--font-mono); font-weight: 700; letter-spacing: .1em; border: 5px double var(--ink); padding: .3rem .8rem; font-size: 1.8rem; transform: rotate(-8deg); }
+.document { background: var(--paper-card); border: 1px solid var(--rule-strong); padding: clamp(1.25rem, 4vw, 3rem); margin-bottom: 1.5rem; overflow-wrap: anywhere; }
+.documentHeader { display: grid; gap: .9rem; border-bottom: 3px double var(--rule-strong); padding-bottom: 1.5rem; }
+.documentHeader h3 { font-size: var(--step-3); }
+.section { margin-top: 1.7rem; }
+.section h4, .sectionTitle { font-family: var(--font-display); font-size: var(--step-1); font-weight: 500; margin: 0 0 .7rem; display: block; }
+.section ul { padding-left: 1.25rem; margin: .5rem 0; display: grid; gap: .55rem; }
+.section textarea, .confirm input { display: block; width: 100%; padding: .85rem; border: 1px solid var(--rule-strong); background: var(--paper); resize: vertical; margin-top: .5rem; }
+.actions { display: flex; align-items: center; flex-wrap: wrap; gap: 1rem; margin: 1.5rem 0; }
+.notice { border-left: 2px solid var(--ink-freelancer); padding: .8rem 1rem; margin: 1rem 0; color: var(--ink-soft); font-size: var(--step--1); background: var(--paper-deep); }
+.record { display: grid; gap: .3rem; border-top: 1px solid var(--rule); margin-top: 1rem; padding-top: 1rem; }
+.record time { color: var(--ink-soft); font-family: var(--font-mono); font-size: .7rem; }
+.confirm { display: grid; justify-items: start; gap: 1rem; border-top: 1px solid var(--rule-strong); margin-top: 1.5rem; padding-top: 1.5rem; }
+.confirm label { width: 100%; max-width: 400px; }
+.confirm p, .empty { color: var(--ink-soft); font-size: var(--step--1); }
+.error { color: var(--danger); margin-bottom: 1rem; }

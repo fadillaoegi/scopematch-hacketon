@@ -128,7 +128,7 @@ Rules in one transaction:
 
 #### Scope versions and confirmation
 Implements `prd.md > Scope review and confirmation`.
-Draft assembly from decided options (union of included/excluded/responsibilities/criteria; custom-text decisions go into Included as written). Save version (owner, only when all cards Decided) → new row `version = max+1`, which leaves previous versions' confirmations attached to old versions only (effectively resetting). Confirm (`version` from the path, `{name}` in the body, name required) → rejected with `409 not_latest` unless it is the latest version; a role can confirm a version only once. When both roles confirmed the latest version → `projects.agreed_version = n`, everything locked.
+Draft assembly from decided options (union of included/excluded/responsibilities/criteria; custom-text decisions go into Included as written). Save version (owner, only when all cards Decided) → new row `version = max+1`, which leaves previous versions' confirmations attached to old versions only (effectively resetting). Confirm (`version` from the path, `{name}` in the body, name required) → rejected with `409 not_latest` unless it is the latest version; a role can confirm a version only once. When both roles confirmed the latest version → `projects.agreed_version = n`, everything locked. Each saved snapshot also freezes the per-card decision text and active proposal IDs. Reopening a decision makes existing scope versions stale: they stay in history but cannot be confirmed, even after the card is re-decided. A fresh version must be sent. Session scope metadata includes latest confirmation timestamps so polling updates both screens.
 
 #### Markdown export
 Implements `prd.md > Export`.

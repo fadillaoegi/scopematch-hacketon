@@ -68,6 +68,7 @@ export interface Session {
   matches: Match[]
   me: Party
   other: Party
+  scope?: ScopeState
   compare?: Comparison[]
   counts?: { total: number; decided: number; same: number; discussion: number; clarification: number }
 }
@@ -79,6 +80,18 @@ export interface Proposal {
 }
 export interface Comparison { cardId: string; status: CompareStatus; proposal?: Proposal }
 export interface ProposalInput { optionId: string; customText?: string; why?: string }
+
+export interface Summary {
+  included: string[]; excluded: string[]; clientResponsibilities: string[]; acceptanceCriteria: string[]; openQuestions: string[]
+}
+export interface Decision { cardId: string; number: number; title: string; label: string; proposalId: string }
+export interface Confirmation { name: string; at: string }
+export interface ScopeVersion {
+  version: number; summary: Summary; decisions: Decision[]; createdAt: string
+  ownerConfirmation?: Confirmation; clientConfirmation?: Confirmation
+}
+export interface ScopeState { latestVersion: number; agreedVersion: number; current: boolean; ownerConfirmedAt?: string; clientConfirmedAt?: string }
+export interface ScopeView extends ScopeState { versions: ScopeVersion[] }
 
 export interface NewProject {
   name: string
@@ -119,6 +132,15 @@ export const api = {
   setCards: (token: string, cardIds: string[]) => request<Session>('PUT', '/api/project/cards', token, { cardIds }),
   lock: (token: string) => request<{ clientToken: string }>('POST', '/api/project/lock', token),
   saveAnswers: (token: string, answers: Answer[]) => request<Session>('PUT', '/api/answers', token, { answers }),
+  scope: (token: string) => request<ScopeView>('GET', '/api/scope', token),
+  draft: (token: string) => request<{ summary: Summary }>('GET', '/api/scope/draft', token),
+  saveVersion: (token: string, summary: Summary) => request<{ version: number }>('POST', '/api/scope/versions', token, { summary }),
+  confirmVersion: (token: string, version: number, name: string) => request<{ version: number; agreed: boolean }>('POST', `/api/scope/versions/${version}/confirm`, token, { name }),
+  download: async (token: string) => {
+    const res = await fetch('/api/scope/export.md', { headers: { Authorization: `Bearer ${token}` } })
+    if (!res.ok) throw new ApiError(res.status, (await res.json()).error)
+    return { blob: await res.blob(), filename: res.headers.get('Content-Disposition')?.match(/filename="?([^";]+)/)?.[1] ?? 'scopematch.md' }
+  },
   propose: (token: string, cardId: string, input: ProposalInput) => request<Session>('POST', `/api/cards/${encodeURIComponent(cardId)}/proposals`, token, input),
   confirmProposal: (token: string, id: string) => request<Session>('POST', `/api/proposals/${encodeURIComponent(id)}/confirm`, token),
   submitAnswers: (token: string) => request<Session>('POST', '/api/answers/submit', token),

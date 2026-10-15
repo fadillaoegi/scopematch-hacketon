@@ -49,6 +49,7 @@ type SessionView struct {
 	Other   PartyView       `json:"other"`
 	Compare []Comparison    `json:"compare,omitempty"`
 	Counts  *Counts         `json:"counts,omitempty"`
+	Scope   *ScopeState     `json:"scope,omitempty"`
 }
 
 func (s *Service) Session(ctx context.Context, a Actor) (SessionView, error) {
@@ -157,7 +158,16 @@ func buildSession(ctx context.Context, q store.Q, a Actor) (SessionView, error) 
 		}
 	}
 
+	var scopeState *ScopeState
+	if me.Submitted && other.Submitted {
+		scope, err := scopeView(ctx, q, p)
+		if err != nil {
+			return SessionView{}, err
+		}
+		scopeState = &scope.ScopeState
+	}
 	return SessionView{
+		Scope: scopeState,
 		Role:  a.Role,
 		Stage: stage,
 		Project: ProjectView{

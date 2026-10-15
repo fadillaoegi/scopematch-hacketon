@@ -49,7 +49,7 @@ Build mode: fast (agent recommendation, learner accepted with "lanjut")
   Learner check: Propose B on the booking card as freelancer, counter-propose from the client, then agree on B — watch the card become Decided and the counter go up.
   Commit: `Add proposals, counter-proposals, and confirmations`
 
-- [ ] **5. Confirm one scope version, stamp it AGREED, export Markdown**
+- [x] **5. Confirm one scope version, stamp it AGREED, export Markdown**
   Becomes usable: When all cards are Decided, freelancer reviews/edits the summary, sends v1; both confirm with their names; AGREED stamp lands; both can download the Markdown file.
   Why now: Closes the core journey end to end; depends on decided cards from slice 4.
   PRD ref: `prd.md > Scope review and confirmation`, `prd.md > Export`
@@ -102,3 +102,5 @@ Activity mode:
 - Checkpoint after slice 3: local freelancer/client Compare links provided; learner responded "oke lanjut" with no requested changes. Continue from slice 4.
 
 - Slice 4: proposal replacement, project isolation, same-answer system proposals, explicit dual confirmation, and reopened decisions pass API tests; frontend production build passes. Startup backfills unconfirmed system proposals for matching answers on projects revealed before this feature.
+
+- Slice 5: frozen scope snapshots include decision text and proposal IDs; a replaced decision invalidates pending versions until a new version is sent. API tests cover old-version rejection, confirmation reset, undecided/replaced decisions, simultaneous confirmations, deterministic stored export, role restrictions, and locked writes after agreement. Go tests, vet, and frontend build passed. Real isolated desktop/mobile browser sessions completed counter-proposals → 4/4 decisions → edited v1 → one confirmation → revised v2 → both confirmations → AGREED; the actual downloaded Markdown matched export bytes. Reload kept the agreed scope locked; screenshots inspected and no horizontal overflow/runtime errors observed.
