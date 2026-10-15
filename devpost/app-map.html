@@ -10,7 +10,7 @@
 </style>
 </head>
 <body><main>
-<header><p class="meta">§ ScopeMatch · code reference · snapshot 2c58322</p><h1>From a sealed answer<br>to a shared scope.</h1><p class="lede">A freelancer and client answer separately, compare what they imagined, settle each decision, and confirm one saved scope. React draws the screens. Go enforces the rules. SQLite keeps the records through a repository interface; the use cases do not depend on the database adapter.</p></header>
+<header><p class="meta">§ ScopeMatch · code reference · snapshot e346c51</p><h1>From a sealed answer<br>to a shared scope.</h1><p class="lede">A freelancer and client answer separately, compare what they imagined, settle each decision, and confirm one saved scope. React draws the screens. Go enforces the rules. SQLite keeps the records through a repository interface; the use cases do not depend on the database adapter.</p></header>
 <p class="note">This is a reference route for the completed proof of concept. The learning wrap-up used a brief evidence-based recap; no interactive code tour is claimed. The map is an offline snapshot; refresh it after changes to the mapped behavior.</p>
 <section aria-labelledby="journey"><h2 id="journey">Follow one action: Seal my answers</h2>
 <div class="flow" role="group" aria-label="Browser submission, server transaction, role-filtered response">
@@ -40,5 +40,5 @@ cd ../scopematch_BE
 go run ./cmd/server -static ../scopematch_FE/dist -seed-demo</pre><details><summary>Where state lives and how to check the rules</summary><p>SQLite in <code>scopematch_BE/data/</code> stores projects, answers, proposals, versions, and confirmations. Browser local storage remembers owner links and whether the reveal has played. There are no external runtime services or API keys.</p><pre>cd scopematch_BE
 go test ./...
 go vet ./...</pre><p>The frontend check is <code>npm run build</code> from <code>scopematch_FE</code>.</p></details></section>
-<footer>Source snapshot: <code>2c58322</code> · Implementation through all six build slices. Build review and learning recap are recorded in <a href="checklist.md">checklist.md</a>. This file works offline with JavaScript disabled.</footer>
+<footer>Source snapshot: <code>e346c51</code> · Implementation through all six build slices. Build review and learning recap are recorded in <a href="checklist.md">checklist.md</a>. This file works offline with JavaScript disabled.</footer>
 </main></body></html>
