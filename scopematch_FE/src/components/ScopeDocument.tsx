@@ -102,7 +102,7 @@ export function ScopeDocument({ token, session, onUpdate }: { token: string; ses
         <h4>Confirmation records</h4><p className={styles.empty}>Recorded, not identity-verified.</p>
         {[{ role: 'Freelancer', record: latest.ownerConfirmation }, { role: 'Client', record: latest.clientConfirmation }].map(({ role, record }) => <p className={styles.record} key={role}><span className="meta">{role}</span>{record ? <><strong>{record.name}</strong><time dateTime={record.at}>{new Date(record.at).toLocaleString()}</time></> : <span>Waiting for confirmation</span>}</p>)}
         {!agreed && view?.current && !mine && <form className={styles.confirm} onSubmit={e => { e.preventDefault(); void confirm() }}><label>Your name<input required maxLength={120} autoComplete="name" value={name} onChange={e => setName(e.target.value)} disabled={busy} /></label><p>You are confirming the exact scope saved as v{latest.version}.</p><button className="btn" disabled={busy || !name.trim()}>{busy ? 'Recording…' : `Confirm scope v${latest.version}`}</button></form>}
-        {!agreed && mine && <p className={styles.notice}>Your confirmation of v{latest.version} is recorded. Waiting for {session.other.name}.</p>}
+        {!agreed && mine && view?.current && <p className={styles.notice}>Your confirmation of v{latest.version} is recorded. Waiting for {session.other.name}.</p>}
       </section>}
     </article>}
     {owner && latest && !agreed && !composing && <button className="btn btn-outline" disabled={busy || !canDraft} onClick={() => void edit()}>{view?.current ? 'Edit as a new version' : 'Prepare updated version'}</button>}
