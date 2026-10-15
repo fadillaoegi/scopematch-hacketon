@@ -1,0 +1,144 @@
+.page {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  gap: clamp(2rem, 6vw, 6rem);
+  padding: clamp(2rem, 6vw, 5rem) var(--gutter) 4rem;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.intro {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.intro h1 {
+  font-size: var(--step-3);
+  font-variation-settings: 'opsz' 144, 'SOFT' 50;
+}
+
+.intro h1 em {
+  font-weight: 400;
+  color: var(--ink-soft);
+}
+
+.lede {
+  max-width: 44ch;
+  color: var(--ink-soft);
+  font-size: var(--step-1);
+  line-height: 1.5;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+  padding: clamp(1.25rem, 3vw, 2.25rem);
+  background: var(--paper-card);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  box-shadow: 0 1px 0 var(--rule), 0 18px 40px -28px rgba(27, 26, 23, 0.35);
+}
+
+.pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.field label {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.field input,
+.field textarea {
+  width: 100%;
+  border: 0;
+  border-bottom: 1.5px solid var(--rule-strong);
+  background: transparent;
+  padding: 0.45rem 0;
+  font-size: var(--step-1);
+  border-radius: 0;
+  transition: border-color 160ms;
+}
+
+.field input:focus,
+.field textarea:focus {
+  outline: none;
+  border-bottom-color: var(--ink);
+}
+
+.field input[aria-invalid],
+.field textarea[aria-invalid] {
+  border-bottom-color: var(--danger);
+}
+
+.field ::placeholder {
+  color: var(--ink-faint);
+  opacity: 0.7;
+}
+
+/* The brief sits on ruled paper. */
+.brief {
+  resize: vertical;
+  font-family: var(--font-display);
+  font-variation-settings: 'opsz' 24;
+  line-height: 2rem !important;
+  padding-top: 0.25rem !important;
+  border: 0 !important;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent calc(2rem - 1px),
+    var(--rule) calc(2rem - 1px),
+    var(--rule) 2rem
+  ) !important;
+  background-attachment: local !important;
+}
+
+.dot {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  display: inline-block;
+}
+.dotFreelancer {
+  background: var(--ink-freelancer);
+}
+.dotClient {
+  background: var(--ink-client);
+}
+
+.error {
+  color: var(--danger);
+  font-size: var(--step--1);
+  font-style: italic;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 860px) {
+  .page {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .pair {
+    grid-template-columns: 1fr;
+  }
+}

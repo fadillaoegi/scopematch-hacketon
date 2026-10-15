@@ -1,0 +1,43 @@
+/* ScopeMatch design tokens — "two inks on contract paper".
+   See devpost/spec.md > Look and Feel. */
+:root {
+  /* Paper */
+  --paper: #f4efe4;
+  --paper-deep: #eae2d2;
+  --paper-card: #fbf8f1;
+  --rule: #d6ccb8;
+  --rule-strong: #b9ad95;
+
+  /* Inks */
+  --ink: #1b1a17;
+  --ink-soft: #5e5a52;
+  --ink-faint: #8d877b;
+  --ink-freelancer: #233f94;
+  --ink-client: #d9472b;
+  --danger: #9b2c1f;
+
+  /* Marks */
+  --highlight: rgba(217, 71, 43, 0.2);
+  --highlight-freelancer: rgba(35, 63, 148, 0.14);
+
+  /* Type */
+  --font-display: 'Fraunces Variable', 'Iowan Old Style', Georgia, serif;
+  --font-body: 'Instrument Sans Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, 'SFMono-Regular', monospace;
+
+  --step--1: clamp(0.8rem, 0.78rem + 0.1vw, 0.86rem);
+  --step-0: clamp(1rem, 0.97rem + 0.15vw, 1.08rem);
+  --step-1: clamp(1.2rem, 1.12rem + 0.4vw, 1.4rem);
+  --step-2: clamp(1.5rem, 1.32rem + 0.9vw, 2rem);
+  --step-3: clamp(2rem, 1.6rem + 2vw, 3.2rem);
+  --step-4: clamp(2.6rem, 1.9rem + 3.4vw, 4.6rem);
+
+  /* Space */
+  --gutter: clamp(16px, 4vw, 48px);
+  --measure: 68ch;
+  --radius: 3px;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-ink: cubic-bezier(0.65, 0, 0.35, 1);
+}

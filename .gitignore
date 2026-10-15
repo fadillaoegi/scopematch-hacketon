@@ -1,0 +1,15 @@
+# Personal learning context (Devpost Learn)
+/devpost/learner-profile.md
+
+# Local credentials
+.env
+.env.*
+!.env.example
+
+# Local database
+/scopematch_BE/data/
+*.db
+
+# Build output
+node_modules/
+dist/

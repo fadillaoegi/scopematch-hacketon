@@ -1,0 +1,166 @@
+.picker {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.intro {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.intro h2 {
+  font-size: var(--step-2);
+}
+
+.lede {
+  color: var(--ink-soft);
+  max-width: 52ch;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+/* An index card: off-white stock, a red top rule like a ruled index card. */
+.card {
+  position: relative;
+  padding: 1.1rem 1.25rem 1.2rem;
+  background: var(--paper-card);
+  border: 1px solid var(--rule);
+  border-top: 2px solid var(--ink-client);
+  border-radius: var(--radius);
+  transition:
+    box-shadow 220ms var(--ease-out),
+    transform 220ms var(--ease-out),
+    opacity 220ms;
+}
+
+.card.active {
+  box-shadow: 0 14px 30px -22px rgba(27, 26, 23, 0.55);
+  transform: translateY(-2px);
+}
+
+.excluded {
+  border-top-color: var(--rule-strong);
+  background: transparent;
+  border-style: dashed;
+  opacity: 0.72;
+}
+
+.excluded .options {
+  display: none;
+}
+
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  border: 0;
+  background: none;
+  padding: 0.25rem 0;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+
+.toggle:disabled {
+  cursor: not-allowed;
+}
+
+.toggle.on {
+  color: var(--ink);
+}
+
+.box {
+  display: inline-grid;
+  place-items: center;
+  width: 1.05rem;
+  height: 1.05rem;
+  border: 1.5px solid currentColor;
+  border-radius: 2px;
+  font-size: 0.72rem;
+  line-height: 1;
+}
+
+.on .box {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+
+.question {
+  margin-top: 0.55rem;
+  font-size: var(--step-1);
+  font-variation-settings: 'opsz' 36, 'SOFT' 40;
+  font-weight: 500;
+}
+
+.source {
+  margin-top: 0.5rem;
+  color: var(--ink-soft);
+  font-size: var(--step--1);
+}
+
+.excerpt {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 0.98rem;
+}
+
+.excerpt strong {
+  font-weight: 600;
+  font-style: normal;
+  color: var(--ink);
+  background: linear-gradient(transparent 60%, var(--highlight) 60%);
+}
+
+.options {
+  list-style: none;
+  margin: 0.9rem 0 0;
+  padding: 0.75rem 0 0;
+  border-top: 1px solid var(--rule);
+  display: grid;
+  gap: 0.3rem;
+  font-size: var(--step--1);
+  color: var(--ink-soft);
+}
+
+.options li {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.letter {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--ink);
+  min-width: 1ch;
+}
+
+.extra {
+  color: var(--ink-faint);
+}
+
+.divider {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--rule);
+}

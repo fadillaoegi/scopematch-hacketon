@@ -1,0 +1,89 @@
+.page {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: clamp(1.75rem, 4vw, 3rem) var(--gutter) 5rem;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.header h1 {
+  font-size: var(--step-4);
+  font-variation-settings: 'opsz' 144, 'SOFT' 50;
+}
+
+.parties {
+  font-size: var(--step-1);
+  color: var(--ink-soft);
+}
+
+.parties .ink-freelancer,
+.parties .ink-client {
+  font-weight: 600;
+}
+
+.tabs {
+  display: flex;
+  gap: clamp(1rem, 3vw, 2.5rem);
+  margin: 2rem 0 2.5rem;
+  border-bottom: 1px solid var(--rule-strong);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.tab {
+  padding: 0.7rem 0;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  white-space: nowrap;
+}
+
+.current {
+  color: var(--ink);
+  border-bottom-color: var(--ink);
+}
+
+.num {
+  color: var(--ink-client);
+  margin-right: 0.3rem;
+}
+
+.setup {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  gap: clamp(2rem, 5vw, 5rem);
+  align-items: start;
+}
+
+/* The brief stays in view while scrolling through the cards. */
+.briefCol {
+  position: sticky;
+  top: 1.5rem;
+}
+
+.centered {
+  display: grid;
+  place-items: center;
+  min-height: 50vh;
+  color: var(--ink-soft);
+  padding: var(--gutter);
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+  .setup {
+    grid-template-columns: 1fr;
+  }
+  .briefCol {
+    position: static;
+  }
+}

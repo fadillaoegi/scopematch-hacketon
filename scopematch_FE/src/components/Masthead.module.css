@@ -1,0 +1,40 @@
+.masthead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 1.1rem var(--gutter) 0.9rem;
+  border-bottom: 3px double var(--ink);
+}
+
+.home {
+  text-decoration: none;
+}
+
+.wordmark {
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  font-weight: 600;
+  font-variation-settings: 'opsz' 72, 'SOFT' 60;
+  letter-spacing: -0.02em;
+}
+
+.wordmark em {
+  font-style: italic;
+  font-weight: 400;
+}
+
+.section {
+  display: inline-block;
+  margin-right: 0.35rem;
+  color: var(--ink-client);
+  font-weight: 400;
+  transform: translateY(-0.04em);
+}
+
+.metaLine {
+  display: flex;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+}
