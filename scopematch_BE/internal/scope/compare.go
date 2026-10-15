@@ -12,8 +12,9 @@ const (
 )
 
 type Comparison struct {
-	CardID string `json:"cardId"`
-	Status string `json:"status"`
+	CardID   string          `json:"cardId"`
+	Status   string          `json:"status"`
+	Proposal *store.Proposal `json:"proposal,omitempty"`
 }
 
 type Counts struct {

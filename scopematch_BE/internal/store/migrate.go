@@ -60,6 +60,18 @@ CREATE TABLE IF NOT EXISTS proposals (
 );
 CREATE INDEX IF NOT EXISTS proposals_by_card ON proposals (project_id, card_id, active);
 
+CREATE UNIQUE INDEX IF NOT EXISTS one_active_proposal ON proposals(project_id, card_id) WHERE active = 1;
+
+-- Upgrade projects revealed before proposals were implemented. Never recreate
+-- a cancelled proposal or carry over confirmations from a replaced decision.
+INSERT INTO proposals (id, project_id, card_id, proposed_by, option_id, active, created_at)
+SELECT lower(hex(randomblob(16))), a.project_id, a.card_id, 'system', a.option_id, 1, a.updated_at
+FROM answers a JOIN answers b ON a.project_id=b.project_id AND a.card_id=b.card_id
+WHERE a.role='owner' AND b.role='client' AND a.option_id=b.option_id
+AND a.option_id NOT IN ('other','unsure')
+AND (SELECT count(*) FROM participants p WHERE p.project_id=a.project_id AND p.submitted_at IS NOT NULL)=2
+AND NOT EXISTS (SELECT 1 FROM proposals p WHERE p.project_id=a.project_id AND p.card_id=a.card_id);
+
 CREATE TABLE IF NOT EXISTS scope_versions (
 	project_id          TEXT NOT NULL REFERENCES projects(id),
 	version             INTEGER NOT NULL,

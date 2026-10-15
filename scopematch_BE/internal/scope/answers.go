@@ -115,6 +115,20 @@ func (s *Service) Submit(ctx context.Context, a Actor) error {
 			return invalid(map[string]string{"answers": "Answer every question before sealing."})
 		}
 		_, err = q.ExecContext(ctx, `UPDATE participants SET submitted_at = ? WHERE project_id = ? AND role = ?`, store.Now(), a.ProjectID, a.Role)
-		return err
+		if err != nil {
+			return err
+		}
+		otherRole := RoleClient
+		if a.Role == RoleClient {
+			otherRole = RoleOwner
+		}
+		otherSubmitted, err := store.Submitted(ctx, q, a.ProjectID, otherRole)
+		if err != nil {
+			return err
+		}
+		if otherSubmitted {
+			return seedSameAnswers(ctx, q, a.ProjectID)
+		}
+		return nil
 	})
 }

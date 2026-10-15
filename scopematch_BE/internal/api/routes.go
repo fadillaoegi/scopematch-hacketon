@@ -33,6 +33,8 @@ func New(svc *scope.Service, staticDir string) http.Handler {
 	s.mux.HandleFunc("POST /api/project/lock", s.authed(s.lockProject))
 	s.mux.HandleFunc("PUT /api/answers", s.authed(s.putAnswers))
 	s.mux.HandleFunc("POST /api/answers/submit", s.authed(s.submitAnswers))
+	s.mux.HandleFunc("POST /api/cards/{cardId}/proposals", s.authed(s.propose))
+	s.mux.HandleFunc("POST /api/proposals/{id}/confirm", s.authed(s.confirmProposal))
 	s.mux.HandleFunc("/api/", func(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusNotFound, "not_found", nil)
 	})
@@ -183,4 +185,23 @@ func spa(dir string) http.Handler {
 		}
 		http.ServeFile(w, r, filepath.Join(dir, "index.html"))
 	})
+}
+
+func (s *Server) propose(w http.ResponseWriter, r *http.Request, a scope.Actor) {
+	var in scope.ProposalInput
+	if !readJSON(w, r, &in) {
+		return
+	}
+	if err := s.svc.Propose(r.Context(), a, r.PathValue("cardId"), in); err != nil {
+		s.fail(w, err)
+		return
+	}
+	s.respondSession(w, r, a)
+}
+func (s *Server) confirmProposal(w http.ResponseWriter, r *http.Request, a scope.Actor) {
+	if err := s.svc.ConfirmProposal(r.Context(), a, r.PathValue("id")); err != nil {
+		s.fail(w, err)
+		return
+	}
+	s.respondSession(w, r, a)
 }

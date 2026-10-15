@@ -104,7 +104,7 @@ function Workspace({ token, role }: { token: string; role: Role }) {
         {role === 'owner' && clientToken && <details className={styles.links}><summary>Project links · keep yours, share the client's</summary><LinksPanel token={token} clientToken={clientToken} /></details>}
         <AnswerFlow token={token} session={session} library={library} onUpdate={setSession} />
       </>}
-      {currentTab === 'compare' && compareReady && <CompareBoard token={token} session={session} library={library} />}
+      {currentTab === 'compare' && compareReady && <CompareBoard token={token} session={session} library={library} onUpdate={setSession} />}
     </main>
   </>
 }

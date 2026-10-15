@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useReducedMotion } from 'motion/react'
 import type { Card, Session } from '../api/client'
 import { AnswerCard } from './AnswerCard'
+import { ProposalBox } from './ProposalBox'
 import { StatusTag } from './StatusTag'
 import styles from './CompareBoard.module.css'
 
@@ -11,7 +12,7 @@ function alreadySeen(key: string) {
   catch { return seenInMemory.has(key) }
 }
 
-export function CompareBoard({ token, session, library }: { token: string; session: Session; library: Map<string, Card> }) {
+export function CompareBoard({ token, session, library, onUpdate }: { token: string; session: Session; library: Map<string, Card>; onUpdate: (s: Session) => void }) {
   const key = `scopematch.reveal.${token}`
   const [reveal] = useState(() => !alreadySeen(key))
   const reduced = !!useReducedMotion()
@@ -31,6 +32,7 @@ export function CompareBoard({ token, session, library }: { token: string; sessi
       {counts && <div className={styles.counter} aria-label={`${counts.decided} of ${counts.total} decided`}><strong>{counts.decided}<span> / {counts.total}</span></strong><span className="meta">Decided</span></div>}
     </header>
     {counts && <p className={styles.tally} aria-live="polite"><span>{counts.discussion} need discussion</span><span>{counts.clarification} need clarification</span><span>{counts.same} same answer</span></p>}
+    {session.stage === 'review' && <div className={styles.review}><p>Every question has a decision confirmed by both of you.</p></div>}
     <div className={styles.clauses}>
       {session.compare?.map((comparison, index) => {
         const card = library.get(comparison.cardId)
@@ -43,6 +45,7 @@ export function CompareBoard({ token, session, library }: { token: string; sessi
             <AnswerCard card={card} answer={a} name={owner.name} role="owner" reveal={reveal} reduced={reduced} delay={index * .12} />
             <AnswerCard card={card} answer={b} name={client.name} role="client" reveal={reveal} reduced={reduced} delay={index * .12} />
           </div>
+          <ProposalBox token={token} session={session} card={card} comparison={comparison} onUpdate={onUpdate} />
           {comparison.status === 'same_answer' && <p className={styles.sameNote}>You pictured the same thing. Both still need to confirm it as the decision.</p>}
         </article>
       })}

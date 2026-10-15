@@ -12,6 +12,8 @@ const (
 	StageSetup     = "setup"
 	StageAnswering = "answering"
 	StageCompare   = "compare"
+	StageReview    = "review"
+	StageAgreed    = "agreed"
 )
 
 type ProjectView struct {
@@ -123,6 +125,36 @@ func buildSession(ctx context.Context, q store.Q, a Actor) (SessionView, error) 
 	if me.Submitted && other.Submitted {
 		stage = StageCompare
 		comparisons, counts = compareAnswers(ids, *me.Answers, *other.Answers)
+		proposals, err := store.ActiveProposals(ctx, q, p.ID)
+		if err != nil {
+			return SessionView{}, err
+		}
+		for i := range comparisons {
+			for _, proposal := range proposals {
+				if proposal.CardID != comparisons[i].CardID {
+					continue
+				}
+				comparisons[i].Proposal = &proposal
+				if proposal.Decided() {
+					switch comparisons[i].Status {
+					case StatusSame:
+						counts.Same--
+					case StatusDiscussion:
+						counts.Discussion--
+					case StatusClarification:
+						counts.Clarification--
+					}
+					comparisons[i].Status = "decided"
+					counts.Decided++
+				}
+			}
+		}
+		if counts.Decided == counts.Total {
+			stage = StageReview
+		}
+		if p.AgreedVersion.Valid {
+			stage = StageAgreed
+		}
 	}
 
 	return SessionView{

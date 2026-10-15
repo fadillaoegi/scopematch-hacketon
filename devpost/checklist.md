@@ -39,7 +39,7 @@ Build mode: fast (agent recommendation, learner accepted with "lanjut")
   Learner check: With the project from slice 2, watch the reveal on both screens; check that the booking card shows "Needs discussion" with the A and C previews, and tell me how the motion and look feel.
   Commit: `Reveal answers on Compare with statuses and booking preview`
 
-- [ ] **4. Settle each difference with proposals and confirmations**
+- [x] **4. Settle each difference with proposals and confirmations**
   Becomes usable: Either side proposes a decision (option or custom text + why); the other confirms or counter-proposes; same answers need one tap from each; cards turn Decided.
   Why now: Builds directly on Compare and is the most rule-heavy part of the server; doing it before the summary keeps the summary built on real decisions.
   PRD ref: `prd.md > Resolving differences`
@@ -71,7 +71,7 @@ Build mode: fast (agent recommendation, learner accepted with "lanjut")
 
 ## Hands-on Checkpoints
 
-- [ ] Early usable behavior explored — after slice 3 (reveal + design direction). Implementation and mechanical verification complete; learner feedback requested and still pending. Resume here before slice 4.
+- [x] Early usable behavior explored — after slice 3 (reveal + design direction). Learner accepted the checkpoint and requested continuation with "oke lanjut".
 - [ ] Final kick-the-tires exploration and feedback completed
 
 ## Final Review
@@ -99,4 +99,6 @@ Activity mode:
 
 - Resume audit: Claude stopped at commit `ab30dd2` after slice 1 because of a usage limit. Approved plans and fast mode were preserved; no uncommitted work existed at handoff.
 - Slice 3 verification: all 25 pairs of concrete/custom/unsure answers pass API status tests, with Compare and counts omitted until both submit; matching answers remain 0 decided. `go test ./...`, `go vet ./...`, and `npm run build` pass. Isolated desktop/mobile Chrome sessions verified automatic reveal through polling, booking previews A/B/C, custom answers, one-time reveal after reload, and reduced-motion fade. Screenshots inspected; Setup and Compare have no overflow at 375px. Browser harness and dummy database are under `/private/tmp`, outside the repository.
-- Pending checkpoint: learner was given local freelancer/client Compare links and asked for feedback on appearance, animation, and flow. Do not start slice 4 until this report is received and any relevant fixes are addressed; the hands-on checkbox above intentionally remains unchecked.
+- Checkpoint after slice 3: local freelancer/client Compare links provided; learner responded "oke lanjut" with no requested changes. Continue from slice 4.
+
+- Slice 4: proposal replacement, project isolation, same-answer system proposals, explicit dual confirmation, and reopened decisions pass API tests; frontend production build passes. Startup backfills unconfirmed system proposals for matching answers on projects revealed before this feature.

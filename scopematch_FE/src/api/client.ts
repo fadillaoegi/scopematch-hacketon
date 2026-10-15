@@ -73,7 +73,12 @@ export interface Session {
 }
 
 export type CompareStatus = 'same_answer' | 'needs_discussion' | 'needs_clarification' | 'decided'
-export interface Comparison { cardId: string; status: CompareStatus }
+export interface Proposal {
+  id: string; cardId: string; proposedBy: Role | 'system'; optionId: string; customText?: string; why?: string
+  ownerConfirmedAt?: string; clientConfirmedAt?: string; createdAt: string
+}
+export interface Comparison { cardId: string; status: CompareStatus; proposal?: Proposal }
+export interface ProposalInput { optionId: string; customText?: string; why?: string }
 
 export interface NewProject {
   name: string
@@ -114,5 +119,7 @@ export const api = {
   setCards: (token: string, cardIds: string[]) => request<Session>('PUT', '/api/project/cards', token, { cardIds }),
   lock: (token: string) => request<{ clientToken: string }>('POST', '/api/project/lock', token),
   saveAnswers: (token: string, answers: Answer[]) => request<Session>('PUT', '/api/answers', token, { answers }),
+  propose: (token: string, cardId: string, input: ProposalInput) => request<Session>('POST', `/api/cards/${encodeURIComponent(cardId)}/proposals`, token, input),
+  confirmProposal: (token: string, id: string) => request<Session>('POST', `/api/proposals/${encodeURIComponent(id)}/confirm`, token),
   submitAnswers: (token: string) => request<Session>('POST', '/api/answers/submit', token),
 }
