@@ -72,23 +72,23 @@ Build mode: fast (agent recommendation, learner accepted with "lanjut")
 ## Hands-on Checkpoints
 
 - [x] Early usable behavior explored — after slice 3 (reveal + design direction). Learner accepted the checkpoint and requested continuation with "oke lanjut".
-- [ ] Final kick-the-tires exploration and feedback completed
+- [x] Final review feedback accepted — learner replied "lanjut" to the final readiness question with no requested fixes. Browser exploration evidence above is agent verification; no detailed hands-on learner report was supplied.
 
 ## Final Review
 
-- [ ] Final review complete — feedback resolved and learner confirms ready to ship
+- [x] Final review complete — final-readiness prompt accepted with "lanjut"; no further changes requested before shipping preparation.
 
 ## Code Tour and App Map
 
-- [ ] Learning activity complete — guided route, focused alternative, prior practice connected, or brief recap
-- [ ] Optional edit and transfer reflection addressed — offered/declined/already covered/not applicable as appropriate
-- [x] `devpost/app-map.html` generated from finished code, checked, and shown, including a project-grounded practice to reuse — reference map prepared for final review; interactive activity remains pending
+- [x] Learning activity complete — brief evidence-based recap of the server response boundary, its API test, and a reusable verification practice; no interactive tour or learner mastery claimed.
+- [x] Optional edit and transfer reflection addressed — not applicable to the concise recap route; code pointers remain available in the reference map.
+- [x] `devpost/app-map.html` generated from finished code, checked, and shown, including a project-grounded practice to reuse — offline reference map checked and shown; recap route used instead of an interactive tour
 
-Activity and evidence: Reference map generated from source snapshot `2c58322`; paths and function anchors verified, screenshots inspected, and offline desktop/375px browser checks passed with JavaScript disabled. Final hands-on review and learning activity are not yet complete.
-Route and stops: Reference route only: AnswerFlow.submit → scope.Submit → buildSession/CompareBoard. No interactive tour claimed.
-Edit outcome: No learner edit offered yet; pending final-review outcome.
-Reflection: Not yet offered; pending final-review outcome.
-Activity mode: Reference preparation; learning wrap-up pending.
+Activity and evidence: Brief recap delivered after final review acceptance: AnswerFlow.submit → scope.Submit → buildSession; TestAnswersStaySealedUntilBothSubmit checks that other.answers and secret custom text are absent before both submit. Connected this project guarantee to testing observable server responses. Map paths/anchors verified and offline desktop/375px checks passed with JavaScript disabled.
+Route and stops: Reference route, not an interactive tour: AnswerFlow.submit → scope.Submit → buildSession/CompareBoard.
+Edit outcome: No learner edit requested or performed; not applicable to recap route. Cosmetic-change pointers are in the map.
+Reflection: No learner reflection supplied; no claim about learning made. Optional reflection does not gate shipping.
+Activity mode: Brief evidence-based recap plus offline reference map.
 
 ## Revisions
 
@@ -111,3 +111,7 @@ Activity mode: Reference preparation; learning wrap-up pending.
 
 - Final review requested with links to a fresh setup project and an agreed example. Await learner observations and explicit readiness before marking Final Review complete. The offline app map is prepared as a reference, not recorded as a completed learning activity.
 - Final UI correction: outdated scope versions no longer show the "waiting for the other person" prompt; they retain the stale-version notice and historical confirmation records. Frontend build passed after this correction.
+
+- Build closeout: learner accepted final readiness and requested continuation with "lanjut". Concise recap delivered, map retained as a reference route, and 5-build complete. Proceed to 6-ship; repository/video publication and Devpost submission remain separate actions.
+
+- Shipping preparation: existing Go tests/vet and frontend production build passed again. A 105-second silent 1080p recording of the real salon workflow was captured with isolated browser sessions; video/upload and repository publication remain pending. See `shipping.md` for artifacts and current requirements.

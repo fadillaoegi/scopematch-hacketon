@@ -303,3 +303,7 @@ Manual: full demo flow laptop + phone; phone width has no horizontal scroll; red
 - **Open (from PRD):** card wording for §2–§4 is agent-proposed; real-user test pair needed by 18 Oct. Neither blocks the build.
 - **Package versions:** verified 15 Oct 2026 (see Stack).
 - **Owner link at creation, not at lock** — deviation from the first PRD wording, so the freelancer can return during setup; PRD updated to match.
+
+## Sharing and submission status
+
+Build review and the concise learning recap are complete. `devpost/shipping.md` records current official requirements, the local silent demo video, publication audit, and remaining learner-owned steps. No Git remote, public video URL, deployment, or Devpost submission has been created. Repository creation/push and external upload await explicit authorization and the destination account.

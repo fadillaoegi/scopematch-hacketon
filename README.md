@@ -114,4 +114,4 @@ The proof of concept is one freelancer and one client per project, with no accou
 
 ## License
 
-Project code is available under the [MIT License](LICENSE). Dependencies and fonts retain their own licenses.
+Project code is available under the [MIT License](LICENSE). Dependencies and fonts retain their own licenses. See [third-party notices](THIRD_PARTY_NOTICES.md) for the copied Devpost Learn Skill Pack.
