@@ -42,17 +42,17 @@ export function AnswerFlow({ token, session, library, onUpdate }: {
     finally { setSealing(false) }
   }
 
-  if (session.me.submitted) return <SealedState session={session} />
+  if (session.me.submitted && !session.other.submitted) return <SealedState session={session} />
   return <section className={styles.flow} style={{ '--party-ink': session.role === 'owner' ? 'var(--ink-freelancer)' : 'var(--ink-client)' } as React.CSSProperties}>
     <header className={styles.intro}>
       <p className="meta">Independent answers · {complete} of {cards.length} answered</p>
       <h2>What do you have in mind?</h2>
-      <p>Choose what you imagine this project includes. {session.other.name} will answer the same questions separately.</p>
+      <p>{session.me.submitted ? 'Your sealed answers are recorded below. Both sets of answers are now available in Compare.' : <>Choose what you imagine this project includes. {session.other.name} will answer the same questions separately.</>}</p>
     </header>
     <div className={styles.questions}>
       {cards.map((card, index) => {
         const answer = answers.find(a => a.cardId === card.id)
-        return <fieldset key={card.id} disabled={saving || sealing} className={`${styles.question} ${index === page ? styles.visible : ''}`}>
+        return <fieldset key={card.id} disabled={saving || sealing || session.me.submitted} className={`${styles.question} ${index === page ? styles.visible : ''}`}>
           <legend><span className="meta">§ {card.number} · {card.title}</span><span className={styles.questionTitle}>{card.question}</span></legend>
           {[...card.options.map((o, i) => ({ ...o, letter: 'ABCDEF'[i] })), { id: 'other', label: 'Something else', letter: '+' }, { id: 'unsure', label: 'Not sure yet', letter: '?' }].map(option => <label key={option.id} className={`${styles.option} ${answer?.optionId === option.id ? styles.selected : ''}`}>
             <input type="radio" name={card.id} value={option.id} checked={answer?.optionId === option.id} onChange={() => choose(card.id, option.id)} />
@@ -70,10 +70,9 @@ export function AnswerFlow({ token, session, library, onUpdate }: {
       <button className="btn btn-outline" disabled={page === cards.length - 1 || saving || sealing} onClick={() => setPage(p => p + 1)}>Next</button>
     </nav>
     <footer className={styles.footer}>
-      <p>Submitting seals your choices. You can change them until then.</p>
+      <p>{session.me.submitted ? 'Sealed answers cannot be changed.' : 'Submitting seals your choices. You can change them until then.'}</p>
       {error && <p className={styles.error} role="alert">{error}</p>}
-      <button className="btn" disabled={complete !== cards.length || saving || sealing} onClick={() => void submit()}>{sealing ? 'Sealing…' : 'Seal my answers'}</button>
-      <span className="meta" role="status">{saving ? 'Saving…' : 'Choices save automatically'}</span>
+      {!session.me.submitted && <><button className="btn" disabled={complete !== cards.length || saving || sealing} onClick={() => void submit()}>{sealing ? 'Sealing…' : 'Seal my answers'}</button><span className="meta" role="status">{saving ? 'Saving…' : 'Choices save automatically'}</span></>}
     </footer>
   </section>
 }

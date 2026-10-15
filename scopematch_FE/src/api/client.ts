@@ -68,7 +68,12 @@ export interface Session {
   matches: Match[]
   me: Party
   other: Party
+  compare?: Comparison[]
+  counts?: { total: number; decided: number; same: number; discussion: number; clarification: number }
 }
+
+export type CompareStatus = 'same_answer' | 'needs_discussion' | 'needs_clarification' | 'decided'
+export interface Comparison { cardId: string; status: CompareStatus }
 
 export interface NewProject {
   name: string

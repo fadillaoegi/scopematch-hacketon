@@ -11,6 +11,7 @@ import (
 const (
 	StageSetup     = "setup"
 	StageAnswering = "answering"
+	StageCompare   = "compare"
 )
 
 type ProjectView struct {
@@ -44,6 +45,8 @@ type SessionView struct {
 	Matches []library.Match `json:"matches"`
 	Me      PartyView       `json:"me"`
 	Other   PartyView       `json:"other"`
+	Compare []Comparison    `json:"compare,omitempty"`
+	Counts  *Counts         `json:"counts,omitempty"`
 }
 
 func (s *Service) Session(ctx context.Context, a Actor) (SessionView, error) {
@@ -115,6 +118,12 @@ func buildSession(ctx context.Context, q store.Q, a Actor) (SessionView, error) 
 	if p.LockedAt.Valid {
 		stage = StageAnswering
 	}
+	var comparisons []Comparison
+	var counts *Counts
+	if me.Submitted && other.Submitted {
+		stage = StageCompare
+		comparisons, counts = compareAnswers(ids, *me.Answers, *other.Answers)
+	}
 
 	return SessionView{
 		Role:  a.Role,
@@ -127,5 +136,7 @@ func buildSession(ctx context.Context, q store.Q, a Actor) (SessionView, error) 
 		Matches: all,
 		Me:      me,
 		Other:   other,
+		Compare: comparisons,
+		Counts:  counts,
 	}, nil
 }

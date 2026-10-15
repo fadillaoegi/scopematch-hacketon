@@ -29,7 +29,7 @@ Build mode: fast (agent recommendation, learner accepted with "lanjut")
   Learner check: Lock the salon project, open the client link in a private window or on your phone, answer differently on each side, submit both, and confirm neither side could see the other's choices before the second submit.
   Commit: `Add client link and sealed independent answers`
 
-- [ ] **3. The reveal: Compare shows where you differ**
+- [x] **3. The reveal: Compare shows where you differ**
   Becomes usable: After both submit, both sides see Compare — sealed cards flip together, each card tagged Same answer / Needs discussion / Needs clarification, counts in the header, booking card shows the static customer-view preview for A/B/C.
   Why now: The "oh" moment of the demo and the kernel's second half; getting the design right here shapes everything after, so the early checkpoint follows this slice.
   PRD ref: `prd.md > Compare`, `prd.md > Look and Feel`
@@ -71,7 +71,7 @@ Build mode: fast (agent recommendation, learner accepted with "lanjut")
 
 ## Hands-on Checkpoints
 
-- [ ] Early usable behavior explored — after slice 3 (reveal + design direction)
+- [ ] Early usable behavior explored — after slice 3 (reveal + design direction). Implementation and mechanical verification complete; learner feedback requested and still pending. Resume here before slice 4.
 - [ ] Final kick-the-tires exploration and feedback completed
 
 ## Final Review
@@ -96,3 +96,7 @@ Activity mode:
 
 - Slice 2: client invites are derived with HMAC from the authenticated owner secret, allowing idempotent lock/recovery without storing plaintext tokens. Client and owner use a shared workspace shell with role-specific access and navigation.
 - Slice 2 verification: Go API tests and production frontend build passed; isolated Chrome desktop/mobile sessions exercised create → lock → answer (including custom text) → seal → reload. Raw client session omitted freelancer answers before the second submission. Mobile width 390px had no horizontal overflow; screenshots inspected. Learner checkpoint remains after slice 3.
+
+- Resume audit: Claude stopped at commit `ab30dd2` after slice 1 because of a usage limit. Approved plans and fast mode were preserved; no uncommitted work existed at handoff.
+- Slice 3 verification: all 25 pairs of concrete/custom/unsure answers pass API status tests, with Compare and counts omitted until both submit; matching answers remain 0 decided. `go test ./...`, `go vet ./...`, and `npm run build` pass. Isolated desktop/mobile Chrome sessions verified automatic reveal through polling, booking previews A/B/C, custom answers, one-time reveal after reload, and reduced-motion fade. Screenshots inspected; Setup and Compare have no overflow at 375px. Browser harness and dummy database are under `/private/tmp`, outside the repository.
+- Pending checkpoint: learner was given local freelancer/client Compare links and asked for feedback on appearance, animation, and flow. Do not start slice 4 until this report is received and any relevant fixes are addressed; the hands-on checkbox above intentionally remains unchecked.
