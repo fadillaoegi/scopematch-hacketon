@@ -70,12 +70,12 @@ Flags: `-addr :8080`, `-db data/scopematch.db`, `-static <built-directory>`, and
 
 ## Try the core journey
 
-1. Create a project using **Use the salon example**, or open the printed demo link. Keep the four suggested questions and select **Lock questions & get links**. Save the freelancer link; share only the client link.
+1. Create a project by entering its name, both participants' names and a brief, or open the printed demo link. For the salon walkthrough, use a brief mentioning booking, two languages and editable content. Keep the four suggested questions and select **Lock questions & get links**. Save the freelancer link; share only the client link.
 2. Open the client link in a separate browser/private window. As freelancer choose **A — Open WhatsApp** for Booking; as client choose **C — Reserve immediately**. Choose A for the other questions on both sides.
 3. Seal the freelancer answers first: the freelancer waits and the client cannot see those answers. Seal the client answers. Compare appears automatically, with the A/C booking previews and **Needs discussion**.
 4. Propose **B — Submit a request for staff approval** for Booking; the other person confirms. For each matching-answer question, both people select **Confirm decision**. Counter-proposals are also supported and replace earlier confirmations.
 5. At **4 of 4 decided**, the freelancer selects **Review scope**, edits any summary item, and selects **Send for confirmation**.
-6. Both people review the same version and confirm with their names. **AGREED** appears. Download Markdown and check that it matches the saved scope.
+6. Both people review the same version and confirm with their names. **AGREED** appears. Download Markdown and check that it matches the saved scope, or select **Print / Save as PDF** to save the print layout through the browser.
 7. To exercise versioning before agreement: confirm as one person, edit as a new version, then confirm that new version on both sides. Reopening a decision also requires a fresh scope version.
 
 The reveal plays once per private link in a browser. Use a fresh private window/project to replay it. Reduced-motion settings replace the flip and stamp motion with fades. Try `/c/not-a-valid-token` to see the invalid-link page.

@@ -7,13 +7,6 @@ import { Masthead } from '../components/Masthead'
 import { rememberProject } from '../lib/projects'
 import styles from './NewProjectPage.module.css'
 
-const SALON_EXAMPLE: NewProject = {
-  name: 'Salon website',
-  freelancerName: 'Dimas',
-  clientName: 'Maya',
-  brief: 'We need a salon website with booking, two languages, and editable content.',
-}
-
 const EMPTY: NewProject = { name: '', freelancerName: '', clientName: '', brief: '' }
 
 export function NewProjectPage() {
@@ -122,16 +115,6 @@ export function NewProjectPage() {
           <div className={styles.actions}>
             <button className="btn" type="submit" disabled={busy}>
               {busy ? 'Reading…' : 'Read the brief'} <span aria-hidden>→</span>
-            </button>
-            <button
-              type="button"
-              className="btn-link"
-              onClick={() => {
-                setForm(SALON_EXAMPLE)
-                setErrors({})
-              }}
-            >
-              Use the salon example
             </button>
           </div>
         </form>

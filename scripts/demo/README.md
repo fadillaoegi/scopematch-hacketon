@@ -1,6 +1,56 @@
 # Application demo tooling
 
-## Current delivery: application footage only
+## Current delivery: 128 seconds, with real PDF output
+
+The current requested cut is `artifacts/app-demo-128s/scopematch-demo-128s.mp4`.
+It contains seventeen working-app phases, including the actual **Print / Save as
+PDF** click and the resulting file in Chrome's native PDF viewer. There is no
+intro, closing, narration audio or decorative overlay. With the separate
+8-second intro and 6-second closing added later, the total is 142 seconds.
+
+The actual application no longer has the salon-example shortcut. The first
+scene is a fresh recording of the form after that change; controls are not
+painted out of old footage. English voice-over text and SRT are separately
+retimed from 00:00 for this 128-second cut.
+
+```sh
+PYTHONPYCACHEPREFIX=/private/tmp/scopematch-python-cache python3 scripts/demo/compact.py
+```
+
+`compact-storyboard.json` defines the scene budgets/narration. `compact.py`
+combines validated raw footage from the initial walkthrough with genuine pickup
+captures. `capture-pickup.mjs` records the new form. `capture-pdf.mjs` records the
+agreed project's real `window.print()` action with Chrome configured to save
+directly as PDF, then opens the saved file in the browser's real PDF viewer.
+It does not substitute `Page.printToPDF`, draw a pretend viewer, use a physical
+printer or require macOS save-dialog Accessibility automation.
+
+The PDF recorder expects a private ignored `artifacts/pdf-demo/session.json`
+containing `url` (an owner URL for the same agreed sample fixture) and a dedicated
+Chrome CDP instance at `SCOPEMATCH_CDP_ORIGIN`. Chrome must be launched with
+`--kiosk-printing`, the Save as PDF destination and headers/footers disabled;
+its `savefile.default_directory` must point to the ignored PDF output folder.
+Only a disposable profile/fixture is used. Keep its local URL/capability out of
+Git and logs. The captured fixture was copied from the original disposable demo
+database with an owner capability renewed in the copy; original decisions,
+versions and confirmation times are preserved and the source database is untouched.
+
+`inspect-pdf.swift` uses macOS PDFKit to read and render every page of the actual
+saved PDF; it checks names, scope content and the absence of private source URLs
+or app controls. Recorder cursor/click markers are hidden in print media so they
+remain visible in the walkthrough but do not become part of the document.
+
+```sh
+swiftc -module-cache-path /private/tmp/scopematch-swift-modules scripts/demo/inspect-pdf.swift -o /private/tmp/scopematch-inspect-pdf
+/private/tmp/scopematch-inspect-pdf artifacts/pdf-demo/output/ScopeMatch.pdf artifacts/pdf-demo/pdf-check
+```
+
+The final cut is verified as 128 seconds, 3,840 frames, H.264 1920×1080/30 fps,
+one video stream and no audio, with full decode, sampled visual review and ZIP
+integrity checks. If pickup sources change, invalidate their corresponding
+cached scene MP4s before reassembling. Raw footage and all output remain ignored.
+
+## Earlier 176-second application-only delivery
 
 The requested demo follows the original full-screen recording preview: desktop
 app footage and the client's portrait browser, with visible real interactions
@@ -30,7 +80,8 @@ The source raw MP4s are generated with `SCOPEMATCH_SAVE_RAW=1` when capturing.
 
 The earlier combined film below was rejected by the learner because it attached
 the separately requested intro/closing. It is retained as historical media;
-`app_only.py` is the current demo entry point. Do not attach bookends unless
+`app_only.py` is the earlier 176-second entry point; use `compact.py` for the
+current 128-second delivery. Do not attach bookends unless
 explicitly asked.
 
 ## Earlier combined-film tooling

@@ -1,0 +1,19 @@
+[
+ {"id":"brief","duration":8,"voice":"Raka starts a surf school project and enters Nadia's brief."},
+ {"id":"questions","duration":5,"voice":"The brief suggests concrete questions from a curated library."},
+ {"id":"ai","duration":12,"voice":"Gemini drafts an extra question about lesson levels. Raka reviews its options and scope details before adding it. AI never decides for them."},
+ {"id":"invite","duration":4,"voice":"Raka locks the questions and shares Nadia's link."},
+ {"id":"welcome","duration":4,"voice":"Nadia opens her link on a phone."},
+ {"id":"owner-answers","duration":8,"voice":"Raka answers independently and seals his choices. Nadia cannot see them yet."},
+ {"id":"client-answers","duration":8,"voice":"Nadia selects her own answers and seals them. Only then are both sets revealed."},
+ {"id":"reveal","duration":8,"voice":"Their booking answers differ: a WhatsApp conversation versus instant reservations. The visual examples show the difference."},
+ {"id":"propose","duration":4,"voice":"Raka proposes WhatsApp booking for this project."},
+ {"id":"counter","duration":7,"voice":"Nadia counter-proposes a request form. Staff must confirm lesson availability before accepting a booking."},
+ {"id":"decision","duration":4,"voice":"Raka confirms. The earlier proposal remains in history."},
+ {"id":"same","duration":9,"voice":"Both people also confirm the matching answers. A matching answer alone never becomes an agreed decision."},
+ {"id":"scope","duration":8,"voice":"ScopeMatch assembles the included work, exclusions, responsibilities, and acceptance criteria. Raka sends version one."},
+ {"id":"revision","duration":7,"voice":"Raka adds a note and saves version two. The previous confirmation resets."},
+ {"id":"agreement","duration":9,"voice":"Both confirm version two by name. Their confirmations now match, and the scope becomes agreed."},
+ {"id":"export","duration":5,"voice":"He downloads Markdown and opens the actual agreed file."},
+ {"id":"pdf","duration":18,"voice":"Raka clicks Print / Save as PDF. The browser saves the agreed scope as a PDF. He opens that file and reviews the document, including the decisions, acceptance criteria, and both confirmation records."}
+]

@@ -115,13 +115,15 @@ const client = await page(390, 844, true, 1080 / 844)
 let timer
 try {
   await owner.call('Page.navigate', { url: `${origin}/new` })
-  await owner.until("document.body.textContent.includes('Use the salon example')")
+  await owner.until("!!document.querySelector('#brief')")
   active = owner; recording = true; start = performance.now()
   await capture()
   timer = setInterval(() => { captureWork = capture() }, 85)
   phase('Create project from salon brief')
   await delay(2500)
-  await owner.click('Use the salon example')
+  for (const [id,value] of Object.entries({name:'Salon website',freelancerName:'Dimas',clientName:'Maya',brief:'We need a salon website with booking, two languages, and editable content.'})) {
+    await owner.evaluate(`(()=>{const el=document.getElementById(${JSON.stringify(id)});Object.getOwnPropertyDescriptor(el.tagName==='TEXTAREA'?HTMLTextAreaElement.prototype:HTMLInputElement.prototype,'value').set.call(el,${JSON.stringify(value)});el.dispatchEvent(new Event('input',{bubbles:true}))})()`)
+  }
   await delay(2500)
   await owner.click('Read the brief')
   await owner.until("document.body.textContent.includes('Lock questions & get links')")

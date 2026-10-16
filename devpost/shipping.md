@@ -205,3 +205,46 @@ The demo shows the working browser platform and a function end to end, uses
 English UI, and stays below three minutes. This does not complete public upload,
 participant eligibility declarations, required form/exit-survey fields or final
 Devpost submission. No upload or submission was performed.
+
+## 128-second demo with PDF and no example shortcut — 17 October 2026
+
+The learner requested a demo below 130 seconds to leave room for adding the
+separate intro/closing later, asked to show the PDF action/output, and removed
+the **Use the salon example** feature before recording.
+
+- Removed the example button and preset from `NewProjectPage`. E2E and the
+  earlier recording fixture now enter fields directly. Production frontend
+  build, TypeScript/architecture checks (33 files) and all 44 real-browser E2E
+  checks passed. Application boundaries, backend/API and database schema are
+  unchanged.
+- Re-recorded the initial form against that actual updated build. The demo does
+  not erase or cover up a button in old footage. The same fictional Ombak brief,
+  participant names and existing agreed v2 fixture are used throughout the cut.
+- Recorded a real click on **Print / Save as PDF**, the actual browser-produced
+  PDF and scrolling through it in Chrome's native PDF viewer. A separate Chrome
+  profile is configured to save directly as PDF. No `Page.printToPDF` substitute,
+  fake viewer, physical printer or native macOS save-dialog automation is used.
+  macOS Accessibility control was unavailable; Chrome's supported direct-PDF
+  configuration completed the recording without needing that permission.
+- The PDF fixture is a copy of the original disposable demo database, with the
+  owner capability renewed only in the copy. The original saved scope,
+  decisions and confirmation timestamps are preserved; the source database is
+  untouched. Private local capabilities remain ignored and were never printed.
+- PDFKit extracted and rendered both A4 pages of the saved PDF. Names, decisions,
+  acceptance criteria and confirmation records are present; app controls and
+  private source URLs are absent. Recorder cursor/click markers are hidden in
+  print media, and the final pages were visually inspected.
+- Current delivery: ignored
+  `artifacts/app-demo-128s/scopematch-demo-128s.mp4`, 128 seconds, 3,840 frames,
+  H.264 1920×1080 at 30 fps, no audio, intro or closing. Seventeen working-flow
+  phases retain both Markdown and PDF output. The PDF scene starts at 01:50.
+  Full decode, scene samples, PDF output, ZIP integrity and movie-byte equality
+  inside the ZIP passed.
+- English voice-over **text only** is retimed from 00:00: 227 words, maximum
+  scene pace 150 words/minute. Timed TXT, reading TXT and optional SRT accompany
+  the movie in `scopematch-demo-128s-pack.zip`. No voice audio was generated.
+- With the already separate 8-second intro and 6-second closing added later,
+  the combined duration would be 142 seconds (2:22). They were not attached to
+  this application-only demo. Current tooling entry point: `scripts/demo/compact.py`.
+
+No public video upload or final Devpost submission was performed.

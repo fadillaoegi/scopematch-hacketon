@@ -39,8 +39,13 @@ const contexts = []
 // mouse events, so hover effects in the app fire exactly as for a person.
 const cursorScript = touch => `(() => {
   const add = () => {
+    if (document.getElementById('__tester_cursor')) return
     const c = document.createElement('div')
     c.id = '__tester_cursor'
+    c.dataset.demoPointer = ''
+    const printStyle = document.createElement('style')
+    printStyle.textContent = '@media print{[data-demo-pointer],#__tester_cursor{display:none!important}}'
+    document.head.appendChild(printStyle)
     c.style.cssText = 'position:fixed;left:0;top:0;z-index:2147483647;pointer-events:none;will-change:transform;transform:translate(-100px,-100px)'
     c.innerHTML = ${JSON.stringify(touch
       ? '<div style="width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;background:rgba(27,26,23,.18);border:2px solid rgba(27,26,23,.55)"></div>'
@@ -49,6 +54,7 @@ const cursorScript = touch => `(() => {
     addEventListener('mousemove', e => { c.style.transform = 'translate(' + e.clientX + 'px,' + e.clientY + 'px)' }, true)
     addEventListener('mousedown', e => {
       const r = document.createElement('div')
+      r.dataset.demoPointer = ''
       r.style.cssText = 'position:fixed;z-index:2147483646;pointer-events:none;left:' + (e.clientX - 22) + 'px;top:' + (e.clientY - 22) + 'px;width:44px;height:44px;border-radius:50%;border:2px solid #d9472b;opacity:.9;transition:transform .45s ease-out,opacity .45s ease-out'
       document.documentElement.appendChild(r)
       requestAnimationFrame(() => { r.style.transform = 'scale(1.6)'; r.style.opacity = '0' })
@@ -58,14 +64,16 @@ const cursorScript = touch => `(() => {
   document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', add) : add()
 })()`
 
-async function person(name, { width, height, scale, touch }) {
-  const { browserContextId } = await send('Target.createBrowserContext'); contexts.push(browserContextId)
-  const { targetId } = await send('Target.createTarget', { url: 'about:blank', browserContextId })
+async function person(name, { width, height, scale, touch, target }) {
+  const { browserContextId } = target ?? await send('Target.createBrowserContext')
+  if (!target) contexts.push(browserContextId)
+  const { targetId } = target ?? await send('Target.createTarget', { url: 'about:blank', browserContextId })
   const { sessionId } = await send('Target.attachToTarget', { targetId, flatten: true })
   const call = (m, p = {}) => send(m, p, sessionId)
   await call('Runtime.enable'); await call('Page.enable')
   await call('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: scale, mobile: !!touch })
   await call('Page.addScriptToEvaluateOnNewDocument', { source: cursorScript(touch) })
+  if (target) await call('Runtime.evaluate', { expression: cursorScript(touch) })
   // Hide link values in footage; the links still work.
   await call('Page.addScriptToEvaluateOnNewDocument', { source: `document.addEventListener('DOMContentLoaded',()=>{const s=document.createElement('style');s.textContent='input[readonly],textarea[readonly],[data-secret]{filter:blur(6px)!important}';document.head.append(s)})` })
 
