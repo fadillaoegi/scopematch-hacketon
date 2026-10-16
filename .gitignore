@@ -23,3 +23,6 @@ dist/
 AGENTS.md
 CLAUDE.md
 THIRD_PARTY_NOTICES.md
+
+# Local motion-render tooling cache
+/scripts/motion/__pycache__/

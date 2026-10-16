@@ -115,3 +115,16 @@ The real-user test, learner-authored presentation/submission answers, public You
 ## Post-publication architecture revision
 
 The learner requested Clean Architecture as a permanent project convention. `AGENTS.md` and `CLAUDE.md` now carry that requirement. `docs/architecture.md` describes the application-owned transactional repository, persistence-neutral records, frontend gateway injection, and dependency checks. This is an internal refactor; the approved product scope, HTTP API, and SQLite schema are preserved. Existing demo footage remains representative of the same user-visible behavior.
+
+## Original motion bookends — 16 October 2026
+
+At the learner's explicit request, created an original 3D intro and closing with synchronized sound for the demo. These use the existing project name, in-app phrases, paper palette, and two ink colors. They contain no new narration or submission answers.
+
+- Intro: 8 seconds; sealed blue/red paper cards arrive at different depths, turn to reveal different answers, then settle with the ScopeMatch wordmark.
+- Closing: 6 seconds; a layered scope document turns into view, a dimensional stamp lands at 2.35 seconds, and AGREED resolves before fade-out.
+- Original sound is synthesized from oscillators and noise: paper movement, stereo whooshes, harmonic notes, low tonal bed, and stamp impact. No stock media or music samples used. Encoded audio measured −18.1 LUFS / −6.2 dBTP (intro), and −18.2 LUFS / −1.5 dBTP (closing).
+- Both MP4s verified as 1920×1080, 30 fps H.264, with 48 kHz stereo AAC. Separate 24-bit WAV sound masters and a 14-second bookend preview are available. Key frames/contact sheets and encoded media were inspected.
+- Ignored outputs: `artifacts/motion/scopematch-intro.mp4`, `scopematch-closing.mp4`, `bookends-preview.mp4`, and `scopematch-motion-pack.zip`. Source and reproduction instructions: `scripts/motion/`.
+- Also created `artifacts/motion/demo-with-bookends.mp4` from the existing silent split-screen demo: 169.57 seconds total. That assembly includes the 155.57-second source demo plus the 14 seconds of bookends, preserves the source, and leaves the demo's middle section silent. It does not include the separate Gemini scene or narration. The earlier approximate 2:30 description of the split-screen is superseded by its measured 155.57-second duration.
+
+No upload or submission performed. Real-user testing, learner-authored presentation/submission material, and the public video link remain pending.

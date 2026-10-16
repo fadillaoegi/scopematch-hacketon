@@ -170,6 +170,10 @@ Projects and all agreement records live in the SQLite file on the server. The Pr
 
 The proof of concept is one freelancer and one client per project, with no accounts, chat, notifications, payments, or editing an agreed scope. Final user review and submission preparation are tracked separately in `devpost/checklist.md`.
 
+## Video motion assets
+
+[Motion tooling](scripts/motion/README.md) renders an original 8-second 3D intro and 6-second closing with synchronized stereo sound. It uses the app's paper/two-ink identity and existing text. Rendered MP4s, separate WAV sound masters, and previews stay under ignored `artifacts/motion/`; no app data or API keys are used.
+
 ## License
 
 Project code is available under the [MIT License](LICENSE). Dependencies and fonts retain their own licenses. See [third-party notices](THIRD_PARTY_NOTICES.md) for the copied Devpost Learn Skill Pack.
