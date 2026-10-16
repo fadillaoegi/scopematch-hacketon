@@ -49,7 +49,7 @@ async function page(width, height, mobile = false, scale = 1) {
   await call('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: scale, mobile })
   // Redact link values before their first rendered frame. The link buttons and
   // real access-control behavior remain intact; only demo URLs are concealed.
-  await call('Page.addScriptToEvaluateOnNewDocument', { source: `document.addEventListener('DOMContentLoaded',()=>{const s=document.createElement('style');s.textContent='input[readonly]{color:transparent!important;text-shadow:none!important}';document.head.append(s)})` })
+  await call('Page.addScriptToEvaluateOnNewDocument', { source: `document.addEventListener('DOMContentLoaded',()=>{const s=document.createElement('style');s.textContent='input[readonly],[data-secret]{color:transparent!important;text-shadow:none!important}';document.head.append(s)})` })
   async function evaluate(expression) {
     const r = await call('Runtime.evaluate', { expression, awaitPromise: true, returnByValue: true })
     if (r.exceptionDetails) throw Error(JSON.stringify(r.exceptionDetails))
@@ -145,8 +145,11 @@ try {
   const [ownerURL, clientURL] = await owner.evaluate("[...document.querySelectorAll('input[readonly]')].map(i=>i.value)")
   const ownerToken = new URL(ownerURL).pathname.split('/').pop()
   await client.call('Page.navigate', { url: clientURL })
+  await client.until("document.body.textContent.includes('Before work starts')")
+  await delay(3500)
+  await client.click('Start answering')
   await client.until("document.body.textContent.includes('What do you have in mind?')")
-  await delay(2500)
+  await delay(1500)
   await owner.click('Answer the questions')
   phase('Freelancer chooses A and seals')
   await owner.choose('booking', 'a')

@@ -146,5 +146,289 @@
         "acceptanceCriteria": ["Every page has freelancer-written text and licensed stock photos"]
       }
     ]
+  },
+  {
+    "id": "payments",
+    "number": 5,
+    "title": "Payments",
+    "question": "How should customers pay?",
+    "keywords": [
+      "online payments",
+      "online payment",
+      "payments",
+      "payment",
+      "checkout",
+      "pay",
+      "paid",
+      "transfer"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "label": "No online payment — pay in person or by bank transfer",
+        "included": [
+          "Payment instructions shown on the website (bank details or pay on site)"
+        ],
+        "excluded": [
+          "Taking payments on the website",
+          "Payment gateway setup"
+        ],
+        "clientResponsibilities": [
+          "Check incoming transfers and confirm orders manually"
+        ],
+        "acceptanceCriteria": [
+          "The website shows clear payment instructions",
+          "No card or e-wallet payment is taken on the website"
+        ]
+      },
+      {
+        "id": "b",
+        "label": "Send a payment link after the order",
+        "included": [
+          "An order or request form",
+          "A payment link (for example QRIS or a hosted payment page) sent to the customer afterwards"
+        ],
+        "excluded": [
+          "Checkout with saved carts or automatic order totals on the website"
+        ],
+        "clientResponsibilities": [
+          "Own the payment provider account",
+          "Send payment links and mark orders as paid"
+        ],
+        "acceptanceCriteria": [
+          "Customers can submit an order without paying immediately",
+          "Each order can be marked Paid once the link is paid"
+        ]
+      },
+      {
+        "id": "c",
+        "label": "Full online checkout on the website",
+        "included": [
+          "Cart and checkout pages",
+          "Payment gateway integration with automatic order confirmation"
+        ],
+        "excluded": [
+          "Refund and dispute handling inside the website"
+        ],
+        "clientResponsibilities": [
+          "Open and verify the payment gateway account",
+          "Handle refunds through the provider"
+        ],
+        "acceptanceCriteria": [
+          "Customers can pay by card or e-wallet at checkout",
+          "A successful payment marks the order Paid automatically",
+          "A failed payment leaves the order unpaid with a clear message"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "delivery",
+    "number": 6,
+    "title": "Delivery",
+    "question": "How do orders reach customers?",
+    "keywords": [
+      "shipping",
+      "ship",
+      "delivery",
+      "deliver",
+      "courier",
+      "pickup",
+      "pick up"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "label": "Pickup only, or the customer arranges a courier",
+        "included": [
+          "Pickup address and opening hours on the website"
+        ],
+        "excluded": [
+          "Shipping fees, courier booking, and tracking on the website"
+        ],
+        "clientResponsibilities": [
+          "Prepare orders for pickup and tell customers when they are ready"
+        ],
+        "acceptanceCriteria": [
+          "The website explains how and where to pick up orders"
+        ]
+      },
+      {
+        "id": "b",
+        "label": "Fixed shipping fee; the business ships manually",
+        "included": [
+          "A fixed shipping fee or simple zone table added to orders"
+        ],
+        "excluded": [
+          "Live courier rates",
+          "Automatic tracking updates"
+        ],
+        "clientResponsibilities": [
+          "Book couriers and send tracking numbers to customers"
+        ],
+        "acceptanceCriteria": [
+          "Orders show the agreed shipping fee before payment",
+          "The business can add a tracking number to an order"
+        ]
+      },
+      {
+        "id": "c",
+        "label": "Live courier rates and tracking on the website",
+        "included": [
+          "Courier rate lookup by address",
+          "Shipment booking and tracking status on the website"
+        ],
+        "excluded": [
+          "Returns handling"
+        ],
+        "clientResponsibilities": [
+          "Open and fund courier accounts",
+          "Keep product weights and sizes up to date"
+        ],
+        "acceptanceCriteria": [
+          "Customers see courier options and prices for their address",
+          "Each shipped order shows its tracking status"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "contact",
+    "number": 7,
+    "title": "Contact",
+    "question": "What happens when someone wants to contact the business from the website?",
+    "keywords": [
+      "contact form",
+      "contact us",
+      "contact",
+      "enquiries",
+      "enquiry",
+      "inquiries",
+      "inquiry",
+      "messages",
+      "message"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "label": "Show contact details only",
+        "included": [
+          "Phone, WhatsApp, email, and map shown on the website"
+        ],
+        "excluded": [
+          "Forms that send messages from the website"
+        ],
+        "clientResponsibilities": [
+          "Provide correct contact details and keep them current"
+        ],
+        "acceptanceCriteria": [
+          "Contact details appear on every page footer and the contact page"
+        ]
+      },
+      {
+        "id": "b",
+        "label": "A contact form that emails the business",
+        "included": [
+          "A contact form with name, email, and message",
+          "Spam protection on the form"
+        ],
+        "excluded": [
+          "Storing or tracking messages on the website"
+        ],
+        "clientResponsibilities": [
+          "Provide the email address that receives messages and reply to them"
+        ],
+        "acceptanceCriteria": [
+          "Sending the form delivers an email to the business",
+          "The visitor sees a confirmation after sending"
+        ]
+      },
+      {
+        "id": "c",
+        "label": "A contact form plus a simple inbox to track replies",
+        "included": [
+          "A contact form",
+          "A staff inbox listing messages with New and Replied status"
+        ],
+        "excluded": [
+          "Live chat"
+        ],
+        "clientResponsibilities": [
+          "Check the inbox and mark messages as replied"
+        ],
+        "acceptanceCriteria": [
+          "Each sent form appears in the inbox as New",
+          "Staff can mark a message Replied"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "hosting",
+    "number": 8,
+    "title": "Domain and hosting",
+    "question": "Who owns and pays for the domain and hosting?",
+    "keywords": [
+      "domain name",
+      "domain",
+      "hosting",
+      "hosted",
+      "host",
+      "server",
+      "website address"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "label": "The client buys and owns both; the freelancer sets them up",
+        "included": [
+          "Setting up the client's domain and hosting accounts"
+        ],
+        "excluded": [
+          "Paying for the domain or hosting"
+        ],
+        "clientResponsibilities": [
+          "Buy and renew the domain and hosting in their own name"
+        ],
+        "acceptanceCriteria": [
+          "The site runs on hosting and a domain registered to the client"
+        ]
+      },
+      {
+        "id": "b",
+        "label": "The freelancer hosts for a monthly fee; the client owns the domain",
+        "included": [
+          "Hosting and maintenance by the freelancer for an agreed monthly fee"
+        ],
+        "excluded": [
+          "Domain purchase or renewal"
+        ],
+        "clientResponsibilities": [
+          "Own and renew the domain",
+          "Pay the monthly hosting fee"
+        ],
+        "acceptanceCriteria": [
+          "The domain is registered to the client",
+          "Hosting terms and fee are written in this scope"
+        ]
+      },
+      {
+        "id": "c",
+        "label": "The freelancer provides both for the first year, then hands them over",
+        "included": [
+          "Domain and hosting for the first year",
+          "A handover of both accounts after one year"
+        ],
+        "excluded": [
+          "Hosting or domain costs after the first year"
+        ],
+        "clientResponsibilities": [
+          "Take over and renew both accounts after the first year"
+        ],
+        "acceptanceCriteria": [
+          "Both accounts can be transferred to the client after one year"
+        ]
+      }
+    ]
   }
 ]

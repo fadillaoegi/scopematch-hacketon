@@ -3,6 +3,7 @@ import { useParams } from 'react-router'
 import { useProjectGateway } from '../lib/gateway'
 import type { Role } from '../domain/models'
 import { AnswerFlow } from '../components/AnswerFlow'
+import { AiSuggest } from '../components/AiSuggest'
 import { BriefLink } from '../components/BriefLink'
 import { BriefPanel } from '../components/BriefPanel'
 import { CardPicker } from '../components/CardPicker'
@@ -90,7 +91,9 @@ function Workspace({ token, role }: { token: string; role: Role }) {
     finally { setSaving(false) }
   }
 
-  const marks = session.cards.filter(c => c.match).map(c => ({ match: c.match!, number: library.get(c.id)?.number ?? 0 }))
+  // Curated library plus this project's own (AI-suggested, accepted) cards.
+  const allCards = new Map([...library, ...(session.customCards ?? []).map(c => [c.id, c] as const)])
+  const marks = session.cards.filter(c => c.match).map(c => ({ match: c.match!, number: allCards.get(c.id)?.number ?? 0 }))
   return <>
     <Masthead home={role === 'owner'} meta={<><span>{role === 'owner' ? 'Freelancer view' : 'Client view'}</span><span aria-live="polite">{saving ? 'Saving…' : project.locked ? 'Questions locked' : 'Saved'}</span></>} />
     <main className={styles.page}>
@@ -107,12 +110,12 @@ function Workspace({ token, role }: { token: string; role: Role }) {
       </nav>
       {(error || connectionError) && <p role="alert" className={styles.error}>{error || connectionError}</p>}
       {currentTab === 'setup' && <>
-        {clientToken && <LinksPanel token={token} clientToken={clientToken} />}
+        {clientToken && <LinksPanel token={token} clientToken={clientToken} session={session} />}
         <div className={styles.setup} ref={setupRef}>
           <BriefLink container={setupRef} activeCardId={active} />
           <div className={styles.briefCol}><BriefPanel brief={project.brief} marks={marks} activeCardId={active} onActivate={setActive} /></div>
           <div className={styles.cardsCol}>
-            <CardPicker library={library} selected={session.cards} matches={matches} activeCardId={active} onActivate={setActive} onToggle={toggle} disabled={project.locked || saving} />
+            <CardPicker library={allCards} selected={session.cards} matches={matches} activeCardId={active} onActivate={setActive} onToggle={toggle} disabled={project.locked || saving} afterSelected={role === 'owner' && !project.locked && session.aiSuggestions ? <AiSuggest token={token} onAdded={setSession} /> : null} />
             <div className={styles.actions}>
               {project.locked ? <button className="btn" onClick={() => setTab('answer')}>Answer the questions →</button> : <><p>Locking fixes these questions for both of you.</p><button className="btn" disabled={saving || !session.cards.length} onClick={() => void lock()}>{saving ? 'Locking…' : 'Lock questions & get links'}</button></>}
             </div>
@@ -120,10 +123,10 @@ function Workspace({ token, role }: { token: string; role: Role }) {
         </div>
       </>}
       {currentTab === 'answer' && <>
-        {role === 'owner' && clientToken && <details className={styles.links}><summary>Project links · keep yours, share the client's</summary><LinksPanel token={token} clientToken={clientToken} /></details>}
-        <AnswerFlow token={token} session={session} library={library} onUpdate={setSession} />
+        {role === 'owner' && clientToken && <details className={styles.links}><summary>Project links · keep yours, share the client's</summary><LinksPanel token={token} clientToken={clientToken} session={session} /></details>}
+        <AnswerFlow token={token} session={session} library={allCards} onUpdate={setSession} />
       </>}
-      {currentTab === 'compare' && compareReady && <CompareBoard token={token} session={session} library={library} onUpdate={setSession} onScope={() => setTab('scope')} />}
+      {currentTab === 'compare' && compareReady && <CompareBoard token={token} session={session} library={allCards} onUpdate={setSession} onScope={() => setTab('scope')} />}
       {currentTab === 'scope' && scopeReady && <ScopeDocument token={token} session={session} onUpdate={setSession} />}
     </main>
   </>

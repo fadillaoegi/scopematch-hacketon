@@ -33,6 +33,25 @@ func ActiveProposals(ctx context.Context, q Q, pid string) ([]domain.Proposal, e
 	}
 	return out, rows.Err()
 }
+
+// ReplacedProposals returns proposals that a later proposal replaced, oldest
+// first, so the negotiation behind each decision can be shown.
+func ReplacedProposals(ctx context.Context, q Q, pid string) ([]domain.Proposal, error) {
+	rows, err := q.QueryContext(ctx, `SELECT `+proposalColumns+` FROM proposals WHERE project_id=? AND active=0 ORDER BY created_at,id`, pid)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	out := []domain.Proposal{}
+	for rows.Next() {
+		p, err := scanProposal(rows)
+		if err != nil {
+			return nil, err
+		}
+		out = append(out, p)
+	}
+	return out, rows.Err()
+}
 func GetActiveProposal(ctx context.Context, q Q, pid, id string) (domain.Proposal, error) {
 	return scanProposal(q.QueryRowContext(ctx, `SELECT `+proposalColumns+` FROM proposals WHERE project_id=? AND id=? AND active=1`, pid, id))
 }

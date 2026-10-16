@@ -2,7 +2,15 @@
 
 Two people read the same brief. They rarely picture the same thing.
 
-ScopeMatch helps a freelancer and a small-business client answer the same scope questions independently, reveal differences, and confirm one exportable scope before work starts. The proof of concept uses four curated scenarios: booking, languages, editable content, and launch content.
+ScopeMatch helps a freelancer and a small-business client answer the same scope questions independently, reveal differences, and confirm one exportable scope before work starts. The proof of concept uses eight curated scenarios: booking, languages, editable content, launch content, payments, delivery, contact, and domain and hosting. The salon demo brief matches the first four.
+
+![Compare: both answers revealed side by side. The booking question is marked "≠ Different answers", with what the customer would see for each choice.](docs/screenshots/compare.png)
+
+| Where each question came from | One saved version, confirmed by both |
+|---|---|
+| ![Setup: an ink line links the word "booking" in the brief to the Booking question.](docs/screenshots/setup.png) | ![Agreed scope with the AGREED stamp and a five-stage progress rail.](docs/screenshots/agreed.png) |
+
+Screenshots come from the automated two-role browser test below, using the sample salon brief.
 
 ## What works
 
@@ -14,7 +22,7 @@ ScopeMatch helps a freelancer and a small-business client answer the same scope 
 - Edit the assembled scope, send a saved version, and confirm that exact version with names and timestamps.
 - Stamp the scope **AGREED**, lock changes, and download the stored version as Markdown.
 
-Confirmation records are labelled **recorded, not identity-verified**. Booking previews contain sample data; they do not make reservations. Brief matching uses a fixed library, with no runtime AI service or API key.
+Confirmation records are labelled **recorded, not identity-verified**. Booking previews contain sample data; they do not make reservations. Brief matching uses a fixed library and needs no API key. Optional Gemini suggestions are described below.
 
 ## Run locally
 
@@ -72,6 +80,24 @@ Flags: `-addr :8080`, `-db data/scopematch.db`, `-static <built-directory>`, and
 
 The reveal plays once per private link in a browser. Use a fresh private window/project to replay it. Reduced-motion settings replace the flip and stamp motion with fades. Try `/c/not-a-valid-token` to see the invalid-link page.
 
+## Optional: AI question suggestions (Gemini)
+
+The curated library covers common small-business questions. For briefs it doesn't cover, the freelancer can ask Gemini to **draft** up to three extra questions on the setup screen. Each option has expandable scope details so its included/excluded work, client responsibilities, and acceptance criteria can be reviewed before Add. AI only suggests: each draft is reviewed and added or discarded by the freelancer, re-validated by the server, and labelled as AI-suggested. It never answers, decides, or approves anything, and the rest of the app works without it.
+
+To enable it, create `scopematch_BE/.env` (gitignored; see `.env.example`):
+
+```sh
+GEMINI_API_KEY=your-key-from-ai-studio
+# optional: models to try in order, comma-separated
+GEMINI_MODEL=
+```
+
+When a model answers "rate limited" (per-minute or daily free-tier quota) or "not available", the server skips it for a while and tries the next one. The configured default order is `gemini-3.5-flash-lite`, `gemini-3.1-flash-lite`, `gemini-3.8-flash`, `gemini-3.6-flash`, `gemini-3-flash-preview`. Availability and quotas vary by account; override the order with `GEMINI_MODEL` if necessary.
+
+Restart the server; it logs `AI question suggestions: on` with the fallback order. Pressing the button sends the brief text to Google Gemini; on Gemini's free tier Google may use it to improve its products, and the screen says so before anything is sent.
+
+With the built server and isolated Chrome already running, `node scripts/record-ai.mjs` captures a real AI request, option review, discard, Add, and persistence after reload. Set `SCOPEMATCH_DEMO_ORIGIN` for a non-default port. It uses a disposable bakery brief and the server's configured provider, without reading the key; silent supplementary footage and capture metadata go to ignored `artifacts/ai-demo/`. Provider failures stop the recording. This is automated footage, not user research or a complete submission video.
+
 ## Use a phone
 
 With the laptop and phone on the same Wi-Fi, use the laptop's LAN address instead of `localhost` in the client link. For the development server, Vite prints its network address when started with `--host`. The built Go server listens on all interfaces by default. Keep the port and `/c/<token>` path when replacing the address.
@@ -96,6 +122,29 @@ go vet ./...
 cd scopematch_FE
 npm run build
 ```
+
+### Two-role browser test
+
+`scripts/e2e.mjs` drives real Chrome with two isolated sessions — the freelancer on a 1440px desktop and the client on a 390px phone — through the whole salon journey: validation, card selection, lock, sealed answers, reveal, counter-proposals, same-answer confirmations, a revised scope version, AGREED, and identical exports from both sides. From the client page it also probes access rules (owner-only routes, tampered token, outdated version, writes after agreement). Every screen is checked for horizontal overflow and runtime errors; the script exits non-zero on any failure.
+
+```sh
+# Terminal 1: built app on :8080
+cd scopematch_FE && npm run build
+cd ../scopematch_BE && go run ./cmd/server -static ../scopematch_FE/dist -db data/e2e.db
+```
+
+```sh
+# Terminal 2: separate headless Chrome profile (macOS path shown)
+"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --disable-gpu \
+  --no-first-run --user-data-dir=/private/tmp/scopematch-e2e-browser --remote-debugging-port=9223 about:blank
+```
+
+```sh
+# Terminal 3, from the repository root (Node 24)
+node scripts/e2e.mjs
+```
+
+Screenshots and the exported Markdown are written to the ignored `artifacts/e2e/` folder. Override with `SCOPEMATCH_E2E_ORIGIN`, `SCOPEMATCH_CDP_ORIGIN`, or `SCOPEMATCH_E2E_OUTPUT`.
 
 Backend tests exercise token/role isolation, the server-side reveal gate, all 25 answer-pair statuses, proposal replacement, two-party decisions, version resets, stale-decision rejection, concurrent confirmations, immutable agreed exports, validation, and static serving.
 

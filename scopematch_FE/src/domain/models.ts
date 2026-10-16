@@ -25,6 +25,8 @@ export interface Card {
   question: string
   keywords: string[]
   alwaysSuggest?: boolean
+  /** 'ai' for a project-specific card suggested by AI and accepted by the freelancer. */
+  source?: 'ai'
   options: Option[]
 }
 
@@ -65,6 +67,8 @@ export interface Session {
   }
   cards: CardRef[]
   matches: Match[]
+  customCards: Card[]
+  aiSuggestions?: boolean
   me: Party
   other: Party
   scope?: ScopeState
@@ -77,7 +81,7 @@ export interface Proposal {
   id: string; cardId: string; proposedBy: Role | 'system'; optionId: string; customText?: string; why?: string
   ownerConfirmedAt?: string; clientConfirmedAt?: string; createdAt: string
 }
-export interface Comparison { cardId: string; status: CompareStatus; proposal?: Proposal }
+export interface Comparison { cardId: string; status: CompareStatus; proposal?: Proposal; history?: Proposal[] }
 export interface ProposalInput { optionId: string; customText?: string; why?: string }
 
 export interface Summary {

@@ -38,3 +38,15 @@
 .waiting { border-style: dashed; border-width: 2px; }
 .sealGap { width: 3rem; height: 2px; background: repeating-linear-gradient(90deg, var(--ink-faint) 0 5px, transparent 5px 9px); }
 @media (max-width: 420px) { .sealDisc { width: 7rem; height: 7rem; } .sealGap { width: 1.5rem; } }
+
+/* Client welcome */
+.welcome { max-width: 720px; margin: 0 auto; display: grid; gap: 1.25rem; padding: 1rem 0 2rem; }
+.welcome h2 { font-size: clamp(2rem, 1.3rem + 2.6vw, 3.4rem); line-height: 1.02; letter-spacing: -.025em; font-variation-settings: 'opsz' 144, 'SOFT' 60; }
+.welcomeLede { font-size: var(--step-1); color: var(--ink-soft); max-width: 52ch; }
+.welcomeLede strong { color: var(--ink); font-weight: 600; }
+.welcomeSteps { list-style: none; margin: .5rem 0 0; padding: 0; display: grid; gap: .75rem; }
+.welcomeSteps li { display: grid; grid-template-columns: auto 1fr; gap: 1rem; align-items: start; padding: 1rem 1.1rem; background: var(--paper-card); border: 1px solid var(--rule); border-left: 3px solid var(--ink-client); border-radius: var(--radius); }
+.welcomeSteps li > span:last-child { display: grid; gap: .2rem; }
+.welcomeSteps li > span:last-child span { color: var(--ink-soft); font-size: var(--step--1); }
+.welcomeNum { width: 1.9rem; height: 1.9rem; border-radius: 50%; display: grid; place-items: center; border: 1.5px solid var(--ink-client); color: var(--ink-client); font-family: var(--font-mono); font-weight: 600; font-size: .85rem; }
+.welcomeActions { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.5rem; margin-top: .5rem; }

@@ -15,6 +15,9 @@ type Comparison struct {
 	CardID   string           `json:"cardId"`
 	Status   string           `json:"status"`
 	Proposal *domain.Proposal `json:"proposal,omitempty"`
+	// History lists earlier proposals for this card that were replaced,
+	// oldest first. Only present once Compare is open, like Proposal.
+	History []domain.Proposal `json:"history,omitempty"`
 }
 
 type Counts struct {

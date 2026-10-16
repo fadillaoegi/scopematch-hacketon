@@ -65,3 +65,34 @@ func TestSharedAnswerNeedsTwoConfirmations(t *testing.T) {
 		t.Fatal("both confirmations did not decide")
 	}
 }
+
+func history(s map[string]any) []map[string]any {
+	raw, _ := s["compare"].([]any)[0].(map[string]any)["history"].([]any)
+	out := make([]map[string]any, len(raw))
+	for i, h := range raw {
+		out[i] = h.(map[string]any)
+	}
+	return out
+}
+
+func TestProposalHistoryShowsTheNegotiation(t *testing.T) {
+	c := newClient(t)
+	owner, invite := c.revealed("a", "c")
+	if s := c.expect("GET", "/api/session", owner, nil, 200); len(history(s)) != 0 {
+		t.Fatal("history before any proposal")
+	}
+	c.expect("POST", "/api/cards/booking/proposals", owner, map[string]string{"optionId": "a", "why": "Cheapest to build"}, 200)
+	c.expect("POST", "/api/cards/booking/proposals", invite, map[string]string{"optionId": "c", "why": "Tourists book at night"}, 200)
+	s := c.expect("POST", "/api/cards/booking/proposals", owner, map[string]string{"optionId": "b", "why": "Staff confirm each slot"}, 200)
+	// Both parties see the same history: the two replaced proposals, oldest first.
+	for _, token := range []string{owner, invite} {
+		h := history(c.expect("GET", "/api/session", token, nil, 200))
+		if len(h) != 2 || h[0]["proposedBy"] != "owner" || h[0]["optionId"] != "a" || h[0]["why"] != "Cheapest to build" ||
+			h[1]["proposedBy"] != "client" || h[1]["optionId"] != "c" || h[1]["why"] != "Tourists book at night" {
+			t.Fatalf("history = %v", h)
+		}
+	}
+	if proposal(s)["optionId"] != "b" {
+		t.Fatal("active proposal must not appear twice")
+	}
+}

@@ -33,6 +33,8 @@ func New(svc *scope.Service, staticDir string) http.Handler {
 	s.mux.HandleFunc("GET /api/library", s.getLibrary)
 	s.mux.HandleFunc("GET /api/session", s.authed(s.getSession))
 	s.mux.HandleFunc("PUT /api/project/cards", s.authed(s.putCards))
+	s.mux.HandleFunc("POST /api/project/suggestions", s.authed(s.suggestCards))
+	s.mux.HandleFunc("POST /api/project/custom-cards", s.authed(s.addCustomCard))
 	s.mux.HandleFunc("POST /api/project/lock", s.authed(s.lockProject))
 	s.mux.HandleFunc("PUT /api/answers", s.authed(s.putAnswers))
 	s.mux.HandleFunc("POST /api/answers/submit", s.authed(s.submitAnswers))
@@ -71,6 +73,31 @@ func (s *Server) getLibrary(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) getSession(w http.ResponseWriter, r *http.Request, a scope.Actor) {
+	s.respondSession(w, r, a)
+}
+
+// suggestCards returns AI-drafted questions for the freelancer to review.
+// Nothing is stored; the request body is empty.
+func (s *Server) suggestCards(w http.ResponseWriter, r *http.Request, a scope.Actor) {
+	cards, err := s.svc.SuggestCards(r.Context(), a)
+	if err != nil {
+		s.fail(w, err)
+		return
+	}
+	writeJSON(w, http.StatusOK, map[string]any{"suggestions": cards})
+}
+
+func (s *Server) addCustomCard(w http.ResponseWriter, r *http.Request, a scope.Actor) {
+	var in struct {
+		Card library.Card `json:"card"`
+	}
+	if !readJSON(w, r, &in) {
+		return
+	}
+	if err := s.svc.AddCustomCard(r.Context(), a, in.Card); err != nil {
+		s.fail(w, err)
+		return
+	}
 	s.respondSession(w, r, a)
 }
 
@@ -134,10 +161,13 @@ func (s *Server) fail(w http.ResponseWriter, err error) {
 	var e *scope.Error
 	if errors.As(err, &e) {
 		status := map[scope.Kind]int{
-			scope.Invalid:   http.StatusUnprocessableEntity,
-			scope.Conflict:  http.StatusConflict,
-			scope.NotFound:  http.StatusNotFound,
-			scope.Forbidden: http.StatusForbidden,
+			scope.Invalid:     http.StatusUnprocessableEntity,
+			scope.Conflict:    http.StatusConflict,
+			scope.NotFound:    http.StatusNotFound,
+			scope.Forbidden:   http.StatusForbidden,
+			scope.Unavailable: http.StatusServiceUnavailable,
+			scope.Upstream:    http.StatusBadGateway,
+			scope.TooMany:     http.StatusTooManyRequests,
 		}[e.Kind]
 		writeError(w, status, e.Code, e.Fields)
 		return

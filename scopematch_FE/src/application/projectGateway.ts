@@ -6,6 +6,8 @@ export interface ProjectGateway {
   library(): Promise<{ cards: Card[] }>
   session(token: string): Promise<Session>
   setCards(token: string, ids: string[]): Promise<Session>
+  suggestCards(token: string): Promise<{ suggestions: Card[] }>
+  addCustomCard(token: string, card: Card): Promise<Session>
   lock(token: string): Promise<{ clientToken: string }>
   saveAnswers(token: string, answers: Answer[]): Promise<Session>
   submitAnswers(token: string): Promise<Session>

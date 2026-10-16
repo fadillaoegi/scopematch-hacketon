@@ -7,10 +7,13 @@ import "fmt"
 type Kind int
 
 const (
-	Invalid   Kind = iota // input failed validation (422)
-	Conflict              // action not allowed in the current state (409)
-	NotFound              // no such thing for this project (404)
-	Forbidden             // role may not do this (403)
+	Invalid     Kind = iota // input failed validation (422)
+	Conflict                // action not allowed in the current state (409)
+	NotFound                // no such thing for this project (404)
+	Forbidden               // role may not do this (403)
+	Unavailable             // an optional feature is not configured (503)
+	Upstream                // an external service failed (502)
+	TooMany                 // a usage limit was reached (429)
 )
 
 // Error is a rule violation the API reports to the user as-is.
@@ -31,3 +34,9 @@ func conflict(code string) error { return &Error{Kind: Conflict, Code: code} }
 func notFound(code string) error { return &Error{Kind: NotFound, Code: code} }
 
 func forbidden(code string) error { return &Error{Kind: Forbidden, Code: code} }
+
+func unavailable(code string) error { return &Error{Kind: Unavailable, Code: code} }
+
+func upstream(code string) error { return &Error{Kind: Upstream, Code: code} }
+
+func tooMany(code string) error { return &Error{Kind: TooMany, Code: code} }

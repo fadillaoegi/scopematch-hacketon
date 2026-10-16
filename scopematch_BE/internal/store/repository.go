@@ -55,6 +55,15 @@ func (r *repository) SaveAnswer(ctx context.Context, pid, role string, a domain.
 func (r *repository) ActiveProposals(ctx context.Context, pid string) ([]domain.Proposal, error) {
 	return ActiveProposals(ctx, r.q, pid)
 }
+func (r *repository) ReplacedProposals(ctx context.Context, pid string) ([]domain.Proposal, error) {
+	return ReplacedProposals(ctx, r.q, pid)
+}
+func (r *repository) CustomCards(ctx context.Context, pid string) ([]domain.CustomCardRecord, error) {
+	return CustomCards(ctx, r.q, pid)
+}
+func (r *repository) InsertCustomCard(ctx context.Context, pid string, c domain.CustomCardRecord) error {
+	return InsertCustomCard(ctx, r.q, pid, c)
+}
 func (r *repository) GetActiveProposal(ctx context.Context, pid, id string) (domain.Proposal, error) {
 	return GetActiveProposal(ctx, r.q, pid, id)
 }

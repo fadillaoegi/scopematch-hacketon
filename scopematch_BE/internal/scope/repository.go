@@ -18,6 +18,8 @@ type Repository interface {
 	GetProject(context.Context, string) (domain.Project, error)
 	InsertToken(context.Context, string, string, string) error
 	ListCards(context.Context, string) ([]string, error)
+	CustomCards(context.Context, string) ([]domain.CustomCardRecord, error)
+	InsertCustomCard(context.Context, string, domain.CustomCardRecord) error
 	ReplaceCards(context.Context, string, []string) error
 	LockProject(context.Context, string, string) error
 	Answers(context.Context, string, string) ([]domain.Answer, error)
@@ -25,6 +27,7 @@ type Repository interface {
 	SaveAnswer(context.Context, string, string, domain.Answer) error
 	SealAnswers(context.Context, string, string, string) error
 	ActiveProposals(context.Context, string) ([]domain.Proposal, error)
+	ReplacedProposals(context.Context, string) ([]domain.Proposal, error)
 	GetActiveProposal(context.Context, string, string) (domain.Proposal, error)
 	InsertProposal(context.Context, string, domain.Proposal) error
 	DeactivateProposals(context.Context, string, string) error

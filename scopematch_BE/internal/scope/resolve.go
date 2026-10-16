@@ -71,7 +71,11 @@ func (s *Service) Propose(ctx context.Context, a Actor, cardID string, in Propos
 				selected = true
 			}
 		}
-		card, ok := library.Get(cardID)
+		set, _, err := projectCards(ctx, q, a.ProjectID)
+		if err != nil {
+			return err
+		}
+		card, ok := set.get(cardID)
 		if !ok || !selected {
 			return notFound("card_not_found")
 		}

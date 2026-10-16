@@ -11,11 +11,13 @@ interface Props {
   onActivate: (cardId: string | null) => void
   onToggle: (cardId: string, include: boolean) => void
   disabled?: boolean
+  /** Rendered right after the selected questions, before the unused library. */
+  afterSelected?: React.ReactNode
 }
 
 const LETTERS = 'ABCDEFGH'
 
-export function CardPicker({ library, selected, matches, activeCardId, onActivate, onToggle, disabled }: Props) {
+export function CardPicker({ library, selected, matches, activeCardId, onActivate, onToggle, disabled, afterSelected }: Props) {
   const selectedIds = new Set(selected.map((c) => c.id))
   const chosen = selected.map((c) => library.get(c.id)).filter((c): c is Card => !!c)
   const rest = [...library.values()].filter((c) => !selectedIds.has(c.id))
@@ -60,6 +62,8 @@ export function CardPicker({ library, selected, matches, activeCardId, onActivat
             <>
               <span className="meta">From the brief</span> <Excerpt match={match} />
             </>
+          ) : card.source === 'ai' ? (
+            <span className="meta">Suggested by AI · added by you</span>
           ) : card.alwaysSuggest ? (
             <span className="meta">Always worth asking</span>
           ) : (
@@ -95,6 +99,7 @@ export function CardPicker({ library, selected, matches, activeCardId, onActivat
       </div>
       <LayoutGroup>
         <ul className={styles.list}>{chosen.map((c) => renderCard(c, true))}</ul>
+        {afterSelected}
         {rest.length > 0 && (
           <>
             <motion.p layout className={`meta ${styles.divider}`}>

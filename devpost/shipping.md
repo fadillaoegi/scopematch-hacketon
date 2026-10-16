@@ -34,6 +34,8 @@ Ignored local folder: `artifacts/demo/`.
 - `recording.json`: recorded stages and timing; local capture metadata, not public submission text.
 - `contact-sheet.jpg`: sampled frames used for visual inspection.
 
+Two-role footage (16 Oct): `artifacts/footage/freelancer-laptop.mp4` (1920×1080) and `client-phone.mp4` (1080×1920), 5:00 each on one clock, recorded by `scripts/record-roles.mjs` with a visible cursor/touch dot and character-by-character typing (Ombak scenario). `scopematch-split-2x.mp4` places both side by side at 2× speed, 2:30, silent, labelled as a synthetic session. Candidate for the submission video once the learner adds their own narration.
+
 Larger-text re-recording (15 Oct): `artifacts/demo-large/scopematch-demo.mp4`, same real workflow, 1920×1080, 105.1 seconds, silent. The freelancer view now renders at a 1024×576 CSS viewport with a 1.875 pixel ratio (phone view at 390×844, ratio 1.28), so interface text is about 1.4× larger and stays sharp. `scripts/record-demo.mjs` was changed accordingly. Sampled frames, including the final AGREED frame, were inspected. Prefer this file for upload unless the learner prefers the original.
 
 The recording focuses on Booking as the selected scenario: independent freelancer A/client C choices, sealed waiting state, Compare and static previews, proposed B decision with both confirmations, saved scope v1, both name confirmations, AGREED, and export. The other three curated questions remain in the library and are covered by app verification.
@@ -95,6 +97,20 @@ Public repository URL: https://github.com/fadillaoegi/scopematch-hacketon (creat
 Public video URL: pending.
 Optional deployment URL: not requested.
 Devpost submission URL/status: pending, not submitted.
+
+## Claude resume — 16 October 2026
+
+Claude's last successful step was a live Gemini request with model fallback. The learner accepted recording an AI scene immediately before the session limit. The uncommitted library, onboarding, proposal-history, printing, and optional-AI changes were retained and reviewed together.
+
+Completed during resume:
+
+- Go tests and `go vet ./...` passed, including model fallback/cooldown and errors that echo a credential. Raw provider HTTP and interaction error bodies are no longer included in logged errors.
+- Frontend architecture checks (33 TypeScript files) and production build passed. AI draft options now expose included/excluded work, responsibilities, and acceptance criteria before Add.
+- `scripts/e2e.mjs` passed all 44 checks against the current build in isolated desktop/phone contexts, including role isolation, proposal history, revised versions, and identical agreed Markdown exports. The offline app map passed at desktop and 375px with JavaScript disabled.
+- `scripts/record-ai.mjs` captured a live Gemini request with a disposable bakery brief, review of option details, Discard, Add, and persistence after reload. Output: ignored `artifacts/ai-demo/scopematch-ai.mp4`, H.264, 1920×1200, 45.70 seconds, 2,755,211 bytes, no audio. Screenshots, sampled video frames, and capture metadata were inspected. This is supplementary synthetic footage, not a real-user test or a submitted video. No public upload performed.
+- Publication candidates contain no detected Google-key/private-key signatures; the runtime `.env` remains ignored and mode 600. The example environment file contains no key.
+
+The real-user test, learner-authored presentation/submission answers, public YouTube/Vimeo URL, and final Devpost submission remain pending. Do not mark these complete from automated browser or AI footage. The AI segment is separate from the existing 2:30 split-screen; appending it in full would exceed three minutes, so any final combined cut needs editing.
 
 ## Post-publication architecture revision
 

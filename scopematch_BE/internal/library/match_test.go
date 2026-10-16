@@ -64,3 +64,23 @@ func TestSentenceAround(t *testing.T) {
 		t.Errorf("sentence = %q", m.Sentence)
 	}
 }
+
+func TestNewCardsCoverShopAndServiceBriefs(t *testing.T) {
+	cases := map[string][]string{
+		// Previously matched only launch content.
+		"Online store for handmade batik. Customers pick a product, pay, and we ship it. We need photos of every product.": {"launch-content", "payments", "delivery"},
+		"A site for my bakery with a contact form, and please handle the domain and hosting.":                              {"launch-content", "contact", "hosting"},
+	}
+	for brief, want := range cases {
+		if got := Suggested(brief); !reflect.DeepEqual(got, want) {
+			t.Errorf("Suggested(%q) = %v, want %v", brief, got, want)
+		}
+	}
+}
+
+func TestNewKeywordsAreWholeWords(t *testing.T) {
+	// "membership", "paypal", "ghost", "contacts" must not trigger the new cards.
+	if m := MatchBrief("A membership page with PayPal-free ghost stories."); len(m) != 0 {
+		t.Errorf("unexpected matches: %v", m)
+	}
+}

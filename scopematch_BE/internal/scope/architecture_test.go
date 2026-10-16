@@ -31,6 +31,9 @@ func TestCleanArchitectureDependencies(t *testing.T) {
 			return err
 		}
 		for _, spec := range parsed.Imports {
+			if layer == "scope" && strings.HasSuffix(strings.Trim(spec.Path.Value, `"`), "internal/ai") {
+				t.Errorf("%s: use cases must not import the AI adapter", rel)
+			}
 			imported, err := strconv.Unquote(spec.Path.Value)
 			if err != nil {
 				return err
@@ -47,6 +50,9 @@ func TestCleanArchitectureDependencies(t *testing.T) {
 				allowed = (!local || internal == "domain" || internal == "library") && imported != "database/sql" && !strings.HasPrefix(imported, "net/") && !strings.Contains(strings.Split(imported, "/")[0], ".")
 			case "api":
 				allowed = (!local || internal == "domain" || internal == "scope" || internal == "library") && imported != "database/sql" && !strings.Contains(strings.Split(imported, "/")[0], ".")
+			case "ai":
+				// Outer adapter for the QuestionSuggester port.
+				allowed = !local || internal == "library" || internal == "scope"
 			case "store":
 				allowed = !local || internal == "domain" || internal == "scope"
 			}

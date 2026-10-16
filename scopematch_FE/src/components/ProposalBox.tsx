@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { useProjectGateway } from '../lib/gateway'
-import type { Card, Comparison, Session } from '../domain/models'
+import type { Card, Comparison, Proposal, Session } from '../domain/models'
 import styles from './ProposalBox.module.css'
 
 export function ProposalBox({ token, session, card, comparison, onUpdate }: {
@@ -19,6 +19,9 @@ export function ProposalBox({ token, session, card, comparison, onUpdate }: {
   const mine = session.role === 'owner' ? p?.ownerConfirmedAt : p?.clientConfirmedAt
   const label = p?.optionId === 'other' ? p.customText : card.options.find(o => o.id === p?.optionId)?.label
   const agreed = session.stage === 'agreed'
+  const history = comparison.history ?? []
+  const who = (by: Proposal['proposedBy']) => by === 'owner' ? session.project.freelancerName : by === 'client' ? session.project.clientName : 'Shared answer'
+  const labelOf = (x: Proposal) => x.optionId === 'other' ? x.customText : card.options.find(o => o.id === x.optionId)?.label
   async function act(propose: boolean) {
     setBusy(true); setError('')
     try {
@@ -28,6 +31,18 @@ export function ProposalBox({ token, session, card, comparison, onUpdate }: {
     finally { setBusy(false) }
   }
   return <section className={styles.box} aria-label={`Decision for ${card.title}`}>
+    {history.length > 0 && <ol className={styles.history} aria-label="Earlier proposals, oldest first">
+      <AnimatePresence initial={false}>
+        {history.map(h => <motion.li key={h.id} className={styles[`by_${h.proposedBy}`]} initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} transition={{ duration: reduced ? 0 : .35, ease: [.22, 1, .36, 1] }}>
+          <span className={styles.dot} aria-hidden />
+          <span className={styles.step}>
+            <span className="meta">{h.proposedBy === 'system' ? 'Shared answer' : `${who(h.proposedBy)} proposed`} · replaced</span>
+            <s>{labelOf(h)}</s>
+            {h.why && <q>{h.why}</q>}
+          </span>
+        </motion.li>)}
+      </AnimatePresence>
+    </ol>}
     <AnimatePresence mode="wait" initial={false}>
       <motion.div key={p?.id ?? 'none'} initial={{ opacity: 0, x: reduced ? 0 : 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: reduced ? 0 : -12, textDecoration: 'line-through' }} transition={{ duration: .18 }}>
         {p ? <>

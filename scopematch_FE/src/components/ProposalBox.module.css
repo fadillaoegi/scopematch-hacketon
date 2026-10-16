@@ -10,3 +10,16 @@
 .option input { margin-top: .35rem; accent-color: var(--ink); }
 .form textarea { width: 100%; padding: .75rem; background: var(--paper-card); border: 1px solid var(--rule-strong); resize: vertical; }
 .error { margin-top: 1rem; color: var(--danger); }
+
+/* Negotiation timeline: earlier proposals, struck through, in the proposer's ink. */
+.history { list-style: none; margin: 0 0 1rem; padding: 0 0 1rem; border-bottom: 1px dashed var(--rule-strong); display: grid; gap: .65rem; position: relative; }
+.history::before { content: ''; position: absolute; left: .33rem; top: .5rem; bottom: 1.4rem; width: 1px; background: var(--rule-strong); }
+.history li { display: grid; grid-template-columns: auto 1fr; gap: .75rem; align-items: start; overflow: hidden; }
+.by_owner { --step-ink: var(--ink-freelancer); }
+.by_client { --step-ink: var(--ink-client); }
+.by_system { --step-ink: var(--ink-faint); }
+.dot { position: relative; width: .7rem; height: .7rem; margin-top: .3rem; border-radius: 50%; background: var(--paper-deep); border: 2px solid var(--step-ink); }
+.step { display: grid; gap: .15rem; min-width: 0; }
+.step :global(.meta) { color: var(--step-ink); }
+.step s { color: var(--ink-soft); text-decoration-color: var(--step-ink); text-decoration-thickness: 1.5px; }
+.step q { font-family: var(--font-display); font-style: italic; color: var(--ink-soft); font-size: var(--step--1); }

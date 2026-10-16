@@ -9,8 +9,10 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
+	"scopematch/internal/ai"
 	"scopematch/internal/api"
 	"scopematch/internal/scope"
 	"scopematch/internal/store"
@@ -38,7 +40,19 @@ func main() {
 		log.Fatalf("listen: %v", err)
 	}
 	defer listener.Close()
-	svc := scope.NewService(store.NewRepository(st))
+	loadDotEnv(".env")
+	var opts []scope.Option
+	if key := os.Getenv("GEMINI_API_KEY"); key != "" {
+		g := ai.NewGemini(key, os.Getenv("GEMINI_MODEL"))
+		if endpoint := os.Getenv("GEMINI_ENDPOINT"); endpoint != "" {
+			g.Endpoint = endpoint // for local testing against a stand-in API
+		}
+		opts = append(opts, scope.WithSuggester(g))
+		log.Printf("AI question suggestions: on (Gemini, fallback order: %s)", strings.Join(g.Models, " → "))
+	} else {
+		log.Printf("AI question suggestions: off (set GEMINI_API_KEY in scopematch_BE/.env to enable)")
+	}
+	svc := scope.NewService(store.NewRepository(st), opts...)
 	if *seed {
 		token, err := svc.CreateProject(context.Background(), scope.NewProject{Name: "Salon website", FreelancerName: "Dimas", ClientName: "Maya", Brief: "We need a salon website with booking, two languages, and editable content."})
 		if err != nil {
@@ -60,4 +74,28 @@ func main() {
 	}
 	server := &http.Server{Handler: api.New(svc, *static), ReadHeaderTimeout: 5 * time.Second}
 	log.Fatal(server.Serve(listener))
+}
+
+// loadDotEnv sets variables from a simple KEY=VALUE file if it exists, without
+// overriding the real environment. Values are never logged.
+func loadDotEnv(path string) {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return
+	}
+	for _, line := range strings.Split(string(data), "\n") {
+		line = strings.TrimSpace(line)
+		if line == "" || strings.HasPrefix(line, "#") {
+			continue
+		}
+		key, value, ok := strings.Cut(line, "=")
+		if !ok {
+			continue
+		}
+		key = strings.TrimSpace(strings.TrimPrefix(key, "export "))
+		value = strings.Trim(strings.TrimSpace(value), `"'`)
+		if _, set := os.LookupEnv(key); !set && key != "" {
+			os.Setenv(key, value)
+		}
+	}
 }

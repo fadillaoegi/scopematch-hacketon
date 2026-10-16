@@ -144,3 +144,57 @@ textarea {
     animation-duration: 0.01ms !important;
   }
 }
+
+.print-only {
+  display: none;
+}
+
+/* Print / Save as PDF: only the scope document, black ink on white paper. */
+@media print {
+  @page {
+    size: A4;
+    margin: 16mm 14mm;
+  }
+  body {
+    background: #fff !important;
+    color: #000;
+  }
+  body * {
+    visibility: hidden;
+  }
+  [data-print-root],
+  [data-print-root] * {
+    visibility: visible;
+  }
+  [data-print-root] {
+    position: absolute;
+    inset: 0 0 auto 0;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  [data-print-root] button,
+  [data-print-root] form,
+  [data-print-root] [role='alert'] {
+    display: none !important;
+  }
+  [data-print-root] article {
+    border: 0 !important;
+    box-shadow: none !important;
+    background: #fff !important;
+    padding: 0 !important;
+  }
+  [data-print-root] section,
+  [data-print-root] li {
+    break-inside: avoid;
+  }
+  .print-only {
+    display: block;
+  }
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    animation: none !important;
+    transition: none !important;
+  }
+}

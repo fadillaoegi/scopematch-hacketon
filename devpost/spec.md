@@ -102,7 +102,7 @@ Carries `prd.md > Look and Feel` ("two inks on contract paper").
 
 **Layout revision (16 Oct):** asymmetric workspace header (title 8fr, `StageRail` 4fr), Setup grid 7fr brief / 5fr questions with the question column offset down, Compare `bento` header (dark hero tile, decided counter, open-status bar, question chips), answer pairs with the client card a step lower, and a bento Projects grid. Components: `StageRail` (stage progress + per-party seal state from the session), `BriefLink` (SVG line from `[data-card-mark]` to `[data-card]`, desktop only, measured on scroll/resize), `NumberFlip`, `DiffLink` inside `CompareBoard`, two-seal `SealedState`. Presentation only: no API, schema, or rule change. Token added: `--ink-client-light` for vermilion on dark tiles.
 
-**Copy tone:** plain, calm, specific ("Sealed. Waiting for Maya."), no hype, no "AI".
+**Copy tone:** plain, calm, specific ("Sealed. Waiting for Maya."), no hype. Deterministic matching is never called AI; the optional Gemini panel and accepted AI questions explicitly disclose their origin.
 
 **Avoid:** gradients, glass blur, glow, emoji icons, uniform rounded card grids, decorative blobs.
 
@@ -119,7 +119,7 @@ Reads `Authorization: Bearer <token>`, hashes it (SHA-256), looks up `access_tok
 
 #### Card library and brief matching
 Implements `prd.md > Scenario cards`.
-`library/cards.json` embedded with `go:embed`: cards §1–§4 from the PRD, each option with `label`, `included[]`, `excluded[]`, `clientResponsibilities[]`, `acceptanceCriteria[]`, and (booking only) `preview` steps. Matching: split brief into sentences, lowercase, word-prefix match against card keywords; returns `{cardId, sentenceIndex, start, end}`. §4 always suggested. Deterministic — never labelled AI.
+`library/cards.json` embedded with `go:embed`: cards §1–§8 from the PRD, each option with `label`, `included[]`, `excluded[]`, `clientResponsibilities[]`, `acceptanceCriteria[]`, and (booking only) `preview` steps. Matching: split brief into sentences, lowercase, word-prefix match against card keywords; returns `{cardId, sentenceIndex, start, end}`. §4 always suggested. Deterministic — never labelled AI.
 
 #### Project service
 Implements `prd.md > Creating a project`, `prd.md > Scenario cards`.
@@ -138,6 +138,8 @@ Rules in one transaction:
 - Confirm → only a party that hasn't confirmed yet (for a system proposal, both may confirm); card is Decided when both timestamps are set on the active proposal. The proposal ID in the path must belong to the token's project and be active, otherwise `404` — proposal IDs never give cross-project access.
 - Proposals and confirmations rejected after Agreed (`409`).
 
+Replaced proposals are kept (`active = 0`) and returned per card as `history` (oldest first) through the `ReplacedProposals` repository port; like `proposal`, history exists only once Compare is open.
+
 #### Scope versions and confirmation
 Implements `prd.md > Scope review and confirmation`.
 Draft assembly from decided options (union of included/excluded/responsibilities/criteria; custom-text decisions go into Included as written). Save version (owner, only when all cards Decided) → new row `version = max+1`, which leaves previous versions' confirmations attached to old versions only (effectively resetting). Confirm (`version` from the path, `{name}` in the body, name required) → rejected with `409 not_latest` unless it is the latest version; a role can confirm a version only once. When both roles confirmed the latest version → `projects.agreed_version = n`, everything locked. Each saved snapshot also freezes the per-card decision text and active proposal IDs. Reopening a decision makes existing scope versions stale: they stay in history but cannot be confirmed, even after the card is re-decided. A fresh version must be sent. Session scope metadata includes latest confirmation timestamps so polling updates both screens.
@@ -145,6 +147,13 @@ Draft assembly from decided options (union of included/excluded/responsibilities
 #### Markdown export
 Implements `prd.md > Export`.
 Renders the stored `agreed_version` row only (`404` if not agreed). Includes project name, brief, per-card decision, summary sections, version, confirmation names/times with "(recorded, not identity-verified)". `Content-Disposition: attachment; filename="scopematch-<slug>-v<n>.md"`.
+
+#### Question suggestions (AI port)
+Implements `prd.md > AI question suggestions (optional)`.
+`scope.QuestionSuggester` is an application-owned port; `scope.WithSuggester` enables it. `SuggestCards` (owner, before lock) sends the brief plus already-asked questions, validates each draft (`validateCustomCard`: title ≤40, question 5–160, exactly 3 options re-numbered a–c, ≤4 items of ≤160 chars per list, no previews/keywords), drops malformed ones, and returns up to 3 unstored drafts. `AddCustomCard` validates again, stores the card as JSON in `project_custom_cards`, numbers it after the library (§9, §10…), marks `source: "ai"`, and selects it; max 6 per project. Every rule path resolves cards through `projectCards` (curated + this project's own), so another project's custom id is unknown. In-memory limit: 5 suggestion calls per project per server run. Errors: 503 `ai_unavailable`, 502 `ai_failed` (safe failure category in logs; no raw provider error body), 429 `suggestion_limit`. The draft UI exposes each option's included/excluded work, responsibilities, and acceptance criteria in expandable details before Add.
+
+#### Gemini adapter
+`internal/ai` implements the port (outer adapter; the architecture test forbids use cases from importing it). `POST https://generativelanguage.googleapis.com/v1beta/interactions` with header `x-goog-api-key`, body `{model, input, response_format: {type: "text", mime_type: "application/json", schema}}`; reads `steps[type=model_output].content[type=text].text`. Default fallback order: `gemini-3.5-flash-lite`, `gemini-3.1-flash-lite`, `gemini-3.8-flash`, `gemini-3.6-flash`, `gemini-3-flash-preview` (override with comma-separated `GEMINI_MODEL`). Rate-limited, missing, and unavailable models are temporarily skipped; timeout is 25 s per attempted model; the brief is framed as data between `<brief>` tags. `cmd/server` loads `scopematch_BE/.env` (gitignored, never logged) and wires the adapter only when `GEMINI_API_KEY` is set; `GEMINI_ENDPOINT` points at a stand-in API for local tests. Docs checked 16 Oct 2026: ai.google.dev/gemini-api/docs/models, /structured-output, /api/interactions, /pricing.
 
 #### Demo seed
 `-seed-demo` inserts the salon project (brief from `scope.md > What "Working" Looks Like`) in setup state and prints the owner link.
@@ -297,6 +306,9 @@ Go tests (`go test ./...`) cover the handoff's critical checks:
 
 Manual: full demo flow laptop + phone; phone width has no horizontal scroll; reduced-motion setting replaces flips.
 
+### Gemini API (optional)
+Free tier available; per pricing page (16 Oct 2026) free-tier content is used to improve Google's products, paid tier is not — the UI states this before sending. Free-tier rate limits are shown per account in AI Studio, not on the docs page; the server's own limit is 5 calls per project per run. No key → feature hidden, everything else unchanged.
+
 ## Important Failure Modes
 - **Phone can't reach the laptop (different network/firewall)** → use the `-static` + tunnel path; README documents both.
 - **Two people confirm at the same moment (SQLite write lock)** → single DB connection + `busy_timeout`, all rule changes in transactions; the loser simply sees the updated state.
@@ -307,7 +319,7 @@ Manual: full demo flow laptop + phone; phone width has no horizontal scroll; red
 - **SQLite file** instead of PostgreSQL — no Docker or service to keep running; the fuller version would add a Postgres container and connection config.
 - **Secret owner/client links** instead of accounts — accounts don't prove the kernel; the fuller version needs login, sessions, email recovery.
 - **Polling every 4 s while waiting** instead of realtime push — same visible outcome for a two-person flow; realtime would need websockets.
-- **Card library in a code file** instead of an editable admin library — four cards prove the idea.
+- **Card library in a code file** instead of an editable admin library — eight cards prove the idea.
 - **Static booking preview** instead of a simulator — agreed in scope.
 - **Cards locked after invite** instead of versioned questions — agreed in PRD.
 

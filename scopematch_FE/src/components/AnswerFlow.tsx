@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { useProjectGateway } from '../lib/gateway'
 import { GatewayError } from '../application/errors'
 import type { Answer, Card, Session } from '../domain/models'
+import { ClientWelcome } from './ClientWelcome'
 import { SealedState } from './SealedState'
 import styles from './AnswerFlow.module.css'
 
@@ -11,6 +12,8 @@ export function AnswerFlow({ token, session, library, onUpdate }: {
   const api = useProjectGateway()
   const [answers, setAnswers] = useState<Answer[]>(session.me.answers ?? [])
   const [page, setPage] = useState(0)
+  // Clients see a short welcome first, unless they already started answering.
+  const [started, setStarted] = useState(session.role === 'owner' || (session.me.answers?.length ?? 0) > 0)
   const [saving, setSaving] = useState(false)
   const [sealing, setSealing] = useState(false)
   const [error, setError] = useState('')
@@ -46,6 +49,7 @@ export function AnswerFlow({ token, session, library, onUpdate }: {
   }
 
   if (session.me.submitted && !session.other.submitted) return <SealedState session={session} />
+  if (!started && !session.me.submitted) return <ClientWelcome session={session} count={cards.length} onStart={() => { setStarted(true); window.scrollTo({ top: 0 }) }} />
   return <section className={styles.flow} style={{ '--party-ink': session.role === 'owner' ? 'var(--ink-freelancer)' : 'var(--ink-client)' } as React.CSSProperties}>
     <header className={styles.intro}>
       <p className="meta">Independent answers · {complete} of {cards.length} answered</p>

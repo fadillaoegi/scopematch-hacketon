@@ -17,3 +17,5 @@
 .confirm label { width: 100%; max-width: 400px; }
 .confirm p, .empty { color: var(--ink-soft); font-size: var(--step--1); }
 .error { color: var(--danger); margin-bottom: 1rem; }
+
+.printNote { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--rule); font-size: .8rem; color: var(--ink-soft); }

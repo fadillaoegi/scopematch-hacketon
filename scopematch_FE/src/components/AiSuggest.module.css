@@ -1,0 +1,136 @@
+.panel {
+  margin-top: 1.5rem;
+  padding: 1.25rem 1.35rem;
+  border: 1px dashed var(--rule-strong);
+  border-radius: var(--radius);
+  display: grid;
+  gap: 0.85rem;
+}
+
+.head {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.head h3 {
+  font-size: var(--step-1);
+}
+
+.head p {
+  color: var(--ink-soft);
+  font-size: var(--step--1);
+}
+
+.badge {
+  justify-self: start;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.5rem;
+  border: 1px solid var(--ink-freelancer);
+  color: var(--ink-freelancer);
+  border-radius: 2px;
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.privacy {
+  font-size: 0.75rem;
+  color: var(--ink-faint);
+}
+
+.message {
+  font-size: var(--step--1);
+  color: var(--ink-soft);
+  font-style: italic;
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--font-display);
+  font-style: italic;
+  color: var(--ink-soft);
+}
+
+.dots {
+  display: inline-flex;
+  gap: 5px;
+}
+
+.dots i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--ink-freelancer);
+}
+
+/* A draft looks unfinished on purpose: dashed edge, no red index-card rule. */
+.draft {
+  padding: 1rem 1.1rem;
+  border: 1.5px dashed var(--ink-freelancer);
+  border-radius: var(--radius);
+  background: var(--paper);
+  display: grid;
+  gap: 0.4rem;
+}
+
+.draft :global(.meta) {
+  color: var(--ink-freelancer);
+}
+
+.title {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.draft h4 {
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.draft ol {
+  list-style: none;
+  margin: 0.25rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.25rem;
+  font-size: var(--step--1);
+  color: var(--ink-soft);
+}
+
+.draft li {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.draft li span {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.draftActions {
+  display: flex;
+  gap: 1.25rem;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+.draft li > div { min-width: 0; overflow-wrap: anywhere; }
+.optionDetails { margin: 0.35rem 0 0.6rem; font-size: 0.8rem; }
+.optionDetails summary { cursor: pointer; color: var(--ink-freelancer); }
+.optionDetails > div { margin-top: 0.6rem; }
+.optionDetails ul { margin: 0.25rem 0 0; padding-left: 1.1rem; }
+.optionDetails ul li { display: list-item; }

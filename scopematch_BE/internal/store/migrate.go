@@ -72,6 +72,14 @@ AND a.option_id NOT IN ('other','unsure')
 AND (SELECT count(*) FROM participants p WHERE p.project_id=a.project_id AND p.submitted_at IS NOT NULL)=2
 AND NOT EXISTS (SELECT 1 FROM proposals p WHERE p.project_id=a.project_id AND p.card_id=a.card_id);
 
+CREATE TABLE IF NOT EXISTS project_custom_cards (
+	project_id TEXT NOT NULL REFERENCES projects(id),
+	card_id    TEXT NOT NULL,
+	card_json  TEXT NOT NULL,
+	created_at TEXT NOT NULL,
+	PRIMARY KEY (project_id, card_id)
+);
+
 CREATE TABLE IF NOT EXISTS scope_versions (
 	project_id          TEXT NOT NULL REFERENCES projects(id),
 	version             INTEGER NOT NULL,

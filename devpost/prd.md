@@ -66,6 +66,10 @@ Curated library (deterministic keyword matching — never described as AI extrac
 | 2 | **Languages** — What does "two languages" cover? | language, bilingual, translation, English, Indonesian | A: Every page, translated by the client · B: Every page, translated by the freelancer · C: Main pages only |
 | 3 | **Editable content** — What can the client change after launch, without the freelancer? | editable, edit, update, CMS | A: Text and photos on every page · B: Services and prices only · C: Nothing — send changes to the freelancer |
 | 4 | **Launch content** — Who provides the text and photos at launch? | always suggested | A: Client provides all · B: Freelancer writes text, client provides photos · C: Freelancer provides all (stock photos) |
+| 5 | **Payments** — How should customers pay? | payment, pay, checkout, transfer | A: No online payment · B: Payment link after the order · C: Full online checkout |
+| 6 | **Delivery** — How do orders reach customers? | shipping, ship, delivery, courier, pickup | A: Pickup or customer's own courier · B: Fixed fee, shipped manually · C: Live courier rates and tracking |
+| 7 | **Contact** — What happens when someone wants to contact the business? | contact, enquiry, inquiry, message | A: Contact details only · B: Form that emails the business · C: Form plus a simple inbox |
+| 8 | **Domain and hosting** — Who owns and pays for the domain and hosting? | domain, hosting, host, server | A: Client owns both · B: Freelancer hosts monthly, client owns domain · C: Freelancer provides both for a year, then hands over |
 
 Each option stores predefined text for the summary: what it includes, excludes, client responsibilities, and acceptance criteria.
   - [ ] Salon brief suggests cards §1–§4; each suggested card shows the brief sentence it matched.
@@ -73,13 +77,23 @@ Each option stores predefined text for the summary: what it includes, excludes, 
   - [ ] Lock is disabled when zero cards are selected.
   - [ ] After locking, cards and options cannot be edited by anyone.
 
+### AI question suggestions (optional)
+Added 16 Oct with learner approval. Source: handoff rule "AI only suggests questions or tidies drafts; it never decides answers, price, time, exclusions, or approval."
+- [ ] Shown only to the freelancer, only before locking, and only when the server has a Gemini key; the app works fully without it.
+- [ ] Before pressing the button, the freelancer sees that the brief text goes to Google Gemini and that the free tier may use it to improve Google's products.
+- [ ] AI drafts up to three questions not already asked, each with exactly three options and scope text; each draft is labelled "Suggested by AI · review before adding".
+- [ ] Nothing is stored until the freelancer presses Add; Discard drops a draft. Added questions keep the label "Suggested by AI · added by you" and then behave exactly like curated questions (answers, Compare, decisions, versions, export).
+- [ ] Failures, quota, and limits show a plain message and leave the questions unchanged.
+
 ### Links and access
 - [ ] Creating a project produces an unguessable owner link; locking produces a different, unguessable client link; both are shown after locking.
 - [ ] The client link opens only that project, only as the client: it can answer, propose, confirm, and download — never edit the brief, cards, or summary, and never see other projects.
 - [ ] Changing the project ID or token in a URL never opens another project; an invalid link shows "This link isn't valid" and reveals nothing.
 - [ ] Owner link opened on another device restores freelancer access to that project.
+- [ ] After locking, the freelancer gets a ready-to-send invite message with the client link, copyable or opened in WhatsApp via a plain `wa.me` share link; ScopeMatch never sends anything itself (added 16 Oct, learner-approved).
 
 ### Answering separately
+- [ ] A client who has not answered yet first sees a short welcome: who is asking, which project, how many questions, and the rule that answers stay sealed until both are in (added 16 Oct, learner-approved).
 Source: `scope.md > The Unique Kernel`.
 - As a client, I want to answer on my phone without an account, so I can say what I actually imagine.
   - [ ] Every card must have a choice before Submit; "Something else" requires text.
@@ -99,6 +113,7 @@ Source: `scope.md > The Unique Kernel`.
 - [ ] **Same answer** is not automatically decided: it pre-fills a proposal that still needs both confirmations (one tap each).
 - [ ] "Not sure yet" can never become the decision.
 - [ ] Card becomes **Decided** only when both confirmed the same active proposal.
+- [ ] Earlier proposals stay visible as a short history above the current one — who proposed what, their reason, struck through as replaced — so both see how the decision was reached (added 16 Oct, learner-approved).
 
 ### Scope review and confirmation
 - [ ] "Review scope" is available to the freelancer only when every card is Decided.
@@ -130,22 +145,22 @@ Source: `scope.md > The Unique Kernel`.
 - **Sealed after submit** — matches the metaphor and keeps the reveal honest.
 
 Assumptions (agent-proposed, confirm at review):
-- The four scenario cards and their option wording above.
+- The eight scenario cards and their option wording above (§5–§8 added 16 Oct with learner approval, after a synthetic check showed shop briefs got only one question).
 - All selected cards are blocking — every card must be Decided before review.
 
 ## What We're Building
-Projects list; project setup with brief highlighting and four curated cards; locking with owner/client links; separate sealed answers; server-enforced hiding until both submit; Compare with three statuses and booking preview; symmetric proposals and confirmations; versioned summary with both confirmations bound to one version; Agreed lock and stamp; Markdown export; responsive layout and the motion moments listed in Look and Feel.
+Projects list; project setup with brief highlighting and eight curated cards; locking with owner/client links; separate sealed answers; server-enforced hiding until both submit; Compare with three statuses and booking preview; symmetric proposals and confirmations; versioned summary with both confirmations bound to one version; Agreed lock and stamp; Markdown export; responsive layout and the motion moments listed in Look and Feel.
 
 ## Deferred From the POC
 - **Accounts / login** — owner link covers returning; real accounts are a later product decision.
 - **Interactive booking simulation** — static preview proves the point for now.
 - **Editing questions after locking** (versioned questions with answer invalidation) — lock instead.
 - **New draft from an agreed scope** — agreed versions stay locked; change management is later.
-- **PDF export** — Markdown is required; print view later.
+- **PDF export** — built 16 Oct as a print view (Print / Save as PDF on the agreed scope); Markdown stays the canonical export.
 - **Notifications** — links are copied and sent manually.
 
 ## Possible Later Enhancements
-- Optional AI that suggests extra questions from the brief or tidies summary wording; never decides answers, price, time, or approval.
+- AI that tidies summary wording (question suggestions were built 16 Oct); never decides answers, price, time, or approval.
 - Scenario libraries for other small-business site types (restaurant, clinic, shop).
 - Change requests as new scope versions.
 

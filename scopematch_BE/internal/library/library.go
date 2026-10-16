@@ -37,7 +37,10 @@ type Card struct {
 	Question      string   `json:"question"`
 	Keywords      []string `json:"keywords"`
 	AlwaysSuggest bool     `json:"alwaysSuggest,omitempty"`
-	Options       []Option `json:"options"`
+	// Source is "ai" for a project-specific card suggested by AI and accepted
+	// by the freelancer; empty for curated library cards.
+	Source  string   `json:"source,omitempty"`
+	Options []Option `json:"options"`
 }
 
 // Option returns the card's option with the given id, if it is one of the

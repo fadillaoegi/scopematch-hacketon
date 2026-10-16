@@ -48,3 +48,12 @@ type VersionRecord struct {
 	ClientName   string
 	ClientAt     string
 }
+
+// CustomCardRecord is a project-specific question (for example one suggested
+// by AI and accepted by the freelancer). CardJSON holds the card exactly as
+// accepted; the use case layer owns its shape and validation.
+type CustomCardRecord struct {
+	CardID    string
+	CardJSON  string
+	CreatedAt string
+}

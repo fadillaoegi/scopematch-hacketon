@@ -87,7 +87,7 @@ export function ScopeDocument({ token, session, onUpdate }: { token: string; ses
   const composing = owner && !agreed && (editing || (!latest && canDraft))
   const shown = composing ? summary : latest?.summary
   const mine = owner ? latest?.ownerConfirmation : latest?.clientConfirmation
-  return <section className={styles.page} aria-label="Scope document">
+  return <section className={styles.page} aria-label="Scope document" data-print-root>
     <header className={styles.heading}><div><p className="meta">{agreed ? 'One scope · confirmed by both' : 'Review the same version together'}</p><h2>{agreed ? 'The agreed scope.' : 'From decisions to scope.'}</h2></div>{agreed && <AgreedStamp />}</header>
     {error && <p className={styles.error} role="alert">{error}</p>}
     {!view && !error && <p role="status">Opening the scope…</p>}
@@ -108,8 +108,9 @@ export function ScopeDocument({ token, session, onUpdate }: { token: string; ses
         {!agreed && view?.current && !mine && <form className={styles.confirm} onSubmit={e => { e.preventDefault(); void confirm() }}><label>Your name<input required maxLength={120} autoComplete="name" value={name} onChange={e => setName(e.target.value)} disabled={busy} /></label><p>You are confirming the exact scope saved as v{latest.version}.</p><button className="btn" disabled={busy || !name.trim()}>{busy ? 'Recording…' : `Confirm scope v${latest.version}`}</button></form>}
         {!agreed && mine && view?.current && <p className={styles.notice}>Your confirmation of v{latest.version} is recorded. Waiting for {session.other.name}.</p>}
       </section>}
+      {agreed && <p className={`print-only ${styles.printNote}`}>Printed from ScopeMatch · agreed version v{view?.agreedVersion}, confirmed by both · confirmation names and times are recorded, not identity-verified.</p>}
     </article>}
     {owner && latest && !agreed && !composing && <button className="btn btn-outline" disabled={busy || !canDraft} onClick={() => void edit()}>{view?.current ? 'Edit as a new version' : 'Prepare updated version'}</button>}
-    {agreed && <div className={styles.actions}><button className="btn" disabled={busy} onClick={() => void download()}>{busy ? 'Downloading…' : 'Download Markdown'}</button><p className="meta">v{view?.agreedVersion} · locked after both confirmations</p></div>}
+    {agreed && <div className={styles.actions}><button className="btn" disabled={busy} onClick={() => void download()}>{busy ? 'Downloading…' : 'Download Markdown'}</button><button className="btn btn-outline" onClick={() => window.print()}>Print / Save as PDF</button><p className="meta">v{view?.agreedVersion} · locked after both confirmations</p></div>}
   </section>
 }

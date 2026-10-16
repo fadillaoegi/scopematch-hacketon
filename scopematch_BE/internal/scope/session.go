@@ -45,11 +45,17 @@ type SessionView struct {
 	// Matches lists where every library card matched the brief, selected or
 	// not, so the setup screen can show provenance for unselected cards.
 	Matches []library.Match `json:"matches"`
-	Me      PartyView       `json:"me"`
-	Other   PartyView       `json:"other"`
-	Compare []Comparison    `json:"compare,omitempty"`
-	Counts  *Counts         `json:"counts,omitempty"`
-	Scope   *ScopeState     `json:"scope,omitempty"`
+	// CustomCards are this project's own questions (AI-suggested, accepted by
+	// the freelancer), in the same shape as library cards.
+	CustomCards []library.Card `json:"customCards"`
+	// AISuggestions tells the freelancer's screen whether it can offer AI
+	// question suggestions. Never set for the client.
+	AISuggestions bool         `json:"aiSuggestions,omitempty"`
+	Me            PartyView    `json:"me"`
+	Other         PartyView    `json:"other"`
+	Compare       []Comparison `json:"compare,omitempty"`
+	Counts        *Counts      `json:"counts,omitempty"`
+	Scope         *ScopeState  `json:"scope,omitempty"`
 }
 
 func (s *Service) Session(ctx context.Context, a Actor) (SessionView, error) {
@@ -59,6 +65,7 @@ func (s *Service) Session(ctx context.Context, a Actor) (SessionView, error) {
 		v, err = buildSession(ctx, q, a)
 		return err
 	})
+	v.AISuggestions = err == nil && a.Role == RoleOwner && s.suggester != nil
 	return v, err
 }
 
@@ -68,6 +75,10 @@ func buildSession(ctx context.Context, q Repository, a Actor) (SessionView, erro
 		return SessionView{}, err
 	}
 	ids, err := q.ListCards(ctx, p.ID)
+	if err != nil {
+		return SessionView{}, err
+	}
+	_, custom, err := projectCards(ctx, q, p.ID)
 	if err != nil {
 		return SessionView{}, err
 	}
@@ -130,6 +141,17 @@ func buildSession(ctx context.Context, q Repository, a Actor) (SessionView, erro
 		if err != nil {
 			return SessionView{}, err
 		}
+		replaced, err := q.ReplacedProposals(ctx, p.ID)
+		if err != nil {
+			return SessionView{}, err
+		}
+		for i := range comparisons {
+			for _, old := range replaced {
+				if old.CardID == comparisons[i].CardID {
+					comparisons[i].History = append(comparisons[i].History, old)
+				}
+			}
+		}
 		for i := range comparisons {
 			for _, proposal := range proposals {
 				if proposal.CardID != comparisons[i].CardID {
@@ -174,11 +196,12 @@ func buildSession(ctx context.Context, q Repository, a Actor) (SessionView, erro
 			Name: p.Name, Brief: p.Brief, FreelancerName: p.FreelancerName,
 			ClientName: p.ClientName, Locked: p.LockedAt != "",
 		},
-		Cards:   cards,
-		Matches: all,
-		Me:      me,
-		Other:   other,
-		Compare: comparisons,
-		Counts:  counts,
+		Cards:       cards,
+		Matches:     all,
+		CustomCards: custom,
+		Me:          me,
+		Other:       other,
+		Compare:     comparisons,
+		Counts:      counts,
 	}, nil
 }

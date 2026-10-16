@@ -67,12 +67,16 @@ func decidedSnapshot(ctx context.Context, q Repository, pid string) (Snapshot, e
 	if len(ids) == 0 {
 		return v, conflict("undecided")
 	}
+	set, _, err := projectCards(ctx, q, pid)
+	if err != nil {
+		return v, err
+	}
 	for _, id := range ids {
 		p, ok := byCard[id]
 		if !ok || !p.Decided() {
 			return v, conflict("undecided")
 		}
-		card, ok := library.Get(id)
+		card, ok := set.get(id)
 		if !ok {
 			return v, notFound("card_not_found")
 		}

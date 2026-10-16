@@ -35,7 +35,7 @@ export function StageRail({ session }: { session: Session }) {
   }
   return (
     <aside className={styles.rail} aria-label="Project progress">
-      <p className="meta">Progress · stage {at + 1} of {STAGES.length}</p>
+      <p className="meta">Progress · stage {at + 1} of {STAGES.length}<span className={styles.currentName}> · {STAGES[at]?.label}</span></p>
       <ol className={styles.stages}>
         <motion.span
           className={styles.fill}

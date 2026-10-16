@@ -100,3 +100,8 @@
 }
 
 .review { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; padding: 1.5rem 0; border-bottom: 1px solid var(--rule-strong); }
+
+.previewSummary { display: flex; justify-content: space-between; align-items: center; gap: 1rem; cursor: pointer; list-style: none; }
+.previewSummary::-webkit-details-marker { display: none; }
+.previewHint { font-family: var(--font-mono); font-size: .65rem; text-transform: uppercase; letter-spacing: .06em; color: var(--party-ink); border: 1px solid currentColor; padding: .2rem .45rem; }
+@media (min-width: 701px) { .previewHint { display: none; } .previewSummary { cursor: default; pointer-events: none; } }

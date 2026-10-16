@@ -74,9 +74,13 @@ func (s *Service) SaveAnswers(ctx context.Context, a Actor, answers []domain.Ans
 		for _, id := range ids {
 			selected[id] = true
 		}
+		set, _, err := projectCards(ctx, q, a.ProjectID)
+		if err != nil {
+			return err
+		}
 		seen := map[string]bool{}
 		for _, answer := range answers {
-			card, ok := library.Get(answer.CardID)
+			card, ok := set.get(answer.CardID)
 			if !ok || !selected[answer.CardID] || seen[answer.CardID] {
 				return invalid(map[string]string{"answers": "Choose each selected question at most once."})
 			}

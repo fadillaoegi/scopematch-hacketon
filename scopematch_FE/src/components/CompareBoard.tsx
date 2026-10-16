@@ -37,14 +37,14 @@ export function CompareBoard({ token, session, library, onUpdate, onScope }: { t
           <span className={styles.progress} aria-hidden><motion.span initial={false} animate={{ scaleX: counts.total ? counts.decided / counts.total : 0 }} transition={{ duration: .7, ease: [.65, 0, .35, 1] }} /></span>
         </div>
         <div className={`${styles.tile} ${styles.mix}`}>
-          <span className="meta">Still open</span>
+          <span className="meta">Not decided yet</span>
           <span className={styles.bar} aria-hidden>
             {(['needs_discussion', 'needs_clarification', 'same_answer'] as const).map(k => {
               const n = k === 'needs_discussion' ? counts.discussion : k === 'needs_clarification' ? counts.clarification : counts.same
               return <motion.span key={k} className={styles[`seg_${k}`]} initial={false} animate={{ flexGrow: n }} transition={{ duration: .6, ease: [.22, 1, .36, 1] }} />
             })}
           </span>
-          <p className={styles.tally} aria-live="polite"><span><i className={styles.key_needs_discussion} />{counts.discussion} need discussion</span><span><i className={styles.key_needs_clarification} />{counts.clarification} need clarification</span><span><i className={styles.key_same_answer} />{counts.same} same answer</span></p>
+          <p className={styles.tally} aria-live="polite"><span><i className={styles.key_needs_discussion} />{counts.discussion} need discussion</span><span><i className={styles.key_needs_clarification} />{counts.clarification} need clarification</span><span><i className={styles.key_same_answer} />{counts.same} same answer · confirm it</span></p>
         </div>
         <nav className={`${styles.tile} ${styles.map}`} aria-label="Jump to a question">
           <span className="meta">Every question</span>

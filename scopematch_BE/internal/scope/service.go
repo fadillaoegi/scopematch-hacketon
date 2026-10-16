@@ -19,9 +19,19 @@ type Actor struct {
 	Role      string
 }
 
-type Service struct{ repo Repository }
+type Service struct {
+	repo      Repository
+	suggester QuestionSuggester
+	limiter   suggestionLimiter
+}
 
-func NewService(repo Repository) *Service { return &Service{repo: repo} }
+func NewService(repo Repository, opts ...Option) *Service {
+	s := &Service{repo: repo}
+	for _, opt := range opts {
+		opt(s)
+	}
+	return s
+}
 
 // Authenticate resolves a link token to an Actor.
 func (s *Service) Authenticate(ctx context.Context, token string) (Actor, error) {
@@ -100,17 +110,6 @@ func (s *Service) SetCards(ctx context.Context, a Actor, cardIDs []string) error
 	if len(cardIDs) == 0 {
 		return invalid(map[string]string{"cardIds": "Keep at least one question."})
 	}
-	seen := map[string]bool{}
-	var ids []string
-	for _, id := range cardIDs {
-		if _, ok := library.Get(id); !ok {
-			return invalid(map[string]string{"cardIds": "Unknown question: " + id})
-		}
-		if !seen[id] {
-			seen[id] = true
-			ids = append(ids, id)
-		}
-	}
 	return s.repo.WithinTransaction(ctx, func(q Repository) error {
 		p, err := q.GetProject(ctx, a.ProjectID)
 		if err != nil {
@@ -118,6 +117,23 @@ func (s *Service) SetCards(ctx context.Context, a Actor, cardIDs []string) error
 		}
 		if p.LockedAt != "" {
 			return conflict("locked")
+		}
+		// Curated cards plus this project's own; another project's custom
+		// card id is unknown here.
+		set, _, err := projectCards(ctx, q, p.ID)
+		if err != nil {
+			return err
+		}
+		seen := map[string]bool{}
+		var ids []string
+		for _, id := range cardIDs {
+			if _, ok := set.get(id); !ok {
+				return invalid(map[string]string{"cardIds": "Unknown question: " + id})
+			}
+			if !seen[id] {
+				seen[id] = true
+				ids = append(ids, id)
+			}
 		}
 		return q.ReplaceCards(ctx, p.ID, ids)
 	})

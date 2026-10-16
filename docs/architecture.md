@@ -11,6 +11,7 @@ Clean Architecture is a project requirement, recorded in `AGENTS.md` and importe
 | Application | `scopematch_BE/internal/scope` | Use cases, role permissions, sealed answers, reveal gate, proposals, version checks, agreement, and export assembly. Imports domain/library and owns the `Repository` port. |
 | Persistence adapter | `scopematch_BE/internal/store` | SQLite schema, queries, transaction execution, and the implementation of the application repository. SQL and database null handling stay here. |
 | HTTP adapter | `scopematch_BE/internal/api` | Bearer authentication boundary, request decoding, response encoding, HTTP status mapping, and static serving. Imports inner types/use cases and never the SQLite adapter. |
+| AI adapter | `scopematch_BE/internal/ai` | Implements the application-owned `scope.QuestionSuggester` port. Owns Gemini HTTP requests, credentials, model fallback/cooldown, and response parsing. Use cases never import this adapter. |
 | Composition root | `scopematch_BE/cmd/server/main.go` | Opens SQLite, constructs `store.NewRepository(st)`, injects it with `scope.NewService(...)`, and wires the HTTP server. |
 
 `scope.Repository` is an application-owned persistence port for the project aggregate. Operations describe intent, such as `SealAnswers`, `ConfirmProposal`, and `MarkAgreed`; use cases cannot issue raw SQL or see `sql.DB`, `sql.Tx`, or database-specific null types.
@@ -18,6 +19,8 @@ Clean Architecture is a project requirement, recorded in `AGENTS.md` and importe
 `WithinTransaction(ctx, func(repo scope.Repository) error)` supplies a transaction-scoped implementation. Every rule read and subsequent write uses that same repository. The SQLite adapter commits only when the callback succeeds and rejects nested transactions. This preserves atomic answer sealing, replacement of proposal confirmations, version-number assignment, and simultaneous confirmation behavior.
 
 The domain project uses an empty lock timestamp and zero agreed version for unset state; the SQLite adapter maps existing nullable columns. The database schema and public JSON contract remain compatible with existing projects.
+
+Optional AI questions extend storage with an idempotent `project_custom_cards` table. The application validates drafts, enforces owner/before-lock access and per-project limits, and stores only explicitly accepted cards. All answer, decision, and snapshot paths resolve both curated and project-specific cards. `cmd/server` loads the optional ignored environment file and injects the Gemini adapter; no key is required for the curated flow. Provider error bodies are excluded from logged adapter failures. Replaced proposals are exposed through the repository port only after the reveal gate opens.
 
 ## Frontend boundaries
 

@@ -19,14 +19,14 @@ type client struct {
 	srv *httptest.Server
 }
 
-func newClient(t *testing.T) *client {
+func newClient(t *testing.T, opts ...scope.Option) *client {
 	t.Helper()
 	st, err := store.Open(filepath.Join(t.TempDir(), "test.db"))
 	if err != nil {
 		t.Fatal(err)
 	}
 	t.Cleanup(func() { st.Close() })
-	srv := httptest.NewServer(New(scope.NewService(store.NewRepository(st)), ""))
+	srv := httptest.NewServer(New(scope.NewService(store.NewRepository(st), opts...), ""))
 	t.Cleanup(srv.Close)
 	return &client{t: t, srv: srv}
 }
@@ -147,7 +147,7 @@ func TestSetCards(t *testing.T) {
 func TestLibrary(t *testing.T) {
 	c := newClient(t)
 	status, out, _ := c.do("GET", "/api/library", "", nil)
-	if status != http.StatusOK || len(out["cards"].([]any)) != 4 {
+	if status != http.StatusOK || len(out["cards"].([]any)) != 8 {
 		t.Fatalf("library: %d %v", status, out)
 	}
 }
