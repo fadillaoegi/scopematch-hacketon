@@ -19,6 +19,10 @@ dist/
 # Local demo recordings and publication preparation
 /artifacts/
 
+# Local audio and video files, anywhere in the repository
+*.[mM][pP]3
+*.[mM][pP]4
+
 # Local AI instructions, skills, and session state
 /AGENTS.md
 /CLAUDE.md
