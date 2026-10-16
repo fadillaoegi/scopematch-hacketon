@@ -32,7 +32,7 @@ PRD ref: `prd.md > The Core Journey`.
 
 ## Architecture
 
-Clean Architecture is required by the learner for this project and future changes. `AGENTS.md` records the rule; `CLAUDE.md` imports it. See `docs/architecture.md` for the dependency boundaries and verification commands.
+Clean Architecture is required for this project and future changes. Local agent instructions enforce the rule and remain outside Git. See `docs/architecture.md` for the dependency boundaries and verification commands.
 
 Backend: domain records and the pure card library → application use cases in `internal/scope` with an application-owned `Repository` port → SQLite and HTTP adapters; wire implementations in `cmd/server`. Use cases never import `internal/store`, `database/sql`, or `net/http`, and perform rule checks/writes through one transaction-scoped repository.
 
@@ -336,4 +336,4 @@ Free tier available; per pricing page (16 Oct 2026) free-tier content is used to
 
 ## Sharing and submission status
 
-Build review and the concise learning recap are complete. `devpost/shipping.md` records current official requirements, the local silent demo video, publication audit, and remaining learner-owned steps. The learner authorized public repository creation and pushing the audited history. Repository: https://github.com/fadillaoegi/scopematch-hacketon, using the authenticated account `fadillaoegi`; branch `main` was pushed and anonymous API/README access verified, as recorded in `shipping.md`. No public video URL, deployment, or Devpost submission has been created. External video upload and submission remain pending.
+Public repository: https://github.com/fadillaoegi/scopematch-hacketon. Source, run instructions, license and required planning documents are public. Local session notes, publication audits and personal learning context remain outside Git. Public video upload and final Devpost submission remain pending.

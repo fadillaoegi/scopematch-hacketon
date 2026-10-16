@@ -19,10 +19,25 @@ dist/
 # Local demo recordings and publication preparation
 /artifacts/
 
-# AI agent and tooling metadata
+# Local AI instructions, skills, and session state
 AGENTS.md
 CLAUDE.md
-THIRD_PARTY_NOTICES.md
+GEMINI.md
+MEMORY.md
+SESSION*.md
+session*.md
+HANDOFF*.md
+handoff*.md
+/.agents/
+/.claude/
+/.codex/
+/.cursor/
+/agent/skills/
+/devpost/checklist.md
+/devpost/shipping.md
+
+# Keep product documentation and required competition plans tracked:
+# README.md, THIRD_PARTY_NOTICES.md, devpost/{scope,prd,spec}.md, docs/
 
 # Local motion-render tooling cache
 /scripts/motion/__pycache__/

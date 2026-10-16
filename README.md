@@ -152,7 +152,7 @@ Backend tests exercise token/role isolation, the server-side reveal gate, all 25
 
 This project uses **Clean Architecture**. The backend use cases depend on domain records and an application-owned repository interface; SQLite and HTTP are outer adapters. The frontend separates models, gateway contracts, HTTP implementation, and presentation, with dependency injection in `main.tsx`.
 
-[Architecture boundaries and checks](docs/architecture.md) document the dependency direction. [AGENTS.md](AGENTS.md) makes this required for future work; `CLAUDE.md` imports the same rules. The frontend build runs architecture checks automatically; the Go suite checks backend imports.
+[Architecture boundaries and checks](docs/architecture.md) document the required dependency direction. Local agent instructions enforce the same convention and remain outside Git. The frontend build runs architecture checks automatically; the Go suite checks backend imports.
 
 ## Code and data
 
@@ -168,7 +168,7 @@ This project uses **Clean Architecture**. The backend use cases depend on domain
 
 Projects and all agreement records live in the SQLite file on the server. The Projects list stores owner links in this browser's local storage; it is a convenience, not a login or backup. Losing the private owner link loses freelancer access. Keep the database file and owner link to resume later.
 
-The proof of concept is one freelancer and one client per project, with no accounts, chat, notifications, payments, or editing an agreed scope. Final user review and submission preparation are tracked separately in `devpost/checklist.md`.
+The proof of concept is one freelancer and one client per project, with no accounts, chat, notifications, payments, or editing an agreed scope. Local session notes track final user review and submission preparation and remain outside Git.
 
 ## Video motion assets
 

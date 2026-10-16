@@ -1,6 +1,6 @@
 # Clean Architecture
 
-Clean Architecture is a project requirement, recorded in `AGENTS.md` and imported by `CLAUDE.md`. Product rules and models remain independent of HTTP, SQLite, and React. Outer adapters implement the interfaces defined by the application. Names and directories express the existing proof of concept; the dependency direction is the enforced rule.
+Clean Architecture is a project requirement, also enforced by local agent instructions kept outside Git. Product rules and models remain independent of HTTP, SQLite, and React. Outer adapters implement the interfaces defined by the application. Names and directories express the existing proof of concept; the dependency direction is the enforced rule.
 
 ## Backend boundaries
 
