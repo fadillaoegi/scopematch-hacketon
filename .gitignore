@@ -20,24 +20,22 @@ dist/
 /artifacts/
 
 # Local AI instructions, skills, and session state
-AGENTS.md
-CLAUDE.md
-GEMINI.md
-MEMORY.md
-SESSION*.md
-session*.md
-HANDOFF*.md
-handoff*.md
+/AGENTS.md
+/CLAUDE.md
+/GEMINI.md
+/MEMORY.md
 /.agents/
 /.claude/
 /.codex/
 /.cursor/
 /agent/skills/
-/devpost/checklist.md
-/devpost/shipping.md
-
-# Keep product documentation and required competition plans tracked:
-# README.md, THIRD_PARTY_NOTICES.md, devpost/{scope,prd,spec}.md, docs/
+# Preserve competition plans, requirements, and verification records.
+# The personal learner profile is the only ignored Markdown under devpost/.
+!/devpost/*.md
+/devpost/learner-profile.md
+!/README.md
+!/LICENSE
+!/THIRD_PARTY_NOTICES.md
 
 # Local motion-render tooling cache
 /scripts/motion/__pycache__/

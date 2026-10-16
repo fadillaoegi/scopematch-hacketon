@@ -336,4 +336,4 @@ Free tier available; per pricing page (16 Oct 2026) free-tier content is used to
 
 ## Sharing and submission status
 
-Public repository: https://github.com/fadillaoegi/scopematch-hacketon. Source, run instructions, license and required planning documents are public. Local session notes, publication audits and personal learning context remain outside Git. Public video upload and final Devpost submission remain pending.
+Public repository: https://github.com/fadillaoegi/scopematch-hacketon. Source, run instructions, license and required planning documents are public. `devpost/checklist.md` records build verification; `devpost/shipping.md` records competition requirements, publication checks and remaining submission steps. Personal learning context and local agent instructions remain outside Git. Public video upload and final Devpost submission remain pending.

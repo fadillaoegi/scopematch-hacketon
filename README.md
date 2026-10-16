@@ -168,7 +168,7 @@ This project uses **Clean Architecture**. The backend use cases depend on domain
 
 Projects and all agreement records live in the SQLite file on the server. The Projects list stores owner links in this browser's local storage; it is a convenience, not a login or backup. Losing the private owner link loses freelancer access. Keep the database file and owner link to resume later.
 
-The proof of concept is one freelancer and one client per project, with no accounts, chat, notifications, payments, or editing an agreed scope. Local session notes track final user review and submission preparation and remain outside Git.
+The proof of concept is one freelancer and one client per project, with no accounts, chat, notifications, payments, or editing an agreed scope. Build verification is recorded in [the checklist](devpost/checklist.md); competition requirements and submission preparation are recorded in [the shipping record](devpost/shipping.md). Personal learning context and local agent instructions remain outside Git.
 
 ## Video motion assets
 
