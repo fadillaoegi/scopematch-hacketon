@@ -1,0 +1,143 @@
+1
+00:00:12,500 --> 00:00:15,710
+Raka starts a surf school
+project and enters Nadia's brief.
+
+2
+00:00:20,500 --> 00:00:23,590
+The brief suggests concrete
+questions from a curated library.
+
+3
+00:00:25,500 --> 00:00:28,350
+Gemini drafts an extra
+question about lesson levels.
+
+4
+00:00:29,000 --> 00:00:32,450
+Raka reviews its options and
+scope details before adding it.
+
+5
+00:00:32,700 --> 00:00:34,390
+AI never decides for them.
+
+6
+00:00:37,500 --> 00:00:40,430
+Raka locks the questions
+and shares Nadia's link.
+
+7
+00:00:41,867 --> 00:00:43,637
+Nadia opens her link on a phone.
+
+8
+00:00:48,667 --> 00:00:51,617
+Raka answers independently
+and seals his choices.
+
+9
+00:00:52,327 --> 00:00:53,637
+Nadia cannot see them yet.
+
+10
+00:00:56,667 --> 00:00:59,057
+Nadia selects her own answers and seals them.
+
+11
+00:00:59,447 --> 00:01:00,977
+Only then are both sets revealed.
+
+12
+00:01:07,467 --> 00:01:09,017
+Their booking answers differ.
+
+13
+00:01:09,367 --> 00:01:12,077
+A WhatsApp conversation
+versus instant reservations.
+
+14
+00:01:12,607 --> 00:01:14,477
+The visual examples show the difference.
+
+15
+00:01:16,033 --> 00:01:18,603
+Raka proposes WhatsApp booking for this project.
+
+16
+00:01:20,133 --> 00:01:22,423
+Nadia counter-proposes a request form.
+
+17
+00:01:23,013 --> 00:01:25,963
+Staff must confirm lesson availability
+before accepting a booking.
+
+18
+00:01:27,500 --> 00:01:30,930
+Raka confirms. The earlier
+proposal remains in history.
+
+19
+00:01:32,433 --> 00:01:34,923
+Both people also confirm the matching answers.
+
+20
+00:01:35,293 --> 00:01:38,443
+A matching answer alone never
+becomes an agreed decision.
+
+21
+00:01:44,233 --> 00:01:48,363
+ScopeMatch assembles the included
+work, exclusions, responsibilities,
+
+22
+00:01:48,713 --> 00:01:50,083
+and acceptance criteria.
+
+23
+00:01:50,593 --> 00:01:51,883
+Raka sends version 1.
+
+24
+00:01:53,333 --> 00:01:55,703
+Raka adds a note and saves version 2.
+
+25
+00:01:55,973 --> 00:01:57,823
+The previous confirmation resets.
+
+26
+00:02:00,333 --> 00:02:02,403
+Both confirm version 2 by name.
+
+27
+00:02:02,693 --> 00:02:05,643
+Their confirmations now match
+and the scope becomes agreed.
+
+28
+00:02:09,333 --> 00:02:12,303
+He downloads Markdown and
+opens the actual agreed file.
+
+29
+00:02:14,333 --> 00:02:17,283
+Raka clicks Print / Save as PDF.
+
+30
+00:02:17,853 --> 00:02:20,563
+The browser saves the agreed scope as a PDF.
+
+31
+00:02:21,113 --> 00:02:24,903
+He opens that file and reviews the
+document, including the decisions,
+
+32
+00:02:25,093 --> 00:02:27,883
+acceptance criteria, and
+both confirmation records.
+
