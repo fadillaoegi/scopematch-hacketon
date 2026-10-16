@@ -1,4 +1,39 @@
-# Submission film tooling
+# Application demo tooling
+
+## Current delivery: application footage only
+
+The requested demo follows the original full-screen recording preview: desktop
+app footage and the client's portrait browser, with visible real interactions
+through the completed result. It contains no 3D intro/closing, title cards,
+decorative frames or audio. English narration **text** is separate.
+
+```sh
+PYTHONPYCACHEPREFIX=/private/tmp/scopematch-python-cache python3 scripts/demo/app_only.py
+```
+
+This reads the validated raw capture from `artifacts/submission-demo/` and writes
+the corrected delivery to ignored `artifacts/app-demo/`:
+
+- `scopematch-demo-full.mp4`: 2:56, 1920×1080, 30 fps, application footage only.
+- `voice-over-timed-en.txt`, `voice-over-reading-en.txt`, `voice-over-en.srt`:
+  English text timed to this demo, starting at 00:00.
+- `scopematch-demo-full-pack.zip`: the video, narration text and visual review.
+- `verification.json`: duration/frame/decode checks and source-camera mapping.
+
+Both roles' actual confirmation clicks are shown, including confirmations for
+matching answers. One fictional project runs from brief through real Gemini
+draft review, private answers, comparison, counter-proposal, versioned scope,
+confirmation reset, AGREED and actual downloaded Markdown contents. Only the
+long provider waiting interval is removed; action footage is retained. Camera
+offsets are calibrated to the saved raw recording and need review for a new take.
+The source raw MP4s are generated with `SCOPEMATCH_SAVE_RAW=1` when capturing.
+
+The earlier combined film below was rejected by the learner because it attached
+the separately requested intro/closing. It is retained as historical media;
+`app_only.py` is the current demo entry point. Do not attach bookends unless
+explicitly asked.
+
+## Earlier combined-film tooling
 
 Creates a silent, 1920×1080/30 fps walkthrough and synchronized English narration
 **text**. It never generates a voice track. This is media tooling outside the

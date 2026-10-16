@@ -169,3 +169,39 @@ all participant/submission eligibility requirements. Adding the learner's own
 voice, public upload/link verification, actual form/exit-survey answers and final
 Devpost submission remain pending. The recording is an automated demonstration
 with fictional sample participants, not a real-user study.
+
+## Corrected application-only demo — 17 October 2026
+
+The learner rejected the combined film because the requested deliverable was a
+complete application demo following the earlier recording preview, with the
+separately requested intro/closing kept separate. The current delivery is
+`artifacts/app-demo/scopematch-demo-full.mp4`; the earlier combined file is
+historical and is not the requested demo.
+
+- Application footage fills the desktop frame; the real portrait client browser
+  is centered at full height, matching the original recording format. No 3D
+  bookends, title cards, decorative frames, music or voice track are included.
+- All sixteen working-flow phases appear, from the initial project form through
+  live Gemini question review, two-role answers/negotiation, version reset,
+  both v2 confirmation clicks, AGREED and actual exported-file contents. Both
+  people's confirmation clicks for matching answers are now visible as well.
+- The raw validated capture is reused directly; no new provider call or mocked
+  response was needed. Long provider waiting is shortened. Cursor/tap movement,
+  typing and application actions are real automated browser interactions with
+  fictional participants, not evidence of a real-user study.
+- Verified: H.264 1920×1080 at 30 fps, 5,280 frames, approximately 176 seconds
+  (2:56), 23,190,394 bytes, one video stream and no audio. Full decode passed;
+  every phase, the agreed screen and exported result were sampled visually.
+- Updated separate English narration text: 305 words, exact timing from 00:00,
+  maximum scene pace 154 words/minute. Timed/reading TXT and optional SRT are
+  included with the corrected video in `scopematch-demo-full-pack.zip`. ZIP
+  integrity and its movie bytes matching the delivered MP4 were verified.
+- `scripts/demo/app_only.py` is the current rendering entry point. The media
+  README states that bookends must remain separate unless explicitly requested.
+  Application/domain/architecture source is unchanged.
+
+Official rules were checked again at https://learn-ai-basics.devpost.com/rules.
+The demo shows the working browser platform and a function end to end, uses
+English UI, and stays below three minutes. This does not complete public upload,
+participant eligibility declarations, required form/exit-survey fields or final
+Devpost submission. No upload or submission was performed.

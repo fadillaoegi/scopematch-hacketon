@@ -174,6 +174,12 @@ The proof of concept is one freelancer and one client per project, with no accou
 
 [Motion tooling](scripts/motion/README.md) renders an original 8-second 3D intro and 6-second closing with synchronized stereo sound. It uses the app's paper/two-ink identity and existing text. Rendered MP4s, separate WAV sound masters, and previews stay under ignored `artifacts/motion/`; no app data or API keys are used.
 
+[Application demo tooling](scripts/demo/README.md) produces the complete working-app
+walkthrough in the original full-screen preview format. The demo contains only
+application footage; the separately requested intro/closing stay separate.
+English voice-over text and timing are delivered independently, with no generated
+narration audio.
+
 ## License
 
 Project code is available under the [MIT License](LICENSE). Dependencies and fonts retain their own licenses. See [third-party notices](THIRD_PARTY_NOTICES.md) for the copied Devpost Learn Skill Pack.
