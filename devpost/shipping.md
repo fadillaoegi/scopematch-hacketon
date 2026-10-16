@@ -128,3 +128,44 @@ At the learner's explicit request, created an original 3D intro and closing with
 - Also created `artifacts/motion/demo-with-bookends.mp4` from the existing silent split-screen demo: 169.57 seconds total. That assembly includes the 155.57-second source demo plus the 14 seconds of bookends, preserves the source, and leaves the demo's middle section silent. It does not include the separate Gemini scene or narration. The earlier approximate 2:30 description of the split-screen is superseded by its measured 155.57-second duration.
 
 No upload or submission performed. Real-user testing, learner-authored presentation/submission material, and the public video link remain pending.
+
+## Complete silent submission film — 16 October 2026
+
+At the learner's explicit request, recorded a new working-app walkthrough with
+natural cursor/tap movement and prepared synchronized English voice-over text.
+No speech or narration audio was generated. This supersedes the earlier demo
+assemblies as the intended picture master for adding the learner's own voice.
+
+- Output: ignored `artifacts/submission-demo/scopematch-demo-silent.mp4`, exactly
+  173 seconds (2:53), 5,190 frames, H.264 1920×1080 at 30 fps, 27,398,865 bytes,
+  with no audio stream. Full decode and sampled visual review passed.
+- Original 8-second intro and 6-second closing surround one fictional Ombak
+  surf-school project: brief, curated questions, real Gemini draft/detail review
+  and Add, locked private links, separate desktop/phone answers, simultaneous
+  reveal, proposal/counter-proposal/history, explicit confirmations for matching
+  answers, scope v1, revision/reset, both v2 confirmation clicks, AGREED, export.
+- Eight capture assertions passed, including answer privacy before both seals,
+  no automatic agreement for matching answers, all decisions confirmed, reset of
+  old confirmations after revision, latest-version agreement, and an actual
+  downloaded Markdown file matching the stored export byte for byte.
+- One earlier take had a provider timeout; the completed take uses a successful
+  real provider response. Waiting time is condensed and labelled. No mocked AI
+  result or fabricated application screen is included. The final plain file
+  viewer displays the actual downloaded Markdown, labelled accordingly.
+- Separate English text files: 325-word timed recording script, clean reading
+  copy, optional SRT, and exact scene timeline. Narration cues fit the scene
+  durations. These factual drafts were expressly requested by the learner;
+  they do not invent personal learning reflections or user-research evidence.
+- Source/reproduction notes: `scripts/demo/`. Generated footage, private capture
+  metadata, sample download and scripts for recording voice stay under ignored
+  `artifacts/`. Only media tooling and this technical record changed; app
+  architecture/runtime code is unchanged.
+
+Official video requirements were rechecked at
+https://learn-ai-basics.devpost.com/rules: less than three minutes, actual working
+platform footage, English/translation, and a public YouTube/Vimeo URL. This film
+meets the local format/content checks; it does not complete publication or prove
+all participant/submission eligibility requirements. Adding the learner's own
+voice, public upload/link verification, actual form/exit-survey answers and final
+Devpost submission remain pending. The recording is an automated demonstration
+with fictional sample participants, not a real-user study.
